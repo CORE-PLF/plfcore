@@ -7,7 +7,7 @@ import { db } from '@/lib/db'
 
 export function getPlans() {
   return db.plan.findMany({
-    where: { active: true, product: { slug: 'resync' } },
+    where: { active: true, product: { slug: 'plfcore' } },
     orderBy: { sortOrder: 'asc' },
     include: { prices: { where: { active: true, currency: 'BRL' } } },
   })

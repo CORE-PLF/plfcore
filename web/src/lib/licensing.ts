@@ -145,7 +145,7 @@ export function licenseDisplayState(
 
 // Licença viva do produto: é ela que dá direito a baixar o instalador e a
 // escolher entre renovar e abrir nova instalação no checkout.
-export async function findLiveLicense(userId: string, productSlug = 'resync') {
+export async function findLiveLicense(userId: string, productSlug = 'plfcore') {
   return db.license.findFirst({
     where: {
       userId,

@@ -50,7 +50,7 @@ hwid = sha256_hex(machineGuid)   # 64 caracteres [0-9a-f]
 const CURL_ACTIVATE = `curl -X POST https://SEU-DOMINIO/api/v1/licenses/activate \\
   -H "Content-Type: application/json" \\
   -d '{
-    "key": "RESYNC-A2C4-E6G8-J3KL-MN57",
+    "key": "PLF-A2C4-E6G8-J3KL-MN57",
     "hwid": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
     "deviceName": "DESKTOP-GAMER",
     "appVersion": "1.2.0"
@@ -98,11 +98,11 @@ const CURL_VALIDATE = `curl -X POST https://SEU-DOMINIO/api/v1/licenses/validate
 }`
 
 const CURL_DOWNLOAD = `curl https://SEU-DOMINIO/api/v1/app/download \\
-  -H "X-License-Key: RESYNC-A2C4-E6G8-J3KL-MN57"
+  -H "X-License-Key: PLF-A2C4-E6G8-J3KL-MN57"
 
 # 200
 {
-  "url": "https://cdn.example.com/resync/resync-setup-1.2.0.exe",
+  "url": "https://cdn.example.com/plfcore/plfcore-setup-1.2.0.exe",
   "checksum": "3b0c44298fc1c149afbf4c8996fb92427ae41e...",
   "version": "1.2.0"
 }`

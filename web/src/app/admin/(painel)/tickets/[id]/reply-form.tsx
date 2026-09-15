@@ -11,7 +11,7 @@ const TEMPLATES = [
   },
   {
     label: 'LICENÇA NÃO ATIVA',
-    body: 'Verifique se a chave foi digitada exatamente como aparece no painel (formato RESYNC-XXXX-...). Se o erro continuar, informe o código exibido pelo aplicativo na tela de ativação para conferirmos o status da licença.',
+    body: 'Verifique se a chave foi digitada exatamente como aparece no painel (formato PLF-XXXX-...). Se o erro continuar, informe o código exibido pelo aplicativo na tela de ativação para conferirmos o status da licença.',
   },
   {
     label: 'REINSTALAÇÃO LIMPA',

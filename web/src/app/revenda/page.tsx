@@ -153,7 +153,7 @@ function Inscricao() {
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-8">
       <div>
         <Kicker>PROGRAMA DE REVENDA</Kicker>
-        <h1 className="type-display mt-1 text-4xl">REVENDA RESYNC</h1>
+        <h1 className="type-display mt-1 text-4xl">REVENDA PLF CORE</h1>
       </div>
 
       <Chamfer cut={12} className="p-6">

@@ -16,7 +16,7 @@ const SESSION_COOKIE = 'bbx_session'
 
 // chaves de licença nunca ficam em claro no corpo de tickets
 function maskKeys(text: string): string {
-  return text.replace(/RESYNC-[A-Z0-9-]+/gi, 'RESYNC-****')
+  return text.replace(/PLF-[A-Z0-9-]+/gi, 'PLF-****')
 }
 
 function backWithError(path: string, message: string): never {

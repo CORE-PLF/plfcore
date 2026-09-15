@@ -17,7 +17,7 @@ export function TotpSetup({ enabled }: { enabled: boolean }) {
 
   if (confirmState.done) {
     const codes = confirmState.recoveryCodes ?? []
-    const txt = `CÓDIGOS DE RECUPERAÇÃO 2FA — RESYNC OPS\nCada código funciona UMA vez, no lugar do código do autenticador.\n\n${codes.join('\n')}\n`
+    const txt = `CÓDIGOS DE RECUPERAÇÃO 2FA — PLF CORE OPS\nCada código funciona UMA vez, no lugar do código do autenticador.\n\n${codes.join('\n')}\n`
     return (
       <div className="space-y-3">
         <p className="type-kicker text-ink-1">[OK] 2FA ATIVADA. O próximo acesso ao painel vai pedir o código.</p>
@@ -35,7 +35,7 @@ export function TotpSetup({ enabled }: { enabled: boolean }) {
             <a
               className="btn btn--ghost btn--sm chamfer inline-block"
               href={`data:text/plain;charset=utf-8,${encodeURIComponent(txt)}`}
-              download="resync-2fa-codigos-recuperacao.txt"
+              download="plfcore-2fa-codigos-recuperacao.txt"
             >
               BAIXAR .TXT
             </a>

@@ -16,7 +16,7 @@ export function WebhookForm({ currentUrl }: { currentUrl: string | null }) {
         name="webhookUrl"
         type="url"
         defaultValue={currentUrl ?? ''}
-        placeholder="https://seusistema.com/webhooks/resync"
+        placeholder="https://seusistema.com/webhooks/plfcore"
         aria-label="URL do webhook"
         className="field w-full"
         maxLength={500}

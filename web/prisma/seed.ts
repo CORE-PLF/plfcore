@@ -36,8 +36,8 @@ async function main() {
   }
 
   const product = await db.product.upsert({
-    where: { slug: 'resync' },
-    create: { slug: 'resync', name: 'Resync' },
+    where: { slug: 'plfcore' },
+    create: { slug: 'plfcore', name: 'PLF CORE' },
     update: {},
   })
 
@@ -112,7 +112,7 @@ async function main() {
       version: '1.0.0',
       channel: 'stable',
       notes: 'Primeira versão pública: diagnóstico real, limpeza segura, otimizações reversíveis.',
-      fileName: 'RESYNC-1.0.0-setup.exe',
+      fileName: 'PLF-1.0.0-setup.exe',
       checksum: 'sha256:preencher-no-deploy-real',
       publishedAt: new Date(),
     },
@@ -120,12 +120,12 @@ async function main() {
   })
 
   // ===== contas de demonstração (dev) =====
-  const senha = await hashPassword('resync123')
+  const senha = await hashPassword('plfcore123')
 
   const admin = await db.user.upsert({
-    where: { email: 'admin@resync.dev' },
+    where: { email: 'admin@plfcore.dev' },
     create: {
-      email: 'admin@resync.dev',
+      email: 'admin@plfcore.dev',
       name: 'Admin Dev',
       passwordHash: senha,
       staffRole: 'SUPERADMIN',
@@ -135,14 +135,14 @@ async function main() {
   })
 
   const cliente = await db.user.upsert({
-    where: { email: 'cliente@resync.dev' },
-    create: { email: 'cliente@resync.dev', name: 'Cliente Dev', passwordHash: senha, emailVerifiedAt: new Date() },
+    where: { email: 'cliente@plfcore.dev' },
+    create: { email: 'cliente@plfcore.dev', name: 'Cliente Dev', passwordHash: senha, emailVerifiedAt: new Date() },
     update: {},
   })
 
   const afiliadoUser = await db.user.upsert({
-    where: { email: 'afiliado@resync.dev' },
-    create: { email: 'afiliado@resync.dev', name: 'Afiliado Dev', passwordHash: senha, emailVerifiedAt: new Date() },
+    where: { email: 'afiliado@plfcore.dev' },
+    create: { email: 'afiliado@plfcore.dev', name: 'Afiliado Dev', passwordHash: senha, emailVerifiedAt: new Date() },
     update: {},
   })
   await db.affiliate.upsert({
@@ -152,8 +152,8 @@ async function main() {
   })
 
   const revendaUser = await db.user.upsert({
-    where: { email: 'revenda@resync.dev' },
-    create: { email: 'revenda@resync.dev', name: 'Revenda Dev', passwordHash: senha, emailVerifiedAt: new Date() },
+    where: { email: 'revenda@plfcore.dev' },
+    create: { email: 'revenda@plfcore.dev', name: 'Revenda Dev', passwordHash: senha, emailVerifiedAt: new Date() },
     update: {},
   })
   const reseller = await db.reseller.upsert({
@@ -179,7 +179,7 @@ async function main() {
     cliente: cliente.email,
     afiliado: afiliadoUser.email,
     revenda: revendaUser.email,
-    senha: 'resync123',
+    senha: 'plfcore123',
   })
 }
 

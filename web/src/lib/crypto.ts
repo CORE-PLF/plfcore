@@ -57,7 +57,7 @@ export function hmacVerify(value: string, signature: string, secret = env.PAYMEN
 }
 
 // ===== chave de licença =====
-// Formato de exibição RESYNC-XXXX-XXXX-XXXX-XXXX, mas a entropia vem de
+// Formato de exibição PLF-XXXX-XXXX-XXXX-XXXX, mas a entropia vem de
 // 20 bytes aleatórios (160 bits) — o formato é só apresentação.
 
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // sem 0/O/1/I
@@ -67,7 +67,7 @@ export function generateLicenseKey(): string {
   let out = ''
   for (let i = 0; i < 16; i++) out += ALPHABET[bytes[i] % ALPHABET.length]
   const groups = out.match(/.{4}/g) as string[]
-  return `RESYNC-${groups.join('-')}`
+  return `PLF-${groups.join('-')}`
 }
 
 export function maskLicenseKey(key: string): string {

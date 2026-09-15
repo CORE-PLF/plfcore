@@ -12,7 +12,7 @@ export default async function EmitirPage() {
   const { reseller } = await requireApprovedReseller()
 
   const plans = await db.plan.findMany({
-    where: { active: true, product: { slug: 'resync' }, prices: { some: { active: true, currency: 'BRL' } } },
+    where: { active: true, product: { slug: 'plfcore' }, prices: { some: { active: true, currency: 'BRL' } } },
     include: { prices: { where: { active: true, currency: 'BRL' } } },
     orderBy: { sortOrder: 'asc' },
   })

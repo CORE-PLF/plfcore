@@ -63,7 +63,7 @@ export async function deliverPurchaseDm(userId: string, orderId: string, license
     await sendDm(
       user.discordId,
       [
-        'PAGAMENTO CONFIRMADO — RESYNC',
+        'PAGAMENTO CONFIRMADO — PLF CORE',
         `Plano: ${license.plan.name} (${validade}).`,
         `Sua licença está no painel: ${env.APP_URL}/painel/licenca`,
         'Nunca compartilhe sua chave. Nosso time nunca pede a chave por DM.',

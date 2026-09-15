@@ -106,7 +106,7 @@ export async function emitirLicencaAction(
   if (!planId) return { error: 'Selecione um plano.' }
 
   const plan = await db.plan.findUnique({ where: { id: planId }, include: { product: true } })
-  if (!plan || !plan.active || plan.product.slug !== 'resync')
+  if (!plan || !plan.active || plan.product.slug !== 'plfcore')
     return { error: 'Plano indisponível. Recarregue a página e tente de novo.' }
 
   try {
