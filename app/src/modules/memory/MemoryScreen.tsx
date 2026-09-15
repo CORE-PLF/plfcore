@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { ScreenTitle } from '../../components/Kicker'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { Button } from '../../components/Button'
 import { MetricRow } from '../../components/MetricRow'
-import { SegmentedProgress } from '../../components/SegmentedProgress'
+import { ProgressBar } from '../../components/ProgressBar'
 import { ProgressModal, ResultModal } from '../../components/Modal'
 import { DemoTag, EstimatedTag } from '../../components/Tag'
 import { ErrorState, Skeleton } from '../../components/states'
@@ -60,7 +60,7 @@ function UsageChart({ samples, ariaLabel }: { samples: SystemMetrics[]; ariaLabe
 }
 
 /** Sobrevive à troca de tela e morre quando o app fecha: pente otimizado só
- *  volta a aceitar OTIMIZAR depois de fechar e abrir o RESYNC. */
+ *  volta a aceitar OTIMIZAR depois de fechar e abrir o PLF CORE. */
 const sessao: { otimizados: Set<string> } = { otimizados: new Set() }
 
 export default function MemoryScreen() {
@@ -223,7 +223,7 @@ export default function MemoryScreen() {
               : Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-[104px] w-full" />)}
           </section>
 
-          <ChamferSurface cut={8} flat className="p-4">
+          <Surface cut={8} flat className="p-4">
             <p className="type-kicker mb-2">{t('panelKicker')}</p>
             {mem ? (
               <>
@@ -257,7 +257,7 @@ export default function MemoryScreen() {
                   )}
                 </span>
               </div>
-              <SegmentedProgress pct={cargaPct} showPct={false} hot={(cargaPct ?? 0) > 85} className="mt-1.5" />
+              <ProgressBar pct={cargaPct} showPct={false} hot={(cargaPct ?? 0) > 85} className="mt-1.5" />
             </div>
 
             <div className="mt-5">
@@ -274,7 +274,7 @@ export default function MemoryScreen() {
                 </p>
               )}
             </div>
-          </ChamferSurface>
+          </Surface>
         </div>
       )}
 

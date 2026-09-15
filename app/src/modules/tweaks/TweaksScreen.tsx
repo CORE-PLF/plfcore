@@ -6,10 +6,10 @@ import { useToastsStore } from '../../stores/toasts'
 import type { TweakCategoria, TweakState } from '../../types'
 import { ArmSwitch } from '../../components/ArmSwitch'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { HoldButton } from '../../components/HoldButton'
 import { ScreenTitle } from '../../components/Kicker'
-import { SegmentedProgress } from '../../components/SegmentedProgress'
+import { ProgressBar } from '../../components/ProgressBar'
 import { StatusLED } from '../../components/StatusLED'
 import { ErrorState } from '../../components/states'
 import { dict } from './i18n'
@@ -255,7 +255,7 @@ export default function TweaksScreen() {
 
       {estados !== null && (
         <>
-          <ChamferSurface cut={12} className="tw-hero">
+          <Surface cut={12} className="tw-hero">
             <div className="tw-hero-info">
               <span className="tw-hero-kicker">{t('heroKicker')}</span>
               <strong className="tw-hero-num type-mono">{pendentesTudo}</strong>
@@ -268,7 +268,7 @@ export default function TweaksScreen() {
             <div className="tw-hero-acao">
               {lote ? (
                 <div className="tw-hero-progresso">
-                  <SegmentedProgress pct={(lote.feitos / lote.total) * 100} segments={20} hot />
+                  <ProgressBar pct={(lote.feitos / lote.total) * 100} segments={20} hot />
                   <span className="type-mono text-[10px] tracking-[0.12em] text-ink-3">
                     {t('aplicandoLote', { feitos: lote.feitos, total: lote.total })}
                   </span>
@@ -286,7 +286,7 @@ export default function TweaksScreen() {
                 {t('reler')}
               </Button>
             </div>
-          </ChamferSurface>
+          </Surface>
 
           {!admin && <p className="tw-aviso-admin mt-4">{t('semAdmin')}</p>}
           <p className="tw-nota mt-4">{t('heroNota')}</p>
@@ -372,7 +372,7 @@ export default function TweaksScreen() {
             {vbs && (
               <section className="tw-grupo tw-grupo--risco">
                 <h2 className="tw-grupo-titulo">{t('grupo.seguranca')}</h2>
-                <ChamferSurface cut={8} className="tw-hazard">
+                <Surface cut={8} className="tw-hazard">
                   <div className="hazard h-1.5 w-full" aria-hidden />
                   <div className="mt-3 flex items-center justify-between gap-4">
                     <span className="tw-nome">{t('tw.vbs-off.nome')}</span>
@@ -396,7 +396,7 @@ export default function TweaksScreen() {
                           : t('desligarProtecao')}
                     </HoldButton>
                   </div>
-                </ChamferSurface>
+                </Surface>
               </section>
             )}
           </div>

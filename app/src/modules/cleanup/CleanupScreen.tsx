@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { HoldButton } from '../../components/HoldButton'
 import { ScreenTitle } from '../../components/Kicker'
 import { MetricRow } from '../../components/MetricRow'
 import { ResultModal } from '../../components/Modal'
 import { Odometer } from '../../components/Odometer'
-import { SegmentedProgress } from '../../components/SegmentedProgress'
+import { ProgressBar } from '../../components/ProgressBar'
 import { DemoTag, KTag } from '../../components/Tag'
 import { EmptyState, ErrorState } from '../../components/states'
 import { IconCheck } from '../../components/icons'
@@ -220,7 +220,7 @@ export default function CleanupScreen() {
       <div className="grid items-stretch gap-6 lg:grid-cols-[minmax(300px,2fr)_3fr]">
         <DiskIllustration scanning={phase === 'scanning'} />
 
-        <ChamferSurface cut={8} className="self-start">
+        <Surface cut={8} className="self-start">
           <div className="p-6">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h2 className="type-display text-xl">{t('statusDisco')}</h2>
@@ -274,7 +274,7 @@ export default function CleanupScreen() {
                 <p className="type-kicker">{t('etapa')}</p>
                 <p className="type-mono mt-1 text-xs text-ink-2">{t('etapaVarredura')}</p>
                 <div className="mt-3">
-                  <SegmentedProgress pct={null} />
+                  <ProgressBar pct={null} />
                 </div>
                 <p className="type-mono mt-2 text-[11px] text-ink-3">
                   {tk('tempoDecorrido')} {fmtClock(elapsedS)}
@@ -360,7 +360,7 @@ export default function CleanupScreen() {
                           {etapaCat ? t(`cat.${etapaCat}.nome`) : t('etapaPreparo')}
                         </p>
                         <div className="mt-3">
-                          <SegmentedProgress pct={pct} hot />
+                          <ProgressBar pct={pct} hot />
                         </div>
                         <p className="type-mono mt-2 text-[11px] text-ink-3">
                           {tk('tempoDecorrido')} {fmtClock(elapsedS)}
@@ -426,7 +426,7 @@ export default function CleanupScreen() {
               <span className="text-xs text-ink-3">{t('avisoProtegido')}</span>
             </div>
           </div>
-        </ChamferSurface>
+        </Surface>
       </div>
 
       <ResultModal

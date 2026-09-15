@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { BRAND } from '../../brand'
 import { ArmSwitch } from '../../components/ArmSwitch'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { HoldButton } from '../../components/HoldButton'
 import { ScreenTitle } from '../../components/Kicker'
 import { ProgressModal } from '../../components/Modal'
@@ -167,7 +167,7 @@ export default function WindowsScreen() {
     <div className="h-full overflow-y-auto p-8">
       <ScreenTitle kicker={t('kicker')} title={t('titulo')} />
 
-      <ChamferSurface cut={12} className="win-hero">
+      <Surface cut={12} className="win-hero">
         <div className="win-hero-info">
           <span className="type-mono win-hero-code">L{atual}</span>
           <div className="win-hero-txt">
@@ -184,7 +184,7 @@ export default function WindowsScreen() {
             {t('voltarOriginal')}
           </Button>
         )}
-      </ChamferSurface>
+      </Surface>
 
       {erro && (
         <div className="mt-4">
@@ -198,7 +198,7 @@ export default function WindowsScreen() {
 
       <section className="win-regua" aria-label={t('regua')}>
         {ORDEM.map((n) => (
-          <ChamferSurface
+          <Surface
             key={n}
             cut={8}
             className={`win-card ${atual === n ? 'is-current' : ''} ${n === 1 ? 'win-card--l1' : ''} ${n === 2 ? 'win-card--l2' : ''}`}
@@ -229,7 +229,7 @@ export default function WindowsScreen() {
 
               <div className="win-card-acao">{acao(n)}</div>
             </div>
-          </ChamferSurface>
+          </Surface>
         ))}
       </section>
 

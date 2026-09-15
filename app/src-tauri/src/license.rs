@@ -9,7 +9,7 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use tauri::AppHandle;
 
 const CREATE_NO_WINDOW: u32 = 0x0800_0000;
-const CREDENTIAL_SERVICE: &str = "com.resync.app";
+const CREDENTIAL_SERVICE: &str = "com.plfcore.app";
 const CREDENTIAL_USER: &str = "device-license";
 const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
 const OFFLINE_GRACE_SECS: u64 = 72 * 60 * 60;
@@ -149,16 +149,16 @@ fn now_unix() -> u64 {
 }
 
 /// Base do site para links de venda. Mesma origem da API — em release vem do
-/// build (RESYNC_API_BASE_URL); sem ela, o domínio de produção.
+/// build (PLFCORE_API_BASE_URL); sem ela, o domínio de produção.
 pub fn site_base() -> &'static str {
-    match option_env!("RESYNC_API_BASE_URL") {
+    match option_env!("PLFCORE_API_BASE_URL") {
         Some(value) if value.starts_with("https://") => value.trim_end_matches('/'),
-        _ => "https://resync.com.br",
+        _ => "https://plfcore.com.br",
     }
 }
 
 fn api_base() -> Result<&'static str, ApiFailure> {
-    if let Some(value) = option_env!("RESYNC_API_BASE_URL") {
+    if let Some(value) = option_env!("PLFCORE_API_BASE_URL") {
         let trimmed = value.trim_end_matches('/');
         if trimmed.starts_with("https://")
             || (cfg!(debug_assertions) && trimmed.starts_with("http://"))
@@ -232,7 +232,7 @@ fn machine_guid() -> Result<String, String> {
 }
 
 fn hwid() -> Result<String, String> {
-    let source = format!("resync:v1|{}", machine_guid()?);
+    let source = format!("plfcore:v1|{}", machine_guid()?);
     Ok(format!("{:x}", Sha256::digest(source.as_bytes())))
 }
 
@@ -240,7 +240,7 @@ fn client() -> Result<Client, ApiFailure> {
     Client::builder()
         .connect_timeout(Duration::from_secs(5))
         .timeout(Duration::from_secs(12))
-        .user_agent(format!("Resync/{APP_VERSION}"))
+        .user_agent(format!("PLFCore/{APP_VERSION}"))
         .build()
         .map_err(|_| ApiFailure::Network)
 }

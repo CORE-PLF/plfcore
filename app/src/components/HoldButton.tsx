@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type { ButtonHTMLAttributes } from 'react'
 import { sfx } from '../services/sfx'
 import './kit.css'
@@ -13,38 +13,21 @@ interface Props extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>
 }
 
 /**
- * Ação destrutiva: segurar 900ms. Uma borda de carga percorre o perímetro
- * do chanfro; soltar antes cancela e a carga recua.
+ * Ação destrutiva: segurar 900ms. Uma carga preenche o botão da esquerda
+ * pra direita; soltar antes cancela e a carga recua.
  */
 export function HoldButton({ onConfirm, armed = true, variant = 'danger', className = '', children, disabled, ...rest }: Props) {
-  const btnRef = useRef<HTMLButtonElement>(null)
-  const pathRef = useRef<SVGPathElement>(null)
-  const [perimeter, setPerimeter] = useState(0)
+  const chargeRef = useRef<HTMLSpanElement>(null)
   const raf = useRef(0)
   const start = useRef(0)
   const progress = useRef(0)
   const holding = useRef(false)
   const fired = useRef(false)
 
-  // path do perímetro acompanha o chanfro real do botão
-  useEffect(() => {
-    const el = btnRef.current
-    if (!el) return
-    const ro = new ResizeObserver(() => {
-      const { offsetWidth: w, offsetHeight: h } = el
-      const c = 6
-      const d = `M ${c} 0 H ${w} V ${h - c} L ${w - c} ${h} H 0 V ${c} Z`
-      pathRef.current?.setAttribute('d', d)
-      setPerimeter(2 * (w + h) - 4 * c + 2 * c * Math.SQRT2)
-    })
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [])
-
   const paint = useCallback(() => {
-    const p = pathRef.current
-    if (p) p.style.strokeDashoffset = String(perimeter * (1 - progress.current))
-  }, [perimeter])
+    const el = chargeRef.current
+    if (el) el.style.width = `${progress.current * 100}%`
+  }, [])
 
   const loop = useCallback(
     (ts: number) => {
@@ -62,7 +45,7 @@ export function HoldButton({ onConfirm, armed = true, variant = 'danger', classN
         }
       } else {
         // carga recua 3× mais rápido
-        progress.current = Math.max(0, progress.current - 3 / (HOLD_MS / 16.7) )
+        progress.current = Math.max(0, progress.current - 3 / (HOLD_MS / 16.7))
         paint()
         if (progress.current <= 0) return
       }
@@ -93,9 +76,7 @@ export function HoldButton({ onConfirm, armed = true, variant = 'danger', classN
 
   return (
     <button
-      ref={btnRef}
-      className={`btn chamfer holdbtn btn--${variant} ${className}`}
-      style={{ '--cut': '6px' } as React.CSSProperties}
+      className={`btn holdbtn btn--${variant} ${className}`}
       disabled={disabled || !armed}
       onPointerDown={begin}
       onPointerUp={end}
@@ -108,13 +89,8 @@ export function HoldButton({ onConfirm, armed = true, variant = 'danger', classN
       }}
       {...rest}
     >
-      {children}
-      <svg className="charge" aria-hidden>
-        <path
-          ref={pathRef}
-          style={{ strokeDasharray: perimeter, strokeDashoffset: perimeter }}
-        />
-      </svg>
+      <span ref={chargeRef} className="charge" aria-hidden />
+      <span className="label inline-flex items-center gap-2">{children}</span>
     </button>
   )
 }

@@ -2,7 +2,7 @@
 // O que esta tela nunca faz: instalar mod. Com sv_pureLevel 1 o servidor só
 // perdoa quatro caminhos de áudio, com 2 não perdoa nada, e no FiveM para GTA V
 // Enhanced o pure é sempre ligado — instalar mod aqui seria impedir a pessoa de
-// entrar no servidor, e ela culparia o RESYNC, não o mod.
+// entrar no servidor, e ela culparia o PLF CORE, não o mod.
 
 import { useCallback, useEffect, useState } from 'react'
 import { useT } from '../../i18n'
@@ -12,7 +12,7 @@ import { useToastsStore } from '../../stores/toasts'
 import type { FiveMFolder, FiveMScan } from '../../types'
 import { ArmSwitch } from '../../components/ArmSwitch'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { HoldButton } from '../../components/HoldButton'
 import { KTag } from '../../components/Tag'
 import { MetricRow } from '../../components/MetricRow'
@@ -148,7 +148,7 @@ export function FivemPanel() {
 
   return (
     <>
-      <ChamferSurface cut={12} className="fm-hero mt-4">
+      <Surface cut={12} className="fm-hero mt-4">
         <div className="fm-hero-topo">
           <div className="fm-hero-num">
             <span className="fm-hero-kicker">{t('fmHeroKicker')}</span>
@@ -188,10 +188,10 @@ export function FivemPanel() {
           </ul>
           <p className="cfg-explica mt-3">{t('fmCacheNota')}</p>
         </div>
-      </ChamferSurface>
+      </Surface>
 
       <div className="fm-colunas">
-        <ChamferSurface cut={6} flat className="p-4">
+        <Surface cut={6} flat className="p-4">
           <div className="cfg-head mb-2">
             <p className="type-kicker text-ink-2">{t('fmCliente')}</p>
             {scan.canal !== null && <StatusLED state={scan.canal === 'production' ? 'white' : 'heat'} />}
@@ -204,9 +204,9 @@ export function FivemPanel() {
           {scan.canal !== null && scan.canal !== 'production' && (
             <p className="cfg-explica mt-3">{t('fmCanalAviso')}</p>
           )}
-        </ChamferSurface>
+        </Surface>
 
-        <ChamferSurface cut={6} flat className="fm-mods">
+        <Surface cut={6} flat className="fm-mods">
         <div className="cfg-head">
           <span className="game-name">{t('fmModsTitulo')}</span>
           <KTag variant={comMod.length > 0 ? 'critical' : 'ok'}>
@@ -229,7 +229,7 @@ export function FivemPanel() {
         ))}
 
         <p className="cfg-backup type-mono mt-3">{t('fmBackupEm', { caminho: scan.backup })}</p>
-        </ChamferSurface>
+        </Surface>
       </div>
 
       <div className="game-zona-limpeza hazard">

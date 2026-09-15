@@ -1,8 +1,8 @@
 [package]
-name = "resync"
+name = "plfcore"
 version = "1.9.0"
 description = "Diagnóstico e otimização de Windows para gamers"
-authors = ["RESYNC"]
+authors = ["PLF"]
 edition = "2021"
 rust-version = "1.80"
 
@@ -13,7 +13,7 @@ name = "app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [[bin]]
-name = "resync"
+name = "plfcore"
 path = "src/main.rs"
 test = false
 bench = false

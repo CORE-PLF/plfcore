@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { Modal, ResultModal } from '../../components/Modal'
 import { Skeleton } from '../../components/states'
 import { useT } from '../../i18n'
@@ -185,7 +185,7 @@ export function ProcessLiberator() {
   }
 
   return (
-    <ChamferSurface cut={8} className="process-liberator mt-6 p-5">
+    <Surface cut={8} className="process-liberator mt-6 p-5">
       <div className="process-liberator__head">
         <div>
           <p className="type-kicker text-heat">{t('procKicker')}</p>
@@ -288,6 +288,6 @@ export function ProcessLiberator() {
         ] : []}
         onClose={() => setResult(null)}
       />
-    </ChamferSurface>
+    </Surface>
   )
 }

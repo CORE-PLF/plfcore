@@ -22,7 +22,7 @@ if (-not $output.StartsWith($repo, [System.StringComparison]::OrdinalIgnoreCase)
   throw 'OutputDirectory precisa ficar dentro do repositório.'
 }
 
-$env:RESYNC_API_BASE_URL = $api
+$env:PLFCORE_API_BASE_URL = $api
 Push-Location $repo
 try {
   & npm.cmd run tauri build
@@ -38,10 +38,10 @@ try {
   }
 
   New-Item -ItemType Directory -Path $output -Force | Out-Null
-  $destination = Join-Path $output 'ResyncSetup.exe'
+  $destination = Join-Path $output 'PLFCoreSetup.exe'
   Copy-Item -LiteralPath $installers[0].FullName -Destination $destination -Force
   $hash = (Get-FileHash -LiteralPath $destination -Algorithm SHA256).Hash.ToLowerInvariant()
-  Set-Content -LiteralPath (Join-Path $output 'ResyncSetup.sha256') -Value $hash -Encoding ascii
+  Set-Content -LiteralPath (Join-Path $output 'PLFCoreSetup.sha256') -Value $hash -Encoding ascii
 
   [pscustomobject]@{
     Installer = $destination
@@ -51,5 +51,5 @@ try {
   } | Format-List
 } finally {
   Pop-Location
-  Remove-Item Env:\RESYNC_API_BASE_URL -ErrorAction SilentlyContinue
+  Remove-Item Env:\PLFCORE_API_BASE_URL -ErrorAction SilentlyContinue
 }

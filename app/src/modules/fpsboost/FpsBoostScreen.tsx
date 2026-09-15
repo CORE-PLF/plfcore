@@ -15,10 +15,10 @@ import { useToastsStore } from '../../stores/toasts'
 import type { FpsBoostScan, FpsBoostState } from '../../types'
 import { ArmSwitch } from '../../components/ArmSwitch'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { HoldButton } from '../../components/HoldButton'
 import { ScreenTitle } from '../../components/Kicker'
-import { SegmentedProgress } from '../../components/SegmentedProgress'
+import { ProgressBar } from '../../components/ProgressBar'
 import { StatusLED } from '../../components/StatusLED'
 import { DemoTag } from '../../components/Tag'
 import { ErrorState } from '../../components/states'
@@ -193,7 +193,7 @@ export default function FpsBoostScreen() {
       {estados !== null && scan !== null && (
         <>
           {/* ===== elemento dominante: o turbo ===== */}
-          <ChamferSurface cut={12} className="fb-hero stage-grid">
+          <Surface cut={12} className="fb-hero stage-grid">
             <div className="fb-hero-info">
               <span className="fb-hero-kicker">{t('heroKicker')}</span>
               <strong className={`fb-hero-num type-mono ${pendentesTurbo > 0 ? 'fb-hero-num--hot' : ''}`}>
@@ -208,7 +208,7 @@ export default function FpsBoostScreen() {
             <div className="fb-hero-acao">
               {lote ? (
                 <div className="fb-hero-progresso">
-                  <SegmentedProgress pct={(lote.feitos / lote.total) * 100} segments={20} hot />
+                  <ProgressBar pct={(lote.feitos / lote.total) * 100} segments={20} hot />
                   <span className="type-mono text-[10px] tracking-[0.12em] text-ink-3">
                     {t('aplicandoLote', { feitos: lote.feitos, total: lote.total })}
                   </span>
@@ -232,7 +232,7 @@ export default function FpsBoostScreen() {
               <span>{t('ctxRam', { gb: scan.ramGb })}</span>
               <span>{scan.discoSolido ? t('ctxDiscoSsd') : t('ctxDiscoHdd')}</span>
             </div>
-          </ChamferSurface>
+          </Surface>
 
           {!admin && <p className="fb-aviso-admin mt-4">{t('semAdmin')}</p>}
           <p className="fb-nota mt-4">{t('heroNota')}</p>
@@ -314,7 +314,7 @@ export default function FpsBoostScreen() {
             {risco && (
               <section className="fb-grupo fb-grupo--risco">
                 <h2 className="fb-grupo-titulo">{t('grupo.risco')}</h2>
-                <ChamferSurface cut={8} className="fb-hazard">
+                <Surface cut={8} className="fb-hazard">
                   <div className="hazard h-1.5 w-full" aria-hidden />
                   <div className="mt-3 flex items-center justify-between gap-4">
                     <span className="fb-nome">{nomeDe(FPS_BOOST_RISCO.id)}</span>
@@ -332,7 +332,7 @@ export default function FpsBoostScreen() {
                           : t('desligarProtecao')}
                     </HoldButton>
                   </div>
-                </ChamferSurface>
+                </Surface>
               </section>
             )}
           </div>

@@ -1,4 +1,4 @@
-// Tipos de domínio do RESYNC.
+// Tipos de domínio do PLF CORE.
 // Honestidade de dados: todo número exposto por adapter carrega DataOrigin.
 // Campo de inventário sem fonte = null (a UI exibe NÃO DISPONÍVEL, nunca "UNKNOWN").
 

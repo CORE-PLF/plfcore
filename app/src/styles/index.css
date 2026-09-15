@@ -1,49 +1,58 @@
-@import '@fontsource/saira-condensed/600.css';
-@import '@fontsource/saira-condensed/800.css';
-@import '@fontsource/quantico/400.css';
-@import '@fontsource/quantico/700.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
 @import '@fontsource/jetbrains-mono/500.css';
 @import '@fontsource/jetbrains-mono/700.css';
-@import '@fontsource/jetbrains-mono/800.css';
 @import 'tailwindcss';
 
 @theme {
-  /* paleta — vermelho é luz e sinal, nunca tinta de área grande */
-  --color-void: #050506;
-  --color-carbon: #0a0a0d;
-  --color-steel: #101014;
-  --color-signal: #ff2e3f;
-  --color-blood: #c41230;
-  --color-rust: #6e0f1d;
-  --color-heat: #ff4d2e;
-  --color-ink-1: rgba(255, 255, 255, 0.96);
-  --color-ink-2: rgba(255, 255, 255, 0.66);
-  --color-ink-3: rgba(255, 255, 255, 0.42);
-  --color-ink-4: rgba(255, 255, 255, 0.26);
-  --color-line: rgba(255, 255, 255, 0.07);
-  --color-edge: rgba(255, 255, 255, 0.1);
+  /* fundos em camadas: janela → barras → card → cabeçalho de card → chip */
+  --color-void: #101010;
+  --color-carbon: #141414;
+  --color-steel: #181818;
+  --color-surface-2: #202020;
+  --color-surface-3: #282828;
 
-  --font-display: 'Saira Condensed', 'Arial Narrow', sans-serif;
-  --font-ui: 'Quantico', 'Segoe UI', sans-serif;
+  /* amarelo = ação. É a única cor que "acende". */
+  --color-signal: #f8e800;
+  /* vermelho = marca, erro e zona de perigo. Nunca em CTA. */
+  --color-blood: #e5262b;
+  --color-rust: #7a1518;
+  --color-heat: #f8e800;
+
+  --color-ink-1: #ffffff;
+  --color-ink-2: #c9c9c9;
+  --color-ink-3: #8a8a8a;
+  --color-ink-4: #5a5a5a;
+  --color-line: #222222;
+  --color-edge: #2b2b2b;
+  --color-edge-2: #3a3a3a;
+
+  --font-display: 'Inter', 'Segoe UI', sans-serif;
+  --font-ui: 'Inter', 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-pill: 999px;
 }
 
 :root {
-  --panel: linear-gradient(160deg, rgba(16, 16, 20, 0.97) 42%, rgba(7, 7, 9, 0.72) 100%);
+  --panel: var(--color-steel);
   --t-fast: 120ms;
   --t-base: 180ms;
-  --t-page: 260ms;
+  --t-page: 220ms;
   --expo: cubic-bezier(0.16, 1, 0.3, 1);
   --snap: cubic-bezier(0.7, 0, 0.3, 1);
-  --glow-signal: drop-shadow(0 0 12px rgba(255, 46, 63, 0.35));
+  --glow-signal: drop-shadow(0 0 8px rgba(248, 232, 0, 0.55));
+  --danger-soft: rgba(229, 38, 43, 0.14);
+  --danger-edge: rgba(229, 38, 43, 0.45);
+  --signal-soft: rgba(248, 232, 0, 0.1);
+  --signal-edge: rgba(248, 232, 0, 0.45);
 }
 
-/* REGRA ZERO: raio global 0. Círculos literais usam .circle. */
-*,
-*::before,
-*::after {
-  border-radius: 0;
-}
 .circle {
   border-radius: 50%;
 }
@@ -58,77 +67,54 @@ body {
   background: var(--color-void);
   color: var(--color-ink-2);
   font-family: var(--font-ui);
-  font-size: 14px;
+  font-size: 13px;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   user-select: none;
 }
 
-/* grain 2–3% sobre o fundo */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='128' height='128' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* tipografia utilitária do sistema */
+/* tipografia utilitária */
 .type-display {
   font-family: var(--font-display);
-  font-weight: 800;
-  font-style: italic;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   line-height: 1;
-  padding-right: 0.12em; /* sem isso o clip-path come a ponta do itálico */
   color: var(--color-ink-1);
 }
 .type-mono {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
+.type-num {
+  font-variant-numeric: tabular-nums;
+}
 .type-kicker {
   font-family: var(--font-ui);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--color-ink-3);
 }
 
-/* hazard stripes 45° — exclusivo de zonas destrutivas */
+/* faixa de perigo 6px no topo de um card destrutivo */
+.hazard-bar {
+  height: 6px;
+  background: repeating-linear-gradient(45deg, var(--color-signal) 0 10px, var(--color-void) 10px 20px);
+}
+/* fundo listrado sutil — só em zonas destrutivas */
 .hazard {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    rgba(255, 46, 63, 0.18) 0 8px,
-    rgba(0, 0, 0, 0) 8px 16px
-  );
+  background-image: repeating-linear-gradient(45deg, rgba(248, 232, 0, 0.06) 0 10px, transparent 10px 20px);
 }
 
-/* scanlines quase invisíveis para painéis de dados */
-.scanlines {
-  background-image: repeating-linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.015) 0 1px,
-    transparent 1px 3px
-  );
-}
-
-/* grid técnico de 24px — só em palcos, não na tela inteira */
+/* legado: sem efeito no visual PLF; módulos removem no redesign */
+.scanlines,
 .stage-grid {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: none;
 }
-
-/* régua de 1px que morre em transparente */
 .rule-fade {
   height: 1px;
-  background: linear-gradient(90deg, var(--color-line), transparent);
+  background: var(--color-edge);
 }
 
 :focus-visible {
@@ -144,11 +130,12 @@ body::after {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--color-edge-2);
   border: 2px solid var(--color-void);
+  border-radius: var(--radius-pill);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 46, 63, 0.4);
+  background: var(--color-ink-4);
 }
 
 /* intensidade de animação: setting do app; 'off' e 'reduzida' espelham reduced-motion */

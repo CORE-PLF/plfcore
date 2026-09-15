@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { Button } from '../../components/Button'
 import { HoldButton } from '../../components/HoldButton'
-import { SegmentedProgress } from '../../components/SegmentedProgress'
+import { ProgressBar } from '../../components/ProgressBar'
 import { StatusLED } from '../../components/StatusLED'
 import { ScanLine } from '../../components/ScanLine'
 import { Modal } from '../../components/Modal'
@@ -201,7 +201,7 @@ export default function StopScreen() {
       <div className="grid max-w-[1180px] grid-cols-[minmax(0,7fr)_minmax(0,5fr)] items-start gap-6">
         {/* ── coluna de dados ─────────────────────────────────────────── */}
         <div className="flex min-w-0 flex-col gap-6">
-          <ChamferSurface cut={8} className="relative">
+          <Surface cut={8} className="relative">
             <div className="p-5">
               <div className="flex items-center justify-between">
                 <span className="type-kicker">{t('opAtual')}</span>
@@ -220,7 +220,7 @@ export default function StopScreen() {
                   </div>
                   <div className="mt-4">
                     <span className="type-kicker">{t('progresso')}</span>
-                    <SegmentedProgress pct={jobAtivo.progressoPct} className="mt-2" />
+                    <ProgressBar pct={jobAtivo.progressoPct} className="mt-2" />
                   </div>
                 </>
               ) : (
@@ -228,9 +228,9 @@ export default function StopScreen() {
               )}
             </div>
             {jobAtivo && <ScanLine durationS={2.6} />}
-          </ChamferSurface>
+          </Surface>
 
-          <ChamferSurface cut={6} flat>
+          <Surface cut={6} flat>
             <div className="p-5">
               <div className="flex items-center justify-between">
                 <span className="type-kicker">{t('fila')}</span>
@@ -252,9 +252,9 @@ export default function StopScreen() {
                 </ol>
               )}
             </div>
-          </ChamferSurface>
+          </Surface>
 
-          <ChamferSurface cut={6} flat>
+          <Surface cut={6} flat>
             <div className="p-5">
               <div className="flex items-center justify-between">
                 <span className="type-kicker">{t('historico')}</span>
@@ -287,11 +287,11 @@ export default function StopScreen() {
                 </ul>
               )}
             </div>
-          </ChamferSurface>
+          </Surface>
         </div>
 
         {/* ── zona de interrupção (elemento dominante) ────────────────── */}
-        <ChamferSurface cut={12} allCorners brackets className="min-h-[420px]">
+        <Surface cut={12} allCorners brackets className="min-h-[420px]">
           <div className="flex h-full min-h-[420px] flex-col">
             <div className="hazard h-2 w-full" aria-hidden />
             <div className="flex flex-1 flex-col gap-5 p-6">
@@ -324,7 +324,7 @@ export default function StopScreen() {
                   {fase === 'restaurando' && (
                     <>
                       <p className="type-display text-3xl">{t('stRestaurando')}</p>
-                      <SegmentedProgress pct={jobRestauro?.progressoPct ?? null} className="w-full" />
+                      <ProgressBar pct={jobRestauro?.progressoPct ?? null} className="w-full" />
                     </>
                   )}
                   {fase === 'restaurada' && (
@@ -365,7 +365,7 @@ export default function StopScreen() {
               )}
             </div>
           </div>
-        </ChamferSurface>
+        </Surface>
       </div>
 
       <Modal open={confirmar} title={t('stopBtn')} danger onClose={() => setConfirmar(false)}>

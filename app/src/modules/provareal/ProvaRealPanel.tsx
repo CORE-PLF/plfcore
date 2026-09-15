@@ -12,7 +12,7 @@ import { useLogStore } from '../../stores/log'
 import { useToastsStore } from '../../stores/toasts'
 import { Modal } from '../../components/Modal'
 import { Button } from '../../components/Button'
-import { SegmentedProgress } from '../../components/SegmentedProgress'
+import { ProgressBar } from '../../components/ProgressBar'
 import { DemoTag, EstimatedTag } from '../../components/Tag'
 import { Odometer } from '../../components/Odometer'
 import { BRAND } from '../../brand'
@@ -319,7 +319,7 @@ export default function ProvaRealPanel({ open, onClose }: { open: boolean; onClo
       {emAndamento && (
         <>
           <p className="type-mono mb-3 text-xs font-bold text-ink-1">{faseLabel}</p>
-          <SegmentedProgress pct={fase === 'aplicando' ? null : ((FASE_S - restantes) / FASE_S) * 100} />
+          <ProgressBar pct={fase === 'aplicando' ? null : ((FASE_S - restantes) / FASE_S) * 100} />
           <div className="mt-3 flex items-center justify-between">
             <span className="type-mono text-[11px] text-ink-3">{fase === 'aplicando' ? '' : t('segundos', { n: restantes })}</span>
             <Button size="sm" onClick={cancelar}>

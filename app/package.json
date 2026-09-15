@@ -1,7 +1,7 @@
 {
-  "name": "resync",
+  "name": "plfcore",
   "private": true,
-  "version": "1.9.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,6 +10,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.2.5",
     "@fontsource/quantico": "^5.2.5",
     "@fontsource/saira-condensed": "^5.2.5",

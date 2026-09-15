@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { ScreenTitle } from '../../components/Kicker'
 import { Odometer } from '../../components/Odometer'
 import { KTag } from '../../components/Tag'
@@ -64,7 +64,7 @@ export default function LogScreen() {
     const url = URL.createObjectURL(new Blob([texto], { type: 'text/plain' }))
     const a = document.createElement('a')
     a.href = url
-    a.download = `resync-${new Date().toISOString().slice(0, 10)}.txt`
+    a.download = `plfcore-${new Date().toISOString().slice(0, 10)}.txt`
     a.click()
     URL.revokeObjectURL(url)
     pushToast({ tipo: 'sucesso', mensagem: t('toastExportado') })
@@ -110,7 +110,7 @@ export default function LogScreen() {
         ) : (
           <>
             <div className="mb-6 flex flex-wrap items-center gap-2">
-              <ChamferSurface cut={4} flat className="min-w-64 flex-1">
+              <Surface cut={4} flat className="min-w-64 flex-1">
                 <input
                   type="search"
                   value={busca}
@@ -119,7 +119,7 @@ export default function LogScreen() {
                   aria-label={t('buscar')}
                   className="type-mono w-full bg-transparent px-3 py-[9px] text-xs text-ink-1 placeholder:text-ink-4"
                 />
-              </ChamferSurface>
+              </Surface>
               <div role="group" aria-label={t('filtrar')} className="flex flex-wrap gap-2">
                 <button
                   type="button"

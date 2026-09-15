@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode, RefObject } from 'react'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { HealthBadge } from '../../components/HealthBadge'
 import { ScreenTitle } from '../../components/Kicker'
 import { MetricRow } from '../../components/MetricRow'
 import { ScanLine } from '../../components/ScanLine'
-import { SegmentedProgress } from '../../components/SegmentedProgress'
+import { ProgressBar } from '../../components/ProgressBar'
 import { DemoTag, EstimatedTag } from '../../components/Tag'
 import { ErrorState, Skeleton } from '../../components/states'
 import { IconChevron } from '../../components/icons'
@@ -98,7 +98,7 @@ function Ficha({ id, num, title, selected, onHot, register, extra, children }: F
         register(id, el)
       }}
     >
-      <ChamferSurface
+      <Surface
         flat
         cut={6}
         brackets={selected}
@@ -112,7 +112,7 @@ function Ficha({ id, num, title, selected, onHot, register, extra, children }: F
           {extra && <div className="ml-auto flex items-center gap-2">{extra}</div>}
         </header>
         {children}
-      </ChamferSurface>
+      </Surface>
     </div>
   )
 }
@@ -341,7 +341,7 @@ export default function XRayScreen() {
       <ScreenTitle kicker={t('kicker')} title={t('title')} />
 
       {/* registro da máquina — plaqueta */}
-      <ChamferSurface cut={8} className="relative">
+      <Surface cut={8} className="relative">
         <div className="hazard absolute inset-x-0 top-0 h-1.5" aria-hidden />
         <div className="flex flex-wrap items-center gap-6 p-5 pt-6">
           <span className="circle h-4 w-4 shrink-0 border border-ink-4" aria-hidden />
@@ -365,12 +365,12 @@ export default function XRayScreen() {
             {t('exportar')}
           </Button>
         </div>
-      </ChamferSurface>
+      </Surface>
 
       <div ref={layoutRef} className="relative mt-6 grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)] items-start gap-6">
         {/* blueprint — elemento dominante */}
         <div className="sticky top-6">
-          <ChamferSurface flat cut={8}>
+          <Surface flat cut={8}>
             <div className="stage-grid relative overflow-hidden p-4">
               <ScanLine durationS={4} active={scan} />
               <Blueprint
@@ -392,7 +392,7 @@ export default function XRayScreen() {
                 </Button>
               </div>
             </div>
-          </ChamferSurface>
+          </Surface>
         </div>
 
         {/* inventário — fichas densas */}
@@ -481,7 +481,7 @@ export default function XRayScreen() {
                       {fmtInt(d.usadoGb, tag)} GB · {pct}%
                     </span>
                   </div>
-                  <SegmentedProgress pct={pct} segments={24} showPct={false} className="mt-1.5" />
+                  <ProgressBar pct={pct} segments={24} showPct={false} className="mt-1.5" />
                 </div>
                 <MetricRow label={t('temperatura')} value={d.tempC !== null ? `${d.tempC} °C` : null} />
                 <MetricRow label={t('particoes')} value={d.particoes.length ? d.particoes.join(' · ') : null} />

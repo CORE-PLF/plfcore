@@ -1,4 +1,4 @@
-import { ChamferSurface } from './ChamferSurface'
+import { Surface } from './Surface'
 import { IconCheck, IconWarn, IconX } from './icons'
 import './kit.css'
 
@@ -16,28 +16,20 @@ interface Props {
 const ICON: Record<ToastKind, React.ReactNode> = {
   info: null,
   sucesso: <IconCheck className="text-ink-1" />,
-  erro: <IconX className="text-signal" />,
-  aviso: <IconWarn style={{ color: 'var(--color-heat)' }} />,
+  erro: <IconX className="text-blood" />,
+  aviso: <IconWarn className="text-signal" />,
 }
 
 export function ToastCard({ kind, title, detail, actionLabel, onAction, onDismiss }: Props) {
   return (
-    <ChamferSurface
-      cut={6}
-      className="toast-in w-80"
-      edge={kind === 'erro' ? 'var(--color-signal)' : undefined}
-      role="status"
-    >
+    <Surface className="toast-in w-80" edge={kind === 'erro' ? 'var(--color-blood)' : undefined} role="status">
       <div className="flex items-start gap-3 p-3">
         {ICON[kind] && <span className="mt-0.5 shrink-0">{ICON[kind]}</span>}
         <div className="min-w-0 flex-1">
-          <p className="type-mono text-xs font-bold tracking-[0.08em] text-ink-1">{title}</p>
+          <p className="text-xs font-bold tracking-[0.04em] text-ink-1">{title}</p>
           {detail && <p className="mt-1 text-xs leading-relaxed text-ink-3">{detail}</p>}
           {actionLabel && onAction && (
-            <button
-              className="type-mono mt-2 border border-edge px-2 py-1 text-[11px] font-bold tracking-[0.1em] text-ink-1 hover:border-signal"
-              onClick={onAction}
-            >
+            <button className="btn btn--sm mt-2" onClick={onAction}>
               {actionLabel}
             </button>
           )}
@@ -46,6 +38,6 @@ export function ToastCard({ kind, title, detail, actionLabel, onAction, onDismis
           <IconX width={12} height={12} />
         </button>
       </div>
-    </ChamferSurface>
+    </Surface>
   )
 }

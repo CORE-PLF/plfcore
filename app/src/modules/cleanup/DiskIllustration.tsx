@@ -1,11 +1,11 @@
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { ScanLine } from '../../components/ScanLine'
 
 // Ilustração técnica original: SSD M.2 em traço 1px sobre carbon.
 // Micro-textos são silkscreen decorativo da placa (aria-hidden), não copy de UI.
 export function DiskIllustration({ scanning }: { scanning: boolean }) {
   return (
-    <ChamferSurface cut={8} flat className="relative min-h-[460px] overflow-hidden">
+    <Surface cut={8} flat className="relative min-h-[460px] overflow-hidden">
       <div className="stage-grid absolute inset-px" aria-hidden />
       <svg
         viewBox="0 0 360 560"
@@ -79,6 +79,6 @@ export function DiskIllustration({ scanning }: { scanning: boolean }) {
         <rect x="16" y="536" width="6" height="6" fill="var(--color-signal)" />
       </svg>
       <ScanLine active={scanning} durationS={2.8} />
-    </ChamferSurface>
+    </Surface>
   )
 }

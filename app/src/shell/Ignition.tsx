@@ -5,11 +5,12 @@ import { BRAND } from '../brand'
 import { sfx } from '../services/sfx'
 import { getInventoryCached } from '../services/inventoryCache'
 import { firstRunPending } from './FirstRun'
+import logo from '../assets/logo-grande.png'
 import './shell.css'
 
 /**
  * IGNIÇÃO — roda uma única vez por sessão, ~1.4s, pulável por qualquer tecla.
- * linha varre → logo revela por máscara → um flicker → HUD monta (no AppShell) → LED pronto.
+ * logo sobe → barra amarela enche → HUD monta (no AppShell).
  */
 export function Ignition({ onDone }: { onDone: () => void }) {
   const t = useT(shellDict)
@@ -28,7 +29,7 @@ export function Ignition({ onDone }: { onDone: () => void }) {
       setLifting(true)
       setTimeout(onDone, 260)
     }
-    const timer = setTimeout(finish, 1150)
+    const timer = setTimeout(finish, 1300)
     const skip = () => finish()
     window.addEventListener('keydown', skip)
     window.addEventListener('pointerdown', skip)
@@ -41,11 +42,11 @@ export function Ignition({ onDone }: { onDone: () => void }) {
 
   return (
     <div className={`ignition ${lifting ? 'lifting' : ''}`} role="presentation">
-      <div className="ign-line" aria-hidden />
-      <div className="ign-flicker">
-        <span className="type-display ign-logo block text-7xl">{BRAND.name}</span>
+      <img className="ign-logo" src={logo} alt={BRAND.name} draggable={false} />
+      <div className="ign-bar" aria-hidden>
+        <i />
       </div>
-      <p className="type-mono ign-skip text-[10px] tracking-[0.2em] text-ink-4">{t('ignition.skip')}</p>
+      <p className="ign-skip text-[10px] font-semibold tracking-[0.2em] text-ink-4">{t('ignition.skip')}</p>
     </div>
   )
 }

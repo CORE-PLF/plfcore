@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #0a0a0a; color: #e8e8e8; font-family: Inter, sans-serif; }
+  a { color: #F8E800; text-decoration: none; }
+  a:hover { color: #ffffff; text-decoration: underline; }
+</style>
+</helmet>
+
+<section style="padding:64px 72px 40px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:10px;max-width:980px">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.18em;color:#F8E800">TURNO 2 — DUAS DIREÇÕES NOVAS</span>
+    <h1 style="margin:0;font-size:34px;font-weight:700;letter-spacing:-.01em;color:#fff">Mais dois caminhos, nos mesmos três eixos</h1>
+    <p style="margin:0;font-size:15px;line-height:1.6;color:#9a9a9a;text-wrap:pretty"><a href="#2a">2a</a> TERMINAL e <a href="#2b">2b</a> PLACAR atacam navegação, gauge e marca por outro lado: a navegação vira atalho de teclado em <a href="#2a">2a</a> e grade numerada de módulos em <a href="#2b">2b</a>; o instrumento deixa de ser mostrador redondo e vira régua horizontal e coluna vertical; a marca vai de rodapé discreto a faixa amarela de 96 px. Mesmos dados e mesmos elementos obrigatórios do turno 1.</p>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:72px;align-items:flex-start">
+
+    <div id="2a" style="display:flex;flex-direction:column;gap:18px;width:1920px">
+      <div style="display:flex;gap:24px;align-items:flex-start">
+        <span style="flex:none;display:inline-flex;align-items:center;height:30px;padding:0 14px;border-radius:999px;background:#F8E800;color:#101010;font-size:13px;font-weight:700;letter-spacing:.04em">2a — TERMINAL</span>
+        <div style="flex:1;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:40px">
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.55;color:#9a9a9a">
+            <span style="color:#fff;font-weight:600">A ideia</span>
+            <span>Navegação por teclado: rail de 56 px só com os atalhos 01–12 em mono, e um campo ⌘K na barra de comando.</span>
+            <span>O gauge vira régua horizontal com escala de 0 a 100, zona vermelha acima de 85 e número de 72 px.</span>
+            <span>Marca discreta — carimbo mono no rodapé. Amarelo só em traço, texto e preenchimento de régua.</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:#8a8a8a">
+            <span style="font-family:Inter,sans-serif;font-size:14px;font-weight:600;color:#fff">Tokens</span>
+            <span>bg #0b0b0b · surf #151515 / #1c1c1c · line #262626</span>
+            <span>accent #F8E800 · erro #E5262B · texto mono #C9C9C9</span>
+            <span>rail 56 · barra de comando 68 · régua 26 px · raio 4</span>
+            <span>Mono dominante · Inter só em título e rótulo</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.55;color:#9a9a9a">
+            <span style="color:#fff;font-weight:600">O que mudou</span>
+            <span>Os 15 itens de menu saem da tela: quem opera decora o atalho, e o campo ⌘K cobre o resto.</span>
+            <span>Telemetria, kill feed e leituras viram um único fluxo de log carimbado — a tela lê como um console.</span>
+          </div>
+        </div>
+      </div>
+
+      <div data-screen-label="D — Cockpit" style="position:relative;width:1920px;height:1080px;overflow:hidden;background:#0b0b0b;border:1px solid #262626;display:flex;flex-direction:column;font-family:Inter,sans-serif">
+        <div style="flex:none;display:flex;align-items:center;gap:12px;height:34px;padding:0 6px 0 14px;background:#080808;border-bottom:1px solid #262626">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;color:#8a8a8a">PLF CORE</span>
+          <span style="width:1px;height:14px;background:#262626"></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:#7d7d7d">v1.9.0</span>
+          <div style="margin-left:auto;display:flex;align-items:center">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;color:#8a8a8a">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7.5 8 10.5 11 7.5M2.5 13h11"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;color:#8a8a8a">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;color:#8a8a8a">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="10" height="10"></rect></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;color:#8a8a8a">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+            </span>
+          </div>
+        </div>
+
+        <div style="flex:1;min-height:0;display:flex">
+          <div style="flex:none;width:56px;background:#080808;border-right:1px solid #262626;display:flex;flex-direction:column;align-items:center;padding:10px 0">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:#7d7d7d;margin-bottom:8px">ATL</span>
+            <div style="position:relative;width:100%;display:flex;justify-content:center">
+              <span style="position:absolute;left:0;top:4px;bottom:4px;width:2px;background:#F8E800"></span>
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;border-radius:4px;background:rgba(248,232,0,.12);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#F8E800">01</span>
+            </div>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">02</span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">03</span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">04</span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">05</span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">06</span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">07</span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">08</span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">09</span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">10</span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">11</span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">12</span>
+            <span style="width:26px;height:1px;background:#262626;margin:8px 0"></span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">S</span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">L</span>
+            <span style="margin-top:auto;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:#7d7d7d">⌘K</span>
+          </div>
+
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+            <div style="flex:none;display:flex;align-items:center;gap:16px;height:68px;padding:0 24px;background:#0f0f0f;border-bottom:1px solid #262626">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.1em;color:#8a8a8a">SISTEMA<span style="color:#F8E800;padding:0 8px">/</span><span style="color:#fff;font-weight:700">COCKPIT</span></span>
+              <div style="flex:1;max-width:520px;display:flex;align-items:center;gap:10px;height:40px;padding:0 12px;border-radius:4px;background:#151515;border:1px solid #262626">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#8a8a8a" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"></circle><path d="M10.5 10.5 14 14"></path></svg>
+                <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:#8a8a8a">ir para módulo, comando ou processo</span>
+                <span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:3px;background:#1c1c1c;border:1px solid #2f2f2f;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#c9c9c9">⌘K</span>
+              </div>
+              <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+                <span style="display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 12px;border-radius:4px;background:#151515;border:1px solid #262626;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#e8e8e8;white-space:nowrap">
+                  <span style="width:7px;height:7px;background:#F8E800;box-shadow:0 0 8px rgba(248,232,0,.8)"></span>SISTEMA // PRONTO
+                </span>
+                <span style="display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 12px;border-radius:4px;background:#151515;border:1px solid #262626;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#c9c9c9;white-space:nowrap">PRONTIDÃO <span style="color:#F8E800">{{ nivelCodigo }} {{ nivelNome }}</span></span>
+                <sc-if value="{{ mostrarSeloDemo }}" hint-placeholder-val="{{ true }}">
+                  <span style="display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 12px;border-radius:4px;border:1px solid rgba(248,232,0,.45);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#F8E800;white-space:nowrap">
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 14.5 13.5h-13L8 2.5Z"></path><path d="M8 6.5v3M8 11.6v.01"></path></svg>
+                    DEMONSTRAÇÃO
+                  </span>
+                </sc-if>
+                <span style="display:inline-flex;align-items:center;gap:9px;height:34px;padding:0 16px;border-radius:4px;background:#F8E800;color:#101010;font-size:13px;font-weight:700;letter-spacing:.06em;white-space:nowrap">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z"></path></svg>
+                  PROVA REAL
+                </span>
+              </div>
+            </div>
+
+            <div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 620px;gap:28px;padding:28px 24px">
+              <div style="min-width:0;display:flex;flex-direction:column;gap:20px">
+                <div style="flex:1;min-height:0;border-radius:4px;background:#111;border:1px solid #262626;padding:22px 26px;display:flex;flex-direction:column;justify-content:center;gap:12px">
+                  <div style="display:flex;align-items:flex-end;gap:18px">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:.16em;color:#F8E800">CPU</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#8a8a8a">AMD Ryzen 7 5800X · 3.80 GHz · 53 °C</span>
+                    <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:700;line-height:.85;color:#fff;font-variant-numeric:tabular-nums">30<span style="font-size:28px;color:#8a8a8a">%</span></span>
+                  </div>
+                  <div style="position:relative;height:26px;background:#181818;border:1px solid #262626">
+                    <span style="position:absolute;left:85%;right:0;top:0;bottom:0;background:rgba(229,38,43,.18)"></span>
+                    <span style="position:absolute;left:0;top:0;bottom:0;width:30%;background:#F8E800"></span>
+                    <span style="position:absolute;left:85%;top:0;bottom:0;width:1px;background:#E5262B"></span>
+                  </div>
+                  <div style="position:relative;height:14px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#8a8a8a">
+                    <span style="position:absolute;left:0">0</span>
+                    <span style="position:absolute;left:25%;transform:translateX(-50%)">25</span>
+                    <span style="position:absolute;left:50%;transform:translateX(-50%)">50</span>
+                    <span style="position:absolute;left:75%;transform:translateX(-50%)">75</span>
+                    <span style="position:absolute;right:0;color:#E5262B">100</span>
+                  </div>
+                </div>
+
+                <div style="flex:1;min-height:0;border-radius:4px;background:#111;border:1px solid #262626;padding:22px 26px;display:flex;flex-direction:column;justify-content:center;gap:12px">
+                  <div style="display:flex;align-items:flex-end;gap:18px">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:.16em;color:#F8E800">GPU</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#8a8a8a">NVIDIA GeForce RTX 3080 · VRAM 10 GB · 45 °C</span>
+                    <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:700;line-height:.85;color:#fff;font-variant-numeric:tabular-nums">17<span style="font-size:28px;color:#8a8a8a">%</span></span>
+                  </div>
+                  <div style="position:relative;height:26px;background:#181818;border:1px solid #262626">
+                    <span style="position:absolute;left:85%;right:0;top:0;bottom:0;background:rgba(229,38,43,.18)"></span>
+                    <span style="position:absolute;left:0;top:0;bottom:0;width:17%;background:#F8E800"></span>
+                    <span style="position:absolute;left:85%;top:0;bottom:0;width:1px;background:#E5262B"></span>
+                  </div>
+                  <div style="position:relative;height:14px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#8a8a8a">
+                    <span style="position:absolute;left:0">0</span>
+                    <span style="position:absolute;left:25%;transform:translateX(-50%)">25</span>
+                    <span style="position:absolute;left:50%;transform:translateX(-50%)">50</span>
+                    <span style="position:absolute;left:75%;transform:translateX(-50%)">75</span>
+                    <span style="position:absolute;right:0;color:#E5262B">100</span>
+                  </div>
+                </div>
+
+                <div style="flex:1;min-height:0;border-radius:4px;background:#111;border:1px solid #262626;padding:22px 26px;display:flex;flex-direction:column;justify-content:center;gap:12px">
+                  <div style="display:flex;align-items:flex-end;gap:18px">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:.16em;color:#F8E800">RAM</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#8a8a8a">13.7 / 32 GB · 18.3 GB disponíveis</span>
+                    <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:700;line-height:.85;color:#fff;font-variant-numeric:tabular-nums">43<span style="font-size:28px;color:#8a8a8a">%</span></span>
+                  </div>
+                  <div style="position:relative;height:26px;background:#181818;border:1px solid #262626">
+                    <span style="position:absolute;left:85%;right:0;top:0;bottom:0;background:rgba(229,38,43,.18)"></span>
+                    <span style="position:absolute;left:0;top:0;bottom:0;width:43%;background:#F8E800"></span>
+                    <span style="position:absolute;left:85%;top:0;bottom:0;width:1px;background:#E5262B"></span>
+                  </div>
+                  <div style="position:relative;height:14px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#8a8a8a">
+                    <span style="position:absolute;left:0">0</span>
+                    <span style="position:absolute;left:25%;transform:translateX(-50%)">25</span>
+                    <span style="position:absolute;left:50%;transform:translateX(-50%)">50</span>
+                    <span style="position:absolute;left:75%;transform:translateX(-50%)">75</span>
+                    <span style="position:absolute;right:0;color:#E5262B">100</span>
+                  </div>
+                </div>
+
+                <div style="flex:none;height:150px;border-radius:4px;background:#111;border:1px solid #262626;display:flex;flex-direction:column;overflow:hidden">
+                  <div style="display:flex;align-items:center;gap:14px;height:34px;padding:0 16px;border-bottom:1px solid #262626;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;color:#c9c9c9">
+                    TELEMETRIA 60 S
+                    <span style="margin-left:auto;color:#8a8a8a">CPU —— · GPU - - - · PICO 44% / 20%</span>
+                  </div>
+                  <div style="flex:1;min-height:0;padding:10px 16px">
+                    <svg viewBox="0 0 600 120" preserveAspectRatio="none" style="display:block;width:100%;height:100%">
+                      <line x1="10" y1="4" x2="590" y2="4" stroke="#1d1d1d" stroke-width="1"></line>
+                      <line x1="10" y1="60" x2="590" y2="60" stroke="#1d1d1d" stroke-width="1"></line>
+                      <line x1="10" y1="116" x2="590" y2="116" stroke="#1d1d1d" stroke-width="1"></line>
+                      <polyline points="10,102.6 58,100.3 106,101.4 154,99.2 202,102.6 250,98.1 298,100.3 346,101.4 394,96.9 442,99.2 490,95.8 538,93.6 590,96.9" fill="none" stroke="#8a8a8a" stroke-width="1.5" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"></polyline>
+                      <polyline points="10,89.1 58,91.4 106,86.9 154,90.2 202,84.6 250,88 298,85.8 346,81.3 394,86.9 442,73.4 490,77.9 538,66.7 590,82.4" fill="none" stroke="#F8E800" stroke-width="2" vector-effect="non-scaling-stroke"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div style="min-width:0;display:flex;flex-direction:column;gap:20px">
+                <div style="flex:1;min-height:0;border-radius:4px;background:#111;border:1px solid #262626;display:flex;flex-direction:column;overflow:hidden">
+                  <div style="display:flex;align-items:center;gap:12px;height:36px;padding:0 16px;border-bottom:1px solid #262626;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;color:#c9c9c9">
+                    LOG DA SESSÃO
+                    <span style="margin-left:auto;color:#8a8a8a">5 PROCESSOS LIDOS</span>
+                  </div>
+                  <div style="flex:1;min-height:0;padding:12px 16px;display:flex;flex-direction:column;gap:7px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5">
+                    <span style="color:#8a8a8a">10:42:06 <span style="color:#c9c9c9">adaptador de demonstração conectado</span></span>
+                    <span style="color:#8a8a8a">10:42:06 <span style="color:#c9c9c9">windows 11 pro 23h2 · build 22631 · uptime 6 h</span></span>
+                    <span style="color:#8a8a8a">10:42:07 <span style="color:#c9c9c9">plano de energia: equilibrado</span></span>
+                    <span style="color:#8a8a8a">10:42:07 <span style="color:#c9c9c9">rede: realtek gaming 2.5gbe · 1000 mbps</span></span>
+                    <span style="color:#8a8a8a">10:42:07 <span style="color:#c9c9c9">disco principal: 610 / 1000 gb</span></span>
+                    <span style="color:#8a8a8a">10:42:08 <span style="color:#c9c9c9">monitor: 1920×1080 @ 165 hz</span></span>
+                    <span style="color:#8a8a8a">10:42:11 <span style="color:#c9c9c9">varredura de processos: 5 em segundo plano</span></span>
+                    <sc-if value="{{ mostrarKillFeed }}" hint-placeholder-val="{{ true }}">
+                      <span style="color:#8a8a8a">10:43:02 <span style="color:#F8E800">encerrado</span> <span style="color:#fff">chrome_updater.exe</span> <span style="color:#F8E800">-212 MB</span></span>
+                    </sc-if>
+                    <sc-if value="{{ mostrarKillFeed }}" hint-placeholder-val="{{ true }}">
+                      <span style="color:#8a8a8a">10:43:04 <span style="color:#F8E800">encerrado</span> <span style="color:#fff">spotify_helper.exe</span> <span style="color:#F8E800">-210 MB</span></span>
+                    </sc-if>
+                    <sc-if value="{{ mostrarKillFeed }}" hint-placeholder-val="{{ true }}">
+                      <span style="color:#8a8a8a">10:43:09 <span style="color:#F8E800">encerrado</span> <span style="color:#fff">OneDrive.exe</span> <span style="color:#F8E800">-148 MB</span></span>
+                    </sc-if>
+                    <span style="color:#8a8a8a">10:43:12 <span style="color:#c9c9c9">ram liberada na sessão: 570 mb</span></span>
+                    <span style="color:#8a8a8a">10:43:12 <span style="color:#c9c9c9">nenhum registro de reversão pendente</span></span>
+                    <span style="margin-top:auto;color:#F8E800">_</span>
+                  </div>
+                </div>
+
+                <div style="flex:none;border-radius:4px;background:#111;border:1px solid #262626;overflow:hidden">
+                  <div style="display:flex;align-items:center;gap:12px;height:36px;padding:0 16px;border-bottom:1px solid #262626;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;color:#c9c9c9">
+                    PROCESSOS EM SEGUNDO PLANO
+                    <span style="margin-left:auto;color:#8a8a8a">↵ ENCERRAR</span>
+                  </div>
+                  <div style="display:flex;flex-direction:column">
+                    <div style="display:flex;align-items:center;gap:12px;height:38px;padding:0 16px;background:#161616;border-bottom:1px solid #1d1d1d;font-family:'JetBrains Mono',monospace;font-size:12px">
+                      <span style="color:#8a8a8a">4812</span>
+                      <span style="flex:1;color:#fff">chrome_updater.exe</span>
+                      <span style="font-weight:700;color:#F8E800">212 MB</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;height:38px;padding:0 16px;border-bottom:1px solid #1d1d1d;font-family:'JetBrains Mono',monospace;font-size:12px">
+                      <span style="color:#8a8a8a">6120</span>
+                      <span style="flex:1;color:#c9c9c9">spotify_helper.exe</span>
+                      <span style="font-weight:700;color:#c9c9c9">210 MB</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;height:38px;padding:0 16px;border-bottom:1px solid #1d1d1d;font-family:'JetBrains Mono',monospace;font-size:12px">
+                      <span style="color:#8a8a8a">7344</span>
+                      <span style="flex:1;color:#c9c9c9">teams_background.exe</span>
+                      <span style="font-weight:700;color:#c9c9c9">178 MB</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;height:38px;padding:0 16px;border-bottom:1px solid #1d1d1d;font-family:'JetBrains Mono',monospace;font-size:12px">
+                      <span style="color:#8a8a8a">2288</span>
+                      <span style="flex:1;color:#c9c9c9">OneDrive.exe</span>
+                      <span style="font-weight:700;color:#c9c9c9">148 MB</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;height:38px;padding:0 16px;font-family:'JetBrains Mono',monospace;font-size:12px">
+                      <span style="color:#8a8a8a">9016</span>
+                      <span style="flex:1;color:#c9c9c9">AdobeUpdater.exe</span>
+                      <span style="font-weight:700;color:#c9c9c9">96 MB</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:none;display:flex;align-items:center;gap:14px;height:34px;padding:0 20px;background:#080808;border-top:1px solid #262626;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;color:#8a8a8a">
+          <span style="width:6px;height:6px;background:#4a4a4a"></span>IDLE
+          <span style="width:1px;height:14px;background:#262626"></span>
+          <span>PRO LEAGUE // PLF CORE</span>
+          <span style="margin-left:auto;color:#7d7d7d">01 COCKPIT · ⌘K PARA NAVEGAR · REV A</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="2b" style="display:flex;flex-direction:column;gap:18px;width:1920px">
+      <div style="display:flex;gap:24px;align-items:flex-start">
+        <span style="flex:none;display:inline-flex;align-items:center;height:30px;padding:0 14px;border-radius:999px;background:#F8E800;color:#101010;font-size:13px;font-weight:700;letter-spacing:.04em">2b — PLACAR</span>
+        <div style="flex:1;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:40px">
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.55;color:#9a9a9a">
+            <span style="color:#fff;font-weight:600">A ideia</span>
+            <span>Marca em faixa: 96 px de amarelo chapado com PRO LEAGUE em preto atravessando o topo.</span>
+            <span>Navegação como grade numerada de módulos — 01 a 12 em cartões largos, o ativo em preto sobre amarelo.</span>
+            <span>Gauge vertical: coluna de escala com preenchimento de baixo para cima, como mesa de som.</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:#8a8a8a">
+            <span style="font-family:Inter,sans-serif;font-size:14px;font-weight:600;color:#fff">Tokens</span>
+            <span>bg #0e0e0e · surf #171717 / #1f1f1f · line #2B2B2B</span>
+            <span>accent #F8E800 em bloco · preto #101010 sobre amarelo · erro #E5262B</span>
+            <span>faixa 96 · grade 58 · coluna 104×430 · rodapé 40 · raio 0</span>
+            <span>Inter 800 na faixa · rótulo 11/600 .16em · número Mono 700</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.55;color:#9a9a9a">
+            <span style="color:#fff;font-weight:600">O que mudou</span>
+            <span>A marca deixa de ser detalhe de canto e passa a ser a primeira coisa na tela — modo transmissão.</span>
+            <span>Sem cantos arredondados e sem mostrador redondo: tudo é bloco, coluna e régua reta.</span>
+          </div>
+        </div>
+      </div>
+
+      <div data-screen-label="E — Cockpit" style="position:relative;width:1920px;height:1080px;overflow:hidden;background:#0e0e0e;border:1px solid #2B2B2B;display:flex;flex-direction:column;font-family:Inter,sans-serif">
+        <div style="flex:none;display:flex;align-items:center;gap:12px;height:34px;padding:0 6px 0 16px;background:#080808;border-bottom:1px solid #2B2B2B">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;color:#8a8a8a">PLF CORE v1.9.0</span>
+          <sc-if value="{{ mostrarSeloDemo }}" hint-placeholder-val="{{ true }}">
+            <span style="display:inline-flex;align-items:center;gap:7px;height:20px;padding:0 9px;border:1px solid rgba(248,232,0,.45);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;color:#F8E800">MODO DE DEMONSTRAÇÃO</span>
+          </sc-if>
+          <div style="margin-left:auto;display:flex;align-items:center">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;color:#8a8a8a">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7.5 8 10.5 11 7.5M2.5 13h11"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;color:#8a8a8a">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;color:#8a8a8a">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="10" height="10"></rect></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;color:#8a8a8a">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+            </span>
+          </div>
+        </div>
+
+        <div style="flex:none;display:flex;align-items:center;height:96px;background:#F8E800">
+          <div style="display:flex;align-items:baseline;gap:18px;padding:0 28px">
+            <span style="font-size:44px;font-weight:800;letter-spacing:-.02em;color:#101010">PRO LEAGUE</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:.2em;color:#101010">FIVEM · PLF CORE</span>
+          </div>
+          <span style="width:1px;align-self:stretch;background:rgba(16,16,16,.25);margin:18px 0"></span>
+          <div style="display:flex;flex-direction:column;gap:2px;padding:0 28px">
+            <span style="font-size:11px;font-weight:700;letter-spacing:.18em;color:rgba(16,16,16,.65)">MÓDULO ATIVO</span>
+            <span style="font-size:26px;font-weight:800;letter-spacing:-.01em;color:#101010">01 COCKPIT</span>
+          </div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:0;align-self:stretch">
+            <div style="display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 24px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.18em;color:rgba(16,16,16,.65)">PRONTIDÃO</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#101010">{{ nivelCodigo }} {{ nivelNome }}</span>
+            </div>
+            <div style="align-self:stretch;display:flex;align-items:center;gap:10px;padding:0 26px;background:#101010">
+              <span style="width:9px;height:9px;border-radius:50%;background:#F8E800;box-shadow:0 0 9px rgba(248,232,0,.9)"></span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:.08em;color:#fff;white-space:nowrap">SISTEMA // PRONTO</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:none;display:flex;height:58px;background:#101010;border-bottom:1px solid #2B2B2B">
+          <span style="flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;background:#F8E800;color:#101010;font-size:12px;font-weight:800;letter-spacing:.04em;white-space:nowrap;overflow:hidden">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700">01</span>COCKPIT
+          </span>
+          <span style="flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;border-left:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">02</span>FPS BOOSTER
+          </span>
+          <span style="flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;border-left:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">03</span>RAIO-X
+          </span>
+          <span style="flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;border-left:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">04</span>MEMÓRIA
+          </span>
+          <span style="flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;border-left:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">05</span>LIMPEZA
+          </span>
+          <span style="flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;border-left:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">06</span>WINDOWS
+          </span>
+          <span style="flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;border-left:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">07</span>FIVEM
+          </span>
+          <span style="flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;border-left:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">08</span>REQUISITOS
+          </span>
+          <span style="flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;border-left:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">09</span>AJUSTES
+          </span>
+          <span style="flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;border-left:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">10</span>INICIALIZAÇÃO
+          </span>
+          <span style="flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;border-left:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">11</span>LATÊNCIA
+          </span>
+          <span style="flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;border-left:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:700;letter-spacing:.04em;white-space:nowrap;overflow:hidden">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#8a8a8a">12</span>GARGALO
+          </span>
+          <span style="flex:none;display:flex;align-items:center;gap:14px;padding:0 20px;border-left:1px solid #2B2B2B;color:#8a8a8a">
+            <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="6" height="6"></rect><path d="M8 1v2.5M8 12.5V15M1 8h2.5M12.5 8H15M3 3l1.8 1.8M11.2 11.2 13 13M13 3l-1.8 1.8M4.8 11.2 3 13"></path></svg>
+            <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="5.5" width="11" height="8"></rect><path d="M2.5 5.5 5 2.5h6l2.5 3M8 8.5v2.5"></path></svg>
+          </span>
+        </div>
+
+        <div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 640px;gap:24px;padding:24px 28px">
+          <div style="min-width:0;display:flex;flex-direction:column;gap:20px">
+            <div style="flex:1;min-height:0;background:#171717;border:1px solid #2B2B2B;display:flex;flex-direction:column">
+              <div style="flex:none;display:flex;align-items:center;gap:16px;height:46px;padding:0 20px;background:#1f1f1f;border-bottom:1px solid #2B2B2B">
+                <span style="font-size:13px;font-weight:800;letter-spacing:.1em;color:#fff">CARGA DA MÁQUINA</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:#8a8a8a">ESCALA 0–100 · ZONA VERMELHA 85+</span>
+                <span style="margin-left:auto;display:inline-flex;align-items:center;gap:9px;height:34px;padding:0 18px;background:#F8E800;color:#101010;font-size:13px;font-weight:800;letter-spacing:.06em">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z"></path></svg>
+                  PROVA REAL
+                </span>
+              </div>
+              <div style="flex:1;min-height:0;display:flex;align-items:stretch;gap:0;padding:24px 20px">
+                <div style="flex:none;width:44px;display:flex;flex-direction:column;justify-content:space-between;padding:26px 0 30px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#8a8a8a;text-align:right">
+                  <span style="color:#E5262B">100</span>
+                  <span>75</span>
+                  <span>50</span>
+                  <span>25</span>
+                  <span>0</span>
+                </div>
+                <div style="flex:1;display:flex;align-items:stretch;justify-content:space-around;gap:20px">
+                  <div style="flex:none;width:150px;display:flex;flex-direction:column;align-items:center;gap:8px">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;line-height:1;color:#fff;font-variant-numeric:tabular-nums">30%</span>
+                    <div style="flex:1;width:104px;position:relative;background:#101010;border:1px solid #2B2B2B">
+                      <span style="position:absolute;left:0;right:0;top:0;height:15%;background:rgba(229,38,43,.16);border-bottom:1px solid #E5262B"></span>
+                      <span style="position:absolute;left:0;right:0;top:25%;height:1px;background:#242424"></span>
+                      <span style="position:absolute;left:0;right:0;top:50%;height:1px;background:#242424"></span>
+                      <span style="position:absolute;left:0;right:0;top:75%;height:1px;background:#242424"></span>
+                      <span style="position:absolute;left:0;right:0;bottom:0;height:30%;background:#F8E800"></span>
+                    </div>
+                    <span style="font-size:13px;font-weight:800;letter-spacing:.12em;color:#fff">CPU</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.04em;color:#8a8a8a;text-align:center">RYZEN 7 5800X<br>3.80 GHZ · 53 °C</span>
+                  </div>
+                  <div style="flex:none;width:150px;display:flex;flex-direction:column;align-items:center;gap:8px">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;line-height:1;color:#fff;font-variant-numeric:tabular-nums">17%</span>
+                    <div style="flex:1;width:104px;position:relative;background:#101010;border:1px solid #2B2B2B">
+                      <span style="position:absolute;left:0;right:0;top:0;height:15%;background:rgba(229,38,43,.16);border-bottom:1px solid #E5262B"></span>
+                      <span style="position:absolute;left:0;right:0;top:25%;height:1px;background:#242424"></span>
+                      <span style="position:absolute;left:0;right:0;top:50%;height:1px;background:#242424"></span>
+                      <span style="position:absolute;left:0;right:0;top:75%;height:1px;background:#242424"></span>
+                      <span style="position:absolute;left:0;right:0;bottom:0;height:17%;background:#F8E800"></span>
+                    </div>
+                    <span style="font-size:13px;font-weight:800;letter-spacing:.12em;color:#fff">GPU</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.04em;color:#8a8a8a;text-align:center">RTX 3080<br>VRAM 10 GB · 45 °C</span>
+                  </div>
+                  <div style="flex:none;width:150px;display:flex;flex-direction:column;align-items:center;gap:8px">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;line-height:1;color:#fff;font-variant-numeric:tabular-nums">43%</span>
+                    <div style="flex:1;width:104px;position:relative;background:#101010;border:1px solid #2B2B2B">
+                      <span style="position:absolute;left:0;right:0;top:0;height:15%;background:rgba(229,38,43,.16);border-bottom:1px solid #E5262B"></span>
+                      <span style="position:absolute;left:0;right:0;top:25%;height:1px;background:#242424"></span>
+                      <span style="position:absolute;left:0;right:0;top:50%;height:1px;background:#242424"></span>
+                      <span style="position:absolute;left:0;right:0;top:75%;height:1px;background:#242424"></span>
+                      <span style="position:absolute;left:0;right:0;bottom:0;height:43%;background:#F8E800"></span>
+                    </div>
+                    <span style="font-size:13px;font-weight:800;letter-spacing:.12em;color:#fff">RAM</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.04em;color:#8a8a8a;text-align:center">13.7 / 32 GB<br>18.3 GB LIVRES</span>
+                  </div>
+                </div>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;padding-left:24px;border-left:1px solid #2B2B2B;margin-left:8px">
+                  <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px">
+                    <span style="font-size:12px;font-weight:800;letter-spacing:.1em;color:#fff">TELEMETRIA 60 S</span>
+                    <span style="display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;color:#c9c9c9"><span style="width:16px;height:2px;background:#F8E800"></span>CPU</span>
+                    <span style="display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;color:#c9c9c9"><span style="width:16px;height:2px;background:repeating-linear-gradient(90deg,#8a8a8a 0 4px,transparent 4px 8px)"></span>GPU</span>
+                  </div>
+                  <svg viewBox="0 0 600 120" preserveAspectRatio="none" style="display:block;width:100%;height:220px">
+                    <line x1="10" y1="4" x2="590" y2="4" stroke="#242424" stroke-width="1"></line>
+                    <line x1="10" y1="60" x2="590" y2="60" stroke="#242424" stroke-width="1"></line>
+                    <line x1="10" y1="116" x2="590" y2="116" stroke="#242424" stroke-width="1"></line>
+                    <polyline points="10,102.6 58,100.3 106,101.4 154,99.2 202,102.6 250,98.1 298,100.3 346,101.4 394,96.9 442,99.2 490,95.8 538,93.6 590,96.9" fill="none" stroke="#8a8a8a" stroke-width="1.5" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"></polyline>
+                    <polyline points="10,89.1 58,91.4 106,86.9 154,90.2 202,84.6 250,88 298,85.8 346,81.3 394,86.9 442,73.4 490,77.9 538,66.7 590,82.4" fill="none" stroke="#F8E800" stroke-width="2" vector-effect="non-scaling-stroke"></polyline>
+                  </svg>
+                  <div style="display:flex;gap:24px;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:#8a8a8a">
+                    <span>PICO CPU <b style="color:#fff">44%</b></span>
+                    <span>PICO GPU <b style="color:#fff">20%</b></span>
+                    <span>UPTIME <b style="color:#fff">6 H</b></span>
+                    <span>DISCO <b style="color:#fff">610 / 1000 GB</b></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="min-width:0;display:flex;flex-direction:column;gap:20px">
+            <sc-if value="{{ mostrarKillFeed }}" hint-placeholder-val="{{ true }}">
+              <div style="flex:none;background:#171717;border:1px solid #2B2B2B">
+                <div style="display:flex;align-items:center;gap:12px;height:46px;padding:0 18px;background:#1f1f1f;border-bottom:1px solid #2B2B2B">
+                  <span style="font-size:13px;font-weight:800;letter-spacing:.1em;color:#fff">AÇÕES NESTA SESSÃO</span>
+                  <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:#8a8a8a">570 MB LIBERADOS</span>
+                </div>
+                <div style="display:flex;flex-direction:column">
+                  <div style="display:flex;align-items:center;gap:12px;height:46px;padding:0 18px;border-bottom:1px solid #222">
+                    <span style="width:4px;height:22px;background:#F8E800"></span>
+                    <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">chrome_updater.exe</span>
+                    <span style="font-size:10px;font-weight:800;letter-spacing:.1em;color:#8a8a8a">ENCERRADO</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#F8E800">212 MB</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:12px;height:46px;padding:0 18px;border-bottom:1px solid #222">
+                    <span style="width:4px;height:22px;background:#F8E800"></span>
+                    <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">spotify_helper.exe</span>
+                    <span style="font-size:10px;font-weight:800;letter-spacing:.1em;color:#8a8a8a">ENCERRADO</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#F8E800">210 MB</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:12px;height:46px;padding:0 18px">
+                    <span style="width:4px;height:22px;background:#F8E800"></span>
+                    <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">OneDrive.exe</span>
+                    <span style="font-size:10px;font-weight:800;letter-spacing:.1em;color:#8a8a8a">ENCERRADO</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#F8E800">148 MB</span>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <div style="flex:1;min-height:0;background:#171717;border:1px solid #2B2B2B;display:flex;flex-direction:column">
+              <div style="flex:none;display:flex;align-items:center;gap:12px;height:46px;padding:0 18px;background:#1f1f1f;border-bottom:1px solid #2B2B2B">
+                <span style="font-size:13px;font-weight:800;letter-spacing:.1em;color:#fff">PROCESSOS EM SEGUNDO PLANO</span>
+                <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:#8a8a8a">5 LIDOS</span>
+              </div>
+              <div style="flex:1;min-height:0;display:flex;flex-direction:column">
+                <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid #222">
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a">4812</span>
+                  <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:13px;color:#fff">chrome_updater.exe</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#F8E800">212 MB</span>
+                  <span style="display:inline-flex;align-items:center;height:30px;padding:0 14px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:800;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                </div>
+                <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid #222">
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a">6120</span>
+                  <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:13px;color:#fff">spotify_helper.exe</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#F8E800">210 MB</span>
+                  <span style="display:inline-flex;align-items:center;height:30px;padding:0 14px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:800;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                </div>
+                <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid #222">
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a">7344</span>
+                  <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:13px;color:#fff">teams_background.exe</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#F8E800">178 MB</span>
+                  <span style="display:inline-flex;align-items:center;height:30px;padding:0 14px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:800;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                </div>
+                <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid #222">
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a">2288</span>
+                  <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:13px;color:#fff">OneDrive.exe</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#F8E800">148 MB</span>
+                  <span style="display:inline-flex;align-items:center;height:30px;padding:0 14px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:800;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                </div>
+                <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 18px">
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a">9016</span>
+                  <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:13px;color:#fff">AdobeUpdater.exe</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#F8E800">96 MB</span>
+                  <span style="display:inline-flex;align-items:center;height:30px;padding:0 14px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:800;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:#2B2B2B;border:1px solid #2B2B2B">
+              <div style="display:flex;flex-direction:column;gap:3px;padding:12px 16px;background:#171717">
+                <span style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#8a8a8a">SISTEMA</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fff">Windows 11 Pro 23H2 · 22631</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:12px 16px;background:#171717">
+                <span style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#8a8a8a">MONITOR</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fff">1920×1080 @ 165 Hz</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:12px 16px;background:#171717">
+                <span style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#8a8a8a">PLANO DE ENERGIA</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fff">Equilibrado</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px;padding:12px 16px;background:#171717">
+                <span style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#8a8a8a">REDE</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fff">2.5GbE · 1000 Mbps</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:none;display:flex;align-items:center;gap:14px;height:40px;padding:0 28px;background:#080808;border-top:1px solid #2B2B2B;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;color:#8a8a8a">
+          <span style="width:7px;height:7px;background:#4a4a4a"></span>IDLE
+          <span style="width:1px;height:16px;background:#2B2B2B"></span>
+          <span>FONTE: ADAPTADOR DE DEMONSTRAÇÃO</span>
+          <span style="margin-left:auto;color:#7d7d7d">PRO LEAGUE // PLF CORE v1.9.0 // REV A</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:24px 72px 96px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:10px;max-width:980px">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.18em;color:#F8E800">TURNO 1 — COCKPIT NAS 3 DIREÇÕES</span>
+    <h1 style="margin:0;font-size:34px;font-weight:700;letter-spacing:-.01em;color:#fff">PLF CORE — a mesma tela em três gramáticas visuais</h1>
+    <p style="margin:0;font-size:15px;line-height:1.6;color:#9a9a9a;text-wrap:pretty">Cockpit 1920×1080 em <a href="#1a">1a</a> ARENA, <a href="#1b">1b</a> PAINEL e <a href="#1c">1c</a> LOADSCREEN. Mesma navegação (12 módulos + Configurações e Log), mesmos dados do adaptador de demonstração (30 %, 17 %, 43 %, Ryzen 7 5800X, RTX 3080, 13.7 / 32 GB), mesmos elementos obrigatórios: título, <b style="color:#e8e8e8">SISTEMA // PRONTO</b>, nível L5 STOCK, selo de demonstração, PROVA REAL, kill feed e barra inferior em IDLE. FPS Booster, Limpeza e Ativação de licença vêm na sequência, na direção que você escolher.</p>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:72px;align-items:flex-start">
+
+    <div id="1a" style="display:flex;flex-direction:column;gap:18px;width:1920px">
+      <div style="display:flex;gap:24px;align-items:flex-start">
+        <span style="flex:none;display:inline-flex;align-items:center;height:30px;padding:0 14px;border-radius:999px;background:#F8E800;color:#101010;font-size:13px;font-weight:700;letter-spacing:.04em">1a — ARENA</span>
+        <div style="flex:1;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:40px">
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.55;color:#9a9a9a">
+            <span style="color:#fff;font-weight:600">A ideia</span>
+            <span>Sai a sidebar: os módulos viram tabs em pílula num header horizontal, como o lobby do servidor.</span>
+            <span>O conteúdo é um painel flutuante sobre o preto, com cabeçalho de painel, CTA amarelo e fechar circular.</span>
+            <span>Amarelo generoso — tab ativa, CTA, preenchimento dos gauges e barras. É a direção mais “jogo”.</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:#8a8a8a">
+            <span style="font-family:Inter,sans-serif;font-size:14px;font-weight:600;color:#fff">Tokens</span>
+            <span>bg #101010 · surf #181818 / #202020 / #282828 · line #2B2B2B</span>
+            <span>accent #F8E800 (texto preto) · erro #E5262B · aviso #FF8A3D</span>
+            <span>raio 10 painel / 6 botão / 999 pílula · header 76 px · gap 20</span>
+            <span>Inter 600-700 · números JetBrains Mono tabular</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.55;color:#9a9a9a">
+            <span style="color:#fff;font-weight:600">O que mudou</span>
+            <span>A navegação vertical de 15 itens virou 7 tabs + dropdown: o topo passa a caber na largura e a tela ganha 232 px.</span>
+            <span>Chanfro, itálico condensado e barras segmentadas saíram; o instrumento continua, agora em cantos de 10 px.</span>
+          </div>
+        </div>
+      </div>
+
+      <div data-screen-label="A — Cockpit" style="position:relative;width:1920px;height:1080px;overflow:hidden;background:#101010;border:1px solid #2B2B2B;font-family:Inter,sans-serif">
+        <div style="display:flex;align-items:center;gap:12px;height:76px;padding:0 14px;background:#0c0c0c;border-bottom:1px solid #2B2B2B">
+          <img src="uploads/logo-pro-league-header.png" alt="PRO LEAGUE" style="height:34px;width:auto;flex:none">
+          <div style="flex:1;min-width:0;display:flex;flex-wrap:nowrap;justify-content:center;gap:6px">
+            <span style="display:inline-flex;flex:none;align-items:center;gap:7px;height:40px;padding:0 11px;border-radius:999px;white-space:nowrap;background:#F8E800;color:#101010;font-size:12px;font-weight:700;letter-spacing:0">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12a5.5 5.5 0 0 1 10 0M8 12 11 7"></path></svg>
+              COCKPIT
+            </span>
+            <span style="display:inline-flex;flex:none;align-items:center;gap:7px;height:40px;padding:0 11px;border-radius:999px;white-space:nowrap;background:#1b1b1b;border:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:600;letter-spacing:0">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z"></path></svg>
+              FPS BOOSTER
+            </span>
+            <span style="display:inline-flex;flex:none;align-items:center;gap:7px;height:40px;padding:0 11px;border-radius:999px;white-space:nowrap;background:#1b1b1b;border:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:600;letter-spacing:0">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5"></circle><path d="M8 1v3M8 12v3M1 8h3M12 8h3"></path></svg>
+              RAIO-X
+            </span>
+            <span style="display:inline-flex;flex:none;align-items:center;gap:7px;height:40px;padding:0 11px;border-radius:999px;white-space:nowrap;background:#1b1b1b;border:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:600;letter-spacing:0">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="4.5" width="11" height="7"></rect><path d="M4.5 11.5v2M7.5 11.5v2M10.5 11.5v2"></path></svg>
+              MEMÓRIA
+            </span>
+            <span style="display:inline-flex;flex:none;align-items:center;gap:7px;height:40px;padding:0 11px;border-radius:999px;white-space:nowrap;background:#1b1b1b;border:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:600;letter-spacing:0">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2h4v4l3 7H3l3-7V2Z"></path><path d="M6 9h4"></path></svg>
+              LIMPEZA
+            </span>
+            <span style="display:inline-flex;flex:none;align-items:center;gap:7px;height:40px;padding:0 11px;border-radius:999px;white-space:nowrap;background:#1b1b1b;border:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:600;letter-spacing:0">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="11" height="11"></rect><path d="M2.5 8h11M8 2.5v11"></path></svg>
+              WINDOWS
+            </span>
+            <span style="display:inline-flex;flex:none;align-items:center;gap:7px;height:40px;padding:0 11px;border-radius:999px;white-space:nowrap;background:#1b1b1b;border:1px solid #2B2B2B;color:#c9c9c9;font-size:12px;font-weight:600;letter-spacing:0">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4.5" width="13" height="7"></rect><path d="M4 6.5v3M2.5 8h3"></path></svg>
+              FIVEM
+            </span>
+            <div style="position:relative">
+              <span style="display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 12px;border-radius:999px;background:#1b1b1b;border:1px solid #3a3a3a;color:#fff;font-size:12px;font-weight:600;letter-spacing:0;white-space:nowrap">
+                MAIS
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#F8E800" stroke-width="1.6"><path d="M4 10l4-4 4 4"></path></svg>
+              </span>
+              <div style="position:absolute;top:48px;left:0;z-index:30;width:228px;padding:8px;border-radius:10px;background:#181818;border:1px solid #2B2B2B;box-shadow:0 24px 48px rgba(0,0,0,.7);display:flex;flex-direction:column;gap:4px">
+                <span style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:6px;background:#202020;color:#e8e8e8;font-size:13px;font-weight:600">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="11" height="11"></rect><path d="M5.5 8.5 7.5 10.5 11 6"></path></svg>
+                  REQUISITOS
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8a8a8a" stroke-width="1.5" style="margin-left:auto"><path d="M6 4l4 4-4 4"></path></svg>
+                </span>
+                <span style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:6px;color:#c9c9c9;font-size:13px;font-weight:600">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4.5h12M2 8h12M2 11.5h12"></path><path d="M5.5 3v3M10.5 6.5v3M4 10v3"></path></svg>
+                  AJUSTES
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8a8a8a" stroke-width="1.5" style="margin-left:auto"><path d="M6 4l4 4-4 4"></path></svg>
+                </span>
+                <span style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:6px;color:#c9c9c9;font-size:13px;font-weight:600">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 14V5"></path><path d="M4.5 8.5 8 5l3.5 3.5"></path><path d="M2.5 2.5h11"></path></svg>
+                  INICIALIZAÇÃO
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8a8a8a" stroke-width="1.5" style="margin-left:auto"><path d="M6 4l4 4-4 4"></path></svg>
+                </span>
+                <span style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:6px;color:#c9c9c9;font-size:13px;font-weight:600">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-4 3 8 2-4h4"></path></svg>
+                  LATÊNCIA
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8a8a8a" stroke-width="1.5" style="margin-left:auto"><path d="M6 4l4 4-4 4"></path></svg>
+                </span>
+                <span style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:6px;color:#c9c9c9;font-size:13px;font-weight:600">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h12L9.5 8v5L6.5 14V8L2 2Z"></path></svg>
+                  GARGALO
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8a8a8a" stroke-width="1.5" style="margin-left:auto"><path d="M6 4l4 4-4 4"></path></svg>
+                </span>
+                <span style="height:1px;background:#2B2B2B;margin:4px 8px"></span>
+                <span style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:6px;color:#c9c9c9;font-size:13px;font-weight:600">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="6" height="6"></rect><path d="M8 1v2.5M8 12.5V15M1 8h2.5M12.5 8H15M3 3l1.8 1.8M11.2 11.2 13 13M13 3l-1.8 1.8M4.8 11.2 3 13"></path></svg>
+                  CONFIGURAÇÕES
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8a8a8a" stroke-width="1.5" style="margin-left:auto"><path d="M6 4l4 4-4 4"></path></svg>
+                </span>
+                <span style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:6px;color:#c9c9c9;font-size:13px;font-weight:600">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="5.5" width="11" height="8"></rect><path d="M2.5 5.5 5 2.5h6l2.5 3M8 8.5v2.5"></path></svg>
+                  LOG
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8a8a8a" stroke-width="1.5" style="margin-left:auto"><path d="M6 4l4 4-4 4"></path></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div style="flex:none;display:flex;align-items:center;gap:8px">
+            <span style="display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:999px;background:#F8E800;color:#101010;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;white-space:nowrap">{{ nivelCodigo }} · {{ nivelNome }}</span>
+            <span style="display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 12px;border-radius:999px;background:#1b1b1b;border:1px solid #2B2B2B;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.04em;color:#e8e8e8;white-space:nowrap">
+              <span style="width:8px;height:8px;border-radius:50%;background:#F8E800;box-shadow:0 0 8px rgba(248,232,0,.8)"></span>
+              SISTEMA // PRONTO
+            </span>
+            <sc-if value="{{ mostrarSeloDemo }}" hint-placeholder-val="{{ true }}">
+              <span style="display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 11px;border-radius:999px;background:rgba(248,232,0,.08);border:1px solid rgba(248,232,0,.45);font-size:11px;font-weight:700;letter-spacing:.02em;color:#F8E800;white-space:nowrap">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 14.5 13.5h-13L8 2.5Z"></path><path d="M8 6.5v3M8 11.6v.01"></path></svg>
+                MODO DE DEMONSTRAÇÃO
+              </span>
+            </sc-if>
+            <span style="width:1px;height:26px;background:#2B2B2B;margin:0"></span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;color:#8a8a8a">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7.5 8 10.5 11 7.5M2.5 13h11"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;color:#8a8a8a">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;color:#8a8a8a">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="10" height="10"></rect></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;color:#8a8a8a">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+            </span>
+          </div>
+        </div>
+
+        <div style="position:relative;height:970px;padding:26px 40px;box-sizing:border-box">
+          <div style="position:relative;height:920px;border-radius:10px;background:#181818;border:1px solid #2B2B2B;box-shadow:0 30px 60px rgba(0,0,0,.55);display:flex;flex-direction:column;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:16px;height:80px;padding:0 24px;border-bottom:1px solid #2B2B2B;flex:none">
+              <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:40px;background:#F8E800;color:#101010;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)">
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12a5.5 5.5 0 0 1 10 0M8 12 11 7"></path></svg>
+              </span>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:11px;font-weight:600;letter-spacing:.14em;color:#8a8a8a">SISTEMA</span>
+                <span style="font-size:21px;font-weight:700;letter-spacing:-.01em;color:#fff">Cockpit</span>
+              </div>
+              <span style="margin-left:6px;display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;border-radius:999px;background:#202020;border:1px solid #2B2B2B;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:#9a9a9a">3 INSTRUMENTOS · 60 S DE TELEMETRIA</span>
+              <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+                <span style="display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 22px;border-radius:6px;background:#F8E800;color:#101010;font-size:14px;font-weight:700;letter-spacing:.06em">
+                  <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z"></path></svg>
+                  PROVA REAL
+                </span>
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:#202020;border:1px solid #3a3a3a;color:#e8e8e8">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+                </span>
+              </div>
+            </div>
+
+            <div style="flex:1;padding:24px;display:flex;flex-direction:column;gap:20px;min-height:0">
+              <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px">
+                <div style="border-radius:10px;background:#1d1d1d;border:1px solid #2B2B2B;overflow:hidden">
+                  <div style="display:flex;align-items:center;justify-content:space-between;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                    <span style="font-size:13px;font-weight:700;letter-spacing:.08em;color:#fff">CPU</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:#8a8a8a">INST-01</span>
+                  </div>
+                  <div style="padding:14px 18px 18px">
+                    <svg viewBox="0 0 200 138" style="display:block;width:100%;max-height:250px">
+                      <path d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#2F2F2F" stroke-width="8"></path>
+                      <path d="M 28.58 126.00 A 76 76 0 1 1 171.42 126.00" fill="none" stroke="#4a4a4a" stroke-width="6" stroke-dasharray="1.2 13.4"></path>
+                      <path d="M 176.74 65.84 A 84 84 0 0 1 178.93 128.73" fill="none" stroke="#E5262B" stroke-width="8"></path>
+                      <path d="M 21.07 128.73 A 84 84 0 0 1 41.65 39.58" fill="none" stroke="#F8E800" stroke-width="8"></path>
+                      <line x1="24.82" y1="127.36" x2="35.16" y2="123.60" stroke="#9a9a9a" stroke-width="2"></line>
+                      <line x1="34.46" y1="54.11" x2="43.48" y2="60.42" stroke="#9a9a9a" stroke-width="2"></line>
+                      <line x1="100" y1="20" x2="100" y2="31" stroke="#9a9a9a" stroke-width="2"></line>
+                      <line x1="165.54" y1="54.11" x2="156.52" y2="60.42" stroke="#9a9a9a" stroke-width="2"></line>
+                      <line x1="175.18" y1="127.36" x2="164.84" y2="123.60" stroke="#E5262B" stroke-width="2"></line>
+                      <text x="45.50" y="122.84" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">0</text>
+                      <text x="52.49" y="69.73" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">25</text>
+                      <text x="100" y="45" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">50</text>
+                      <text x="147.51" y="69.73" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">75</text>
+                      <text x="154.50" y="122.84" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#E5262B">100</text>
+                      <g transform="rotate(-44 100 100)">
+                        <polygon points="98.4,100 101.6,100 100.6,26 99.4,26" fill="#ffffff"></polygon>
+                        <rect x="97.8" y="100" width="4.4" height="11" fill="rgba(255,255,255,.5)"></rect>
+                      </g>
+                      <circle cx="100" cy="100" r="9" fill="#181818" stroke="rgba(255,255,255,.28)" stroke-width="1.5"></circle>
+                      <circle cx="100" cy="100" r="3" fill="#F8E800"></circle>
+                    </svg>
+                    <div style="display:flex;justify-content:center;margin-top:-14px">
+                      <div style="width:132px;height:58px;background:#F8E800;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;align-items:center;justify-content:center">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:#101010;font-variant-numeric:tabular-nums">30%</span>
+                      </div>
+                    </div>
+                    <p style="margin:12px 0 0;text-align:center;font-size:13px;font-weight:600;color:#fff">CPU</p>
+                    <p style="margin:2px 0 0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a">AMD Ryzen 7 5800X</p>
+                    <div style="margin-top:14px;display:flex;flex-direction:column;gap:1px;border-radius:6px;overflow:hidden">
+                      <div style="display:flex;align-items:center;justify-content:space-between;height:34px;padding:0 12px;background:#242424">
+                        <span style="font-size:12px;color:#9a9a9a">Clock base</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">3.80 GHz</span>
+                      </div>
+                      <div style="display:flex;align-items:center;justify-content:space-between;height:34px;padding:0 12px;background:#242424">
+                        <span style="font-size:12px;color:#9a9a9a">Temp CPU</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">53 °C</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="border-radius:10px;background:#1d1d1d;border:1px solid #2B2B2B;overflow:hidden">
+                  <div style="display:flex;align-items:center;justify-content:space-between;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                    <span style="font-size:13px;font-weight:700;letter-spacing:.08em;color:#fff">GPU</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:#8a8a8a">INST-02</span>
+                  </div>
+                  <div style="padding:14px 18px 18px">
+                    <svg viewBox="0 0 200 138" style="display:block;width:100%;max-height:250px">
+                      <path d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#2F2F2F" stroke-width="8"></path>
+                      <path d="M 28.58 126.00 A 76 76 0 1 1 171.42 126.00" fill="none" stroke="#4a4a4a" stroke-width="6" stroke-dasharray="1.2 13.4"></path>
+                      <path d="M 176.74 65.84 A 84 84 0 0 1 178.93 128.73" fill="none" stroke="#E5262B" stroke-width="8"></path>
+                      <path d="M 21.07 128.73 A 84 84 0 0 1 19.85 74.87" fill="none" stroke="#F8E800" stroke-width="8"></path>
+                      <line x1="24.82" y1="127.36" x2="35.16" y2="123.60" stroke="#9a9a9a" stroke-width="2"></line>
+                      <line x1="34.46" y1="54.11" x2="43.48" y2="60.42" stroke="#9a9a9a" stroke-width="2"></line>
+                      <line x1="100" y1="20" x2="100" y2="31" stroke="#9a9a9a" stroke-width="2"></line>
+                      <line x1="165.54" y1="54.11" x2="156.52" y2="60.42" stroke="#9a9a9a" stroke-width="2"></line>
+                      <line x1="175.18" y1="127.36" x2="164.84" y2="123.60" stroke="#E5262B" stroke-width="2"></line>
+                      <text x="45.50" y="122.84" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">0</text>
+                      <text x="52.49" y="69.73" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">25</text>
+                      <text x="100" y="45" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">50</text>
+                      <text x="147.51" y="69.73" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">75</text>
+                      <text x="154.50" y="122.84" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#E5262B">100</text>
+                      <g transform="rotate(-72.6 100 100)">
+                        <polygon points="98.4,100 101.6,100 100.6,26 99.4,26" fill="#ffffff"></polygon>
+                        <rect x="97.8" y="100" width="4.4" height="11" fill="rgba(255,255,255,.5)"></rect>
+                      </g>
+                      <circle cx="100" cy="100" r="9" fill="#181818" stroke="rgba(255,255,255,.28)" stroke-width="1.5"></circle>
+                      <circle cx="100" cy="100" r="3" fill="#F8E800"></circle>
+                    </svg>
+                    <div style="display:flex;justify-content:center;margin-top:-14px">
+                      <div style="width:132px;height:58px;background:#F8E800;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;align-items:center;justify-content:center">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:#101010;font-variant-numeric:tabular-nums">17%</span>
+                      </div>
+                    </div>
+                    <p style="margin:12px 0 0;text-align:center;font-size:13px;font-weight:600;color:#fff">GPU</p>
+                    <p style="margin:2px 0 0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a">NVIDIA GeForce RTX 3080</p>
+                    <div style="margin-top:14px;display:flex;flex-direction:column;gap:1px;border-radius:6px;overflow:hidden">
+                      <div style="display:flex;align-items:center;justify-content:space-between;height:34px;padding:0 12px;background:#242424">
+                        <span style="font-size:12px;color:#9a9a9a">VRAM</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">10 GB</span>
+                      </div>
+                      <div style="display:flex;align-items:center;justify-content:space-between;height:34px;padding:0 12px;background:#242424">
+                        <span style="font-size:12px;color:#9a9a9a">Temp GPU</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">45 °C</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="border-radius:10px;background:#1d1d1d;border:1px solid #2B2B2B;overflow:hidden">
+                  <div style="display:flex;align-items:center;justify-content:space-between;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                    <span style="font-size:13px;font-weight:700;letter-spacing:.08em;color:#fff">RAM</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:#8a8a8a">INST-03</span>
+                  </div>
+                  <div style="padding:14px 18px 18px">
+                    <svg viewBox="0 0 200 138" style="display:block;width:100%;max-height:250px">
+                      <path d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#2F2F2F" stroke-width="8"></path>
+                      <path d="M 28.58 126.00 A 76 76 0 1 1 171.42 126.00" fill="none" stroke="#4a4a4a" stroke-width="6" stroke-dasharray="1.2 13.4"></path>
+                      <path d="M 176.74 65.84 A 84 84 0 0 1 178.93 128.73" fill="none" stroke="#E5262B" stroke-width="8"></path>
+                      <path d="M 21.07 128.73 A 84 84 0 0 1 77.69 19.02" fill="none" stroke="#F8E800" stroke-width="8"></path>
+                      <line x1="24.82" y1="127.36" x2="35.16" y2="123.60" stroke="#9a9a9a" stroke-width="2"></line>
+                      <line x1="34.46" y1="54.11" x2="43.48" y2="60.42" stroke="#9a9a9a" stroke-width="2"></line>
+                      <line x1="100" y1="20" x2="100" y2="31" stroke="#9a9a9a" stroke-width="2"></line>
+                      <line x1="165.54" y1="54.11" x2="156.52" y2="60.42" stroke="#9a9a9a" stroke-width="2"></line>
+                      <line x1="175.18" y1="127.36" x2="164.84" y2="123.60" stroke="#E5262B" stroke-width="2"></line>
+                      <text x="45.50" y="122.84" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">0</text>
+                      <text x="52.49" y="69.73" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">25</text>
+                      <text x="100" y="45" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">50</text>
+                      <text x="147.51" y="69.73" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">75</text>
+                      <text x="154.50" y="122.84" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#E5262B">100</text>
+                      <g transform="rotate(-15.4 100 100)">
+                        <polygon points="98.4,100 101.6,100 100.6,26 99.4,26" fill="#ffffff"></polygon>
+                        <rect x="97.8" y="100" width="4.4" height="11" fill="rgba(255,255,255,.5)"></rect>
+                      </g>
+                      <circle cx="100" cy="100" r="9" fill="#181818" stroke="rgba(255,255,255,.28)" stroke-width="1.5"></circle>
+                      <circle cx="100" cy="100" r="3" fill="#F8E800"></circle>
+                    </svg>
+                    <div style="display:flex;justify-content:center;margin-top:-14px">
+                      <div style="width:132px;height:58px;background:#F8E800;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;align-items:center;justify-content:center">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:#101010;font-variant-numeric:tabular-nums">43%</span>
+                      </div>
+                    </div>
+                    <p style="margin:12px 0 0;text-align:center;font-size:13px;font-weight:600;color:#fff">RAM</p>
+                    <p style="margin:2px 0 0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a">13.7 / 32 GB</p>
+                    <div style="margin-top:14px;display:flex;flex-direction:column;gap:1px;border-radius:6px;overflow:hidden">
+                      <div style="display:flex;align-items:center;justify-content:space-between;height:34px;padding:0 12px;background:#242424">
+                        <span style="font-size:12px;color:#9a9a9a">Em uso</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">13.7 GB</span>
+                      </div>
+                      <div style="display:flex;align-items:center;justify-content:space-between;height:34px;padding:0 12px;background:#242424">
+                        <span style="font-size:12px;color:#9a9a9a">Disponível</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">18.3 GB</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="flex:1;min-height:0;border-radius:10px;background:#1d1d1d;border:1px solid #2B2B2B;display:flex;flex-direction:column;overflow:hidden">
+                <div style="display:flex;align-items:center;gap:16px;height:48px;padding:0 18px;background:#202020;border-bottom:1px solid #2B2B2B">
+                  <span style="font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff">TELEMETRIA — ÚLTIMOS 60 S</span>
+                  <div style="margin-left:auto;display:flex;align-items:center;gap:18px">
+                    <span style="display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#c9c9c9">
+                      <span style="width:18px;height:3px;background:#F8E800"></span>CPU
+                    </span>
+                    <span style="display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#c9c9c9">
+                      <span style="width:18px;height:3px;background:repeating-linear-gradient(90deg,#8a8a8a 0 5px,transparent 5px 9px)"></span>GPU
+                    </span>
+                  </div>
+                </div>
+                <div style="position:relative;flex:1;min-height:0;padding:14px 18px">
+                  <sc-if value="{{ mostrarKillFeed }}" hint-placeholder-val="{{ true }}">
+                    <div style="position:absolute;top:6px;right:14px;z-index:20;width:330px;display:flex;flex-direction:column;gap:6px">
+                      <div style="display:flex;align-items:center;gap:10px;height:38px;padding:0 14px;border-radius:6px;background:#1c1c1c;border:1px solid #2B2B2B;border-left:3px solid #F8E800">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F8E800" stroke-width="1.6"><path d="M3 8.5 6.5 12 13 4.5"></path></svg>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">chrome_updater.exe</span>
+                        <span style="font-size:10px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">ENCERRADO</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#F8E800">212 MB</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:10px;height:38px;padding:0 14px;border-radius:6px;background:#1c1c1c;border:1px solid #2B2B2B;border-left:3px solid #F8E800;opacity:.6">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F8E800" stroke-width="1.6"><path d="M3 8.5 6.5 12 13 4.5"></path></svg>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">spotify_helper.exe</span>
+                        <span style="font-size:10px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">ENCERRADO</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#F8E800">210 MB</span>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <svg viewBox="0 0 600 120" preserveAspectRatio="none" style="display:block;width:100%;height:100%">
+                    <line x1="10" y1="4" x2="590" y2="4" stroke="#232323" stroke-width="1"></line>
+                    <line x1="10" y1="32" x2="590" y2="32" stroke="#232323" stroke-width="1"></line>
+                    <line x1="10" y1="60" x2="590" y2="60" stroke="#232323" stroke-width="1"></line>
+                    <line x1="10" y1="88" x2="590" y2="88" stroke="#232323" stroke-width="1"></line>
+                    <line x1="10" y1="116" x2="590" y2="116" stroke="#232323" stroke-width="1"></line>
+                    <polyline points="10,102.6 58,100.3 106,101.4 154,99.2 202,102.6 250,98.1 298,100.3 346,101.4 394,96.9 442,99.2 490,95.8 538,93.6 590,96.9" fill="none" stroke="#8a8a8a" stroke-width="1.5" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"></polyline>
+                    <polyline points="10,89.1 58,91.4 106,86.9 154,90.2 202,84.6 250,88 298,85.8 346,81.3 394,86.9 442,73.4 490,77.9 538,66.7 590,82.4" fill="none" stroke="#F8E800" stroke-width="2" vector-effect="non-scaling-stroke"></polyline>
+                  </svg>
+                </div>
+                <div style="display:flex;align-items:center;gap:28px;height:46px;padding:0 18px;border-top:1px solid #2B2B2B;background:#1a1a1a">
+                  <span style="display:flex;align-items:center;gap:8px;font-size:12px;color:#8a8a8a">Pico CPU<b style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#fff">44%</b></span>
+                  <span style="display:flex;align-items:center;gap:8px;font-size:12px;color:#8a8a8a">Pico GPU<b style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#fff">20%</b></span>
+                  <span style="display:flex;align-items:center;gap:8px;font-size:12px;color:#8a8a8a">Temp CPU<b style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#fff">53 °C</b></span>
+                  <span style="display:flex;align-items:center;gap:8px;font-size:12px;color:#8a8a8a">Temp GPU<b style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#fff">45 °C</b></span>
+                  <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:#8a8a8a">FONTE: ADAPTADOR DE DEMONSTRAÇÃO</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px;height:32px;padding:0 20px;background:#0c0c0c;border-top:1px solid #2B2B2B;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em;color:#8a8a8a">
+          <span style="width:7px;height:7px;border-radius:50%;background:#4a4a4a"></span>
+          IDLE
+          <span style="margin-left:auto;color:#7d7d7d">PLF CORE v1.9.0 // REV A</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="1b" style="display:flex;flex-direction:column;gap:18px;width:1920px">
+      <div style="display:flex;gap:24px;align-items:flex-start">
+        <span style="flex:none;display:inline-flex;align-items:center;height:30px;padding:0 14px;border-radius:999px;background:#F8E800;color:#101010;font-size:13px;font-weight:700;letter-spacing:.04em">1b — PAINEL</span>
+        <div style="flex:1;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:40px">
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.55;color:#9a9a9a">
+            <span style="color:#fff;font-weight:600">A ideia</span>
+            <span>Sidebar mantida e redesenhada: ícone fino, item ativo em #202020 com barra amarela de 3 px.</span>
+            <span>Densidade alta em superfícies empilhadas, sempre no padrão rótulo cinza pequeno / valor grande branco.</span>
+            <span>Amarelo contido: ação primária, LED e preenchimento de barra. O resto é escala de cinza.</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:#8a8a8a">
+            <span style="font-family:Inter,sans-serif;font-size:14px;font-weight:600;color:#fff">Tokens</span>
+            <span>bg #101010 · sidebar #141414 · card #181818 · row #202020 / #282828</span>
+            <span>accent #F8E800 só em CTA, LED e barra · erro #E5262B</span>
+            <span>raio 10 card / 6 botão · sidebar 248 · topbar 56 · rodapé 28 · gap 16</span>
+            <span>rótulo 11/600 #8A8A8A · valor 15-40 Mono 700 #FFF</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.55;color:#9a9a9a">
+            <span style="color:#fff;font-weight:600">O que mudou</span>
+            <span>A mesma estrutura do RESYNC, sem a tinta: vermelho deixa de ser fundo de item ativo e volta a ser só erro.</span>
+            <span>Leituras e processos sobem para a primeira dobra — 1080 px passam a mostrar a tela inteira, sem rolagem.</span>
+          </div>
+        </div>
+      </div>
+
+      <div data-screen-label="B — Cockpit" style="position:relative;width:1920px;height:1080px;overflow:hidden;background:#101010;border:1px solid #2B2B2B;display:flex;font-family:Inter,sans-serif">
+        <div style="flex:none;width:248px;background:#141414;border-right:1px solid #2B2B2B;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;gap:10px;height:76px;padding:0 20px;border-bottom:1px solid #2B2B2B">
+            <img src="uploads/logo-pro-league-header.png" alt="PRO LEAGUE" style="height:26px;width:auto">
+            <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8a8a8a">CORE</span>
+          </div>
+          <div style="flex:1;padding:10px 0;display:flex;flex-direction:column;gap:2px;overflow:hidden">
+            <div style="position:relative;display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;background:#202020;color:#fff;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <span style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#F8E800"></span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F8E800" stroke-width="1.5"><path d="M3 12a5.5 5.5 0 0 1 10 0M8 12 11 7"></path></svg>
+              COCKPIT
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z"></path></svg>
+              FPS BOOSTER
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5"></circle><path d="M8 1v3M8 12v3M1 8h3M12 8h3"></path></svg>
+              RAIO-X
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="4.5" width="11" height="7"></rect><path d="M4.5 11.5v2M7.5 11.5v2M10.5 11.5v2M4.5 2.5v2M7.5 2.5v2M10.5 2.5v2"></path></svg>
+              MEMÓRIA
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2h4v4l3 7H3l3-7V2Z"></path><path d="M6 9h4"></path></svg>
+              LIMPEZA
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="11" height="11"></rect><path d="M2.5 8h11M8 2.5v11"></path></svg>
+              WINDOWS
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4.5" width="13" height="7"></rect><path d="M4 6.5v3M2.5 8h3M10 7.5h.01M12 9.5h.01"></path></svg>
+              FIVEM
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="11" height="11"></rect><path d="M5.5 8.5 7.5 10.5 11 6"></path></svg>
+              REQUISITOS
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4.5h12M2 8h12M2 11.5h12"></path><path d="M5.5 3v3M10.5 6.5v3M4 10v3"></path></svg>
+              AJUSTES
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 14V5"></path><path d="M4.5 8.5 8 5l3.5 3.5"></path><path d="M2.5 2.5h11"></path></svg>
+              INICIALIZAÇÃO
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-4 3 8 2-4h4"></path></svg>
+              LATÊNCIA
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h12L9.5 8v5L6.5 14V8L2 2Z"></path></svg>
+              GARGALO
+            </div>
+          </div>
+          <div style="border-top:1px solid #2B2B2B;padding:8px 0 12px;display:flex;flex-direction:column;gap:2px">
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="6" height="6"></rect><path d="M8 1v2.5M8 12.5V15M1 8h2.5M12.5 8H15M3 3l1.8 1.8M11.2 11.2 13 13M13 3l-1.8 1.8M4.8 11.2 3 13"></path></svg>
+              CONFIGURAÇÕES
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="5.5" width="11" height="8"></rect><path d="M2.5 5.5 5 2.5h6l2.5 3M8 8.5v2.5"></path></svg>
+              LOG
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 20px 0">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;color:#7d7d7d">PLF CORE v1.9.0</span>
+              <span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:rgba(248,232,0,.1);border:1px solid rgba(248,232,0,.4);font-size:9px;font-weight:700;letter-spacing:.1em;color:#F8E800">DEMO</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+          <div style="flex:none;display:flex;align-items:center;gap:16px;height:56px;padding:0 4px 0 24px;background:#141414;border-bottom:1px solid #2B2B2B">
+            <span style="font-size:15px;font-weight:700;letter-spacing:.02em;color:#fff">Cockpit</span>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+              <span style="display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 6px 0 12px;border-radius:999px;background:#1d1d1d;border:1px solid #2B2B2B;font-size:11px;font-weight:600;color:#8a8a8a">
+                Nível de prontidão
+                <span style="display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:#282828;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#fff">{{ nivelCodigo }} {{ nivelNome }}</span>
+              </span>
+              <span style="display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;border-radius:999px;background:#1d1d1d;border:1px solid #2B2B2B;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;color:#c9c9c9">
+                <span style="width:7px;height:7px;border-radius:50%;background:#F8E800;box-shadow:0 0 7px rgba(248,232,0,.8)"></span>
+                SISTEMA // PRONTO
+              </span>
+              <span style="width:1px;height:22px;background:#2B2B2B;margin:0 4px"></span>
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:56px;color:#8a8a8a">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7.5 8 10.5 11 7.5M2.5 13h11"></path></svg>
+              </span>
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:56px;color:#8a8a8a">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10"></path></svg>
+              </span>
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:56px;color:#8a8a8a">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="10" height="10"></rect></svg>
+              </span>
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:56px;color:#8a8a8a">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+              </span>
+            </div>
+          </div>
+
+          <div style="position:relative;flex:1;min-height:0;padding:22px 24px;display:flex;flex-direction:column;gap:16px">
+            <div style="flex:none;display:flex;align-items:flex-end;gap:20px">
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <span style="font-size:11px;font-weight:600;letter-spacing:.16em;color:#8a8a8a">SISTEMA /</span>
+                <span style="font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1;color:#fff">Cockpit</span>
+              </div>
+              <span style="margin-bottom:4px;font-size:13px;color:#8a8a8a">3 instrumentos · telemetria de 60 s · 5 processos em segundo plano</span>
+              <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+                <sc-if value="{{ mostrarSeloDemo }}" hint-placeholder-val="{{ true }}">
+                  <span style="display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;border-radius:6px;background:rgba(248,232,0,.07);border:1px solid rgba(248,232,0,.4);font-size:12px;font-weight:700;letter-spacing:.04em;color:#F8E800">
+                    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 14.5 13.5h-13L8 2.5Z"></path><path d="M8 6.5v3M8 11.6v.01"></path></svg>
+                    MODO DE DEMONSTRAÇÃO
+                  </span>
+                </sc-if>
+                <span style="display:inline-flex;align-items:center;gap:9px;height:38px;padding:0 18px;border-radius:6px;background:#F8E800;color:#101010;font-size:13px;font-weight:700;letter-spacing:.06em">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z"></path></svg>
+                  PROVA REAL
+                </span>
+              </div>
+            </div>
+
+            <div style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+              <div style="border-radius:10px;background:#181818;border:1px solid #2B2B2B;overflow:hidden">
+                <div style="display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 14px;background:#202020;border-bottom:1px solid #2B2B2B">
+                  <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">CPU</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:#8a8a8a">INST-01</span>
+                </div>
+                <div style="display:flex;gap:16px;padding:14px">
+                  <svg viewBox="0 0 200 138" style="display:block;width:186px;flex:none">
+                    <path d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#2A2A2A" stroke-width="7"></path>
+                    <path d="M 28.58 126.00 A 76 76 0 1 1 171.42 126.00" fill="none" stroke="#3d3d3d" stroke-width="6" stroke-dasharray="1.2 13.4"></path>
+                    <path d="M 176.74 65.84 A 84 84 0 0 1 178.93 128.73" fill="none" stroke="#E5262B" stroke-width="7"></path>
+                    <path d="M 21.07 128.73 A 84 84 0 0 1 41.65 39.58" fill="none" stroke="#F8E800" stroke-width="7"></path>
+                    <line x1="24.82" y1="127.36" x2="35.16" y2="123.60" stroke="#7a7a7a" stroke-width="2"></line>
+                    <line x1="34.46" y1="54.11" x2="43.48" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+                    <line x1="100" y1="20" x2="100" y2="31" stroke="#7a7a7a" stroke-width="2"></line>
+                    <line x1="165.54" y1="54.11" x2="156.52" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+                    <line x1="175.18" y1="127.36" x2="164.84" y2="123.60" stroke="#E5262B" stroke-width="2"></line>
+                    <text x="45.50" y="122.84" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#7d7d7d">0</text>
+                    <text x="52.49" y="69.73" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#7d7d7d">25</text>
+                    <text x="100" y="45" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#7d7d7d">50</text>
+                    <text x="147.51" y="69.73" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#7d7d7d">75</text>
+                    <text x="154.50" y="122.84" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#E5262B">100</text>
+                    <g transform="rotate(-44 100 100)">
+                      <polygon points="98.4,100 101.6,100 100.6,26 99.4,26" fill="#ffffff"></polygon>
+                      <rect x="97.8" y="100" width="4.4" height="11" fill="rgba(255,255,255,.5)"></rect>
+                    </g>
+                    <circle cx="100" cy="100" r="8" fill="#181818" stroke="rgba(255,255,255,.26)" stroke-width="1.5"></circle>
+                    <circle cx="100" cy="100" r="2.6" fill="#F8E800"></circle>
+                  </svg>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px">
+                    <div>
+                      <span style="display:block;font-size:11px;font-weight:600;letter-spacing:.14em;color:#8a8a8a">USO AGORA</span>
+                      <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:40px;font-weight:700;line-height:1.05;color:#fff;font-variant-numeric:tabular-nums">30%</span>
+                      <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">AMD Ryzen 7 5800X</span>
+                    </div>
+                    <div style="margin-top:auto;display:flex;flex-direction:column;gap:1px;border-radius:6px;overflow:hidden">
+                      <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;background:#202020">
+                        <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">CLOCK BASE</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">3.80 GHz</span>
+                      </div>
+                      <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;background:#202020">
+                        <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">TEMP CPU</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">53 °C</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="border-radius:10px;background:#181818;border:1px solid #2B2B2B;overflow:hidden">
+                <div style="display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 14px;background:#202020;border-bottom:1px solid #2B2B2B">
+                  <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">GPU</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:#8a8a8a">INST-02</span>
+                </div>
+                <div style="display:flex;gap:16px;padding:14px">
+                  <svg viewBox="0 0 200 138" style="display:block;width:186px;flex:none">
+                    <path d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#2A2A2A" stroke-width="7"></path>
+                    <path d="M 28.58 126.00 A 76 76 0 1 1 171.42 126.00" fill="none" stroke="#3d3d3d" stroke-width="6" stroke-dasharray="1.2 13.4"></path>
+                    <path d="M 176.74 65.84 A 84 84 0 0 1 178.93 128.73" fill="none" stroke="#E5262B" stroke-width="7"></path>
+                    <path d="M 21.07 128.73 A 84 84 0 0 1 19.85 74.87" fill="none" stroke="#F8E800" stroke-width="7"></path>
+                    <line x1="24.82" y1="127.36" x2="35.16" y2="123.60" stroke="#7a7a7a" stroke-width="2"></line>
+                    <line x1="34.46" y1="54.11" x2="43.48" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+                    <line x1="100" y1="20" x2="100" y2="31" stroke="#7a7a7a" stroke-width="2"></line>
+                    <line x1="165.54" y1="54.11" x2="156.52" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+                    <line x1="175.18" y1="127.36" x2="164.84" y2="123.60" stroke="#E5262B" stroke-width="2"></line>
+                    <text x="45.50" y="122.84" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#7d7d7d">0</text>
+                    <text x="52.49" y="69.73" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#7d7d7d">25</text>
+                    <text x="100" y="45" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#7d7d7d">50</text>
+                    <text x="147.51" y="69.73" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#7d7d7d">75</text>
+                    <text x="154.50" y="122.84" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#E5262B">100</text>
+                    <g transform="rotate(-72.6 100 100)">
+                      <polygon points="98.4,100 101.6,100 100.6,26 99.4,26" fill="#ffffff"></polygon>
+                      <rect x="97.8" y="100" width="4.4" height="11" fill="rgba(255,255,255,.5)"></rect>
+                    </g>
+                    <circle cx="100" cy="100" r="8" fill="#181818" stroke="rgba(255,255,255,.26)" stroke-width="1.5"></circle>
+                    <circle cx="100" cy="100" r="2.6" fill="#F8E800"></circle>
+                  </svg>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px">
+                    <div>
+                      <span style="display:block;font-size:11px;font-weight:600;letter-spacing:.14em;color:#8a8a8a">USO AGORA</span>
+                      <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:40px;font-weight:700;line-height:1.05;color:#fff;font-variant-numeric:tabular-nums">17%</span>
+                      <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">NVIDIA GeForce RTX 3080</span>
+                    </div>
+                    <div style="margin-top:auto;display:flex;flex-direction:column;gap:1px;border-radius:6px;overflow:hidden">
+                      <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;background:#202020">
+                        <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">VRAM</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">10 GB</span>
+                      </div>
+                      <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;background:#202020">
+                        <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">TEMP GPU</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">45 °C</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="border-radius:10px;background:#181818;border:1px solid #2B2B2B;overflow:hidden">
+                <div style="display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 14px;background:#202020;border-bottom:1px solid #2B2B2B">
+                  <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">RAM</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:#8a8a8a">INST-03</span>
+                </div>
+                <div style="display:flex;gap:16px;padding:14px">
+                  <svg viewBox="0 0 200 138" style="display:block;width:186px;flex:none">
+                    <path d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#2A2A2A" stroke-width="7"></path>
+                    <path d="M 28.58 126.00 A 76 76 0 1 1 171.42 126.00" fill="none" stroke="#3d3d3d" stroke-width="6" stroke-dasharray="1.2 13.4"></path>
+                    <path d="M 176.74 65.84 A 84 84 0 0 1 178.93 128.73" fill="none" stroke="#E5262B" stroke-width="7"></path>
+                    <path d="M 21.07 128.73 A 84 84 0 0 1 77.69 19.02" fill="none" stroke="#F8E800" stroke-width="7"></path>
+                    <line x1="24.82" y1="127.36" x2="35.16" y2="123.60" stroke="#7a7a7a" stroke-width="2"></line>
+                    <line x1="34.46" y1="54.11" x2="43.48" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+                    <line x1="100" y1="20" x2="100" y2="31" stroke="#7a7a7a" stroke-width="2"></line>
+                    <line x1="165.54" y1="54.11" x2="156.52" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+                    <line x1="175.18" y1="127.36" x2="164.84" y2="123.60" stroke="#E5262B" stroke-width="2"></line>
+                    <text x="45.50" y="122.84" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#7d7d7d">0</text>
+                    <text x="52.49" y="69.73" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#7d7d7d">25</text>
+                    <text x="100" y="45" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#7d7d7d">50</text>
+                    <text x="147.51" y="69.73" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#7d7d7d">75</text>
+                    <text x="154.50" y="122.84" text-anchor="middle" font-size="9" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#E5262B">100</text>
+                    <g transform="rotate(-15.4 100 100)">
+                      <polygon points="98.4,100 101.6,100 100.6,26 99.4,26" fill="#ffffff"></polygon>
+                      <rect x="97.8" y="100" width="4.4" height="11" fill="rgba(255,255,255,.5)"></rect>
+                    </g>
+                    <circle cx="100" cy="100" r="8" fill="#181818" stroke="rgba(255,255,255,.26)" stroke-width="1.5"></circle>
+                    <circle cx="100" cy="100" r="2.6" fill="#F8E800"></circle>
+                  </svg>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px">
+                    <div>
+                      <span style="display:block;font-size:11px;font-weight:600;letter-spacing:.14em;color:#8a8a8a">USO AGORA</span>
+                      <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:40px;font-weight:700;line-height:1.05;color:#fff;font-variant-numeric:tabular-nums">43%</span>
+                      <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a">13.7 / 32 GB</span>
+                    </div>
+                    <div style="margin-top:auto;display:flex;flex-direction:column;gap:1px;border-radius:6px;overflow:hidden">
+                      <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;background:#202020">
+                        <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">EM USO</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">13.7 GB</span>
+                      </div>
+                      <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;background:#202020">
+                        <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">DISPONÍVEL</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">18.3 GB</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="flex:none;height:232px;border-radius:10px;background:#181818;border:1px solid #2B2B2B;display:flex;flex-direction:column;overflow:hidden">
+              <div style="display:flex;align-items:center;gap:16px;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">TELEMETRIA — ÚLTIMOS 60 S</span>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:18px">
+                  <span style="display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;color:#9a9a9a">
+                    <span style="width:16px;height:2px;background:#F8E800"></span>CPU
+                  </span>
+                  <span style="display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;color:#9a9a9a">
+                    <span style="width:16px;height:2px;background:repeating-linear-gradient(90deg,#7a7a7a 0 4px,transparent 4px 8px)"></span>GPU
+                  </span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;color:#8a8a8a">PICO CPU 44% · PICO GPU 20%</span>
+                </div>
+              </div>
+              <div style="position:relative;flex:1;min-height:0;padding:12px 16px">
+                <sc-if value="{{ mostrarKillFeed }}" hint-placeholder-val="{{ true }}">
+                  <div style="position:absolute;top:8px;right:12px;z-index:20;width:300px;display:flex;flex-direction:column;gap:6px">
+                    <div style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:6px;background:#1c1c1c;border:1px solid #2B2B2B;border-left:3px solid #F8E800">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#ffffff" stroke-width="1.6"><path d="M3 8.5 6.5 12 13 4.5"></path></svg>
+                      <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:11px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">chrome_updater.exe</span>
+                      <span style="font-size:9px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">ENCERRADO</span>
+                      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#F8E800">212 MB</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:6px;background:#1c1c1c;border:1px solid #2B2B2B;border-left:3px solid #F8E800;opacity:.6">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#ffffff" stroke-width="1.6"><path d="M3 8.5 6.5 12 13 4.5"></path></svg>
+                      <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:11px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">OneDrive.exe</span>
+                      <span style="font-size:9px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">ENCERRADO</span>
+                      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#F8E800">148 MB</span>
+                    </div>
+                  </div>
+                </sc-if>
+                <svg viewBox="0 0 600 120" preserveAspectRatio="none" style="display:block;width:100%;height:100%">
+                  <line x1="10" y1="4" x2="590" y2="4" stroke="#242424" stroke-width="1"></line>
+                  <line x1="10" y1="32" x2="590" y2="32" stroke="#242424" stroke-width="1"></line>
+                  <line x1="10" y1="60" x2="590" y2="60" stroke="#242424" stroke-width="1"></line>
+                  <line x1="10" y1="88" x2="590" y2="88" stroke="#242424" stroke-width="1"></line>
+                  <line x1="10" y1="116" x2="590" y2="116" stroke="#242424" stroke-width="1"></line>
+                  <polyline points="10,102.6 58,100.3 106,101.4 154,99.2 202,102.6 250,98.1 298,100.3 346,101.4 394,96.9 442,99.2 490,95.8 538,93.6 590,96.9" fill="none" stroke="#7a7a7a" stroke-width="1.5" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"></polyline>
+                  <polyline points="10,89.1 58,91.4 106,86.9 154,90.2 202,84.6 250,88 298,85.8 346,81.3 394,86.9 442,73.4 490,77.9 538,66.7 590,82.4" fill="none" stroke="#F8E800" stroke-width="2" vector-effect="non-scaling-stroke"></polyline>
+                </svg>
+              </div>
+            </div>
+
+            <div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px">
+              <div style="border-radius:10px;background:#181818;border:1px solid #2B2B2B;display:flex;flex-direction:column;overflow:hidden">
+                <div style="display:flex;align-items:center;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                  <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">LEITURAS DO SISTEMA</span>
+                </div>
+                <div style="flex:1;min-height:0;display:flex;flex-direction:column">
+                  <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">UPTIME</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">6 h · INICIALIZAÇÃO RECENTE</span>
+                  </div>
+                  <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">PLANO DE ENERGIA</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">Equilibrado</span>
+                  </div>
+                  <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">REDE</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">Realtek Gaming 2.5GbE · 1000 Mbps</span>
+                  </div>
+                  <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">DISCO PRINCIPAL</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">610 / 1000 GB</span>
+                  </div>
+                  <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">SISTEMA</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">Windows 11 Pro 23H2 · 22631</span>
+                  </div>
+                  <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">MONITOR</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">1920×1080 @ 165 Hz</span>
+                  </div>
+                  <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">REGISTROS NA SESSÃO</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff">0</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="border-radius:10px;background:#181818;border:1px solid #2B2B2B;display:flex;flex-direction:column;overflow:hidden">
+                <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                  <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">PROCESSOS EM SEGUNDO PLANO</span>
+                  <span style="margin-left:auto;display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:#282828;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:#9a9a9a">5 LIDOS</span>
+                </div>
+                <div style="flex:1;min-height:0;display:flex;flex-direction:column">
+                  <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid #222">
+                    <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:#fff">chrome_updater.exe</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#F8E800">212 MB</span>
+                    <span style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:6px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                  </div>
+                  <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid #222">
+                    <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:#fff">spotify_helper.exe</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#F8E800">210 MB</span>
+                    <span style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:6px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                  </div>
+                  <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid #222">
+                    <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:#fff">teams_background.exe</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#F8E800">178 MB</span>
+                    <span style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:6px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                  </div>
+                  <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid #222">
+                    <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:#fff">OneDrive.exe</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#F8E800">148 MB</span>
+                    <span style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:6px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                  </div>
+                  <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 16px">
+                    <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:#fff">AdobeUpdater.exe</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#F8E800">96 MB</span>
+                    <span style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:6px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div style="flex:none;display:flex;align-items:center;gap:12px;height:28px;padding:0 16px;background:#141414;border-top:1px solid #2B2B2B;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em;color:#8a8a8a">
+            <span style="width:6px;height:6px;border-radius:50%;background:#4a4a4a"></span>
+            IDLE
+            <span style="margin-left:auto;color:#7d7d7d">FONTE: ADAPTADOR DE DEMONSTRAÇÃO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="1c" style="display:flex;flex-direction:column;gap:18px;width:1920px">
+      <div style="display:flex;gap:24px;align-items:flex-start">
+        <span style="flex:none;display:inline-flex;align-items:center;height:30px;padding:0 14px;border-radius:999px;background:#F8E800;color:#101010;font-size:13px;font-weight:700;letter-spacing:.04em">1c — LOADSCREEN</span>
+        <div style="flex:1;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:40px">
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.55;color:#9a9a9a">
+            <span style="color:#fff;font-weight:600">A ideia</span>
+            <span>Navegação vira uma coluna estreita só de ícones; o label aparece no hover.</span>
+            <span>Um elemento gigante no centro — o conta-giros da CPU — e hexágonos para GPU e RAM.</span>
+            <span>Amarelo em traço e contorno, nunca em bloco; painel lateral com cantos cortados e a marca presente.</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:#8a8a8a">
+            <span style="font-family:Inter,sans-serif;font-size:14px;font-weight:600;color:#fff">Tokens</span>
+            <span>bg #101010 → #0a0a0a · surf #181818 · line #2B2B2B · traço amarelo 1 px</span>
+            <span>accent #F8E800 em contorno · erro #E5262B · marca vermelha só no logo</span>
+            <span>rail 92 · painel 420 · canto cortado 18 px · hexágono flat-top</span>
+            <span>título 88/700 -2% · rótulo 11/600 .16em · número Mono 700</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.55;color:#9a9a9a">
+            <span style="color:#fff;font-weight:600">O que mudou</span>
+            <span>A densidade do RESYNC virou hierarquia: um número domina, o resto é telemetria lateral.</span>
+            <span>Os 15 itens de menu couberam em 92 px; a marca PRO LEAGUE ganha o peso que tinha na loadscreen.</span>
+          </div>
+        </div>
+      </div>
+
+      <div data-screen-label="C — Cockpit" style="position:relative;width:1920px;height:1080px;overflow:hidden;background:#0d0d0d;border:1px solid #2B2B2B;display:flex;font-family:Inter,sans-serif">
+        <div style="flex:none;width:92px;background:#080808;border-right:1px solid #2B2B2B;display:flex;flex-direction:column;align-items:center;padding:16px 0 12px">
+          <img src="uploads/logo-proleague-badge-vermelho.png" alt="PRO LEAGUE" style="width:46px;height:auto;margin-bottom:18px">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;width:100%">
+            <div style="position:relative;width:100%;display:flex;justify-content:center">
+              <span style="position:absolute;left:0;top:10px;bottom:10px;width:2px;background:#F8E800"></span>
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;background:rgba(248,232,0,.12);color:#F8E800;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)">
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12a5.5 5.5 0 0 1 10 0M8 12 11 7"></path></svg>
+              </span>
+            </div>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#8a8a8a">
+              <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z"></path></svg>
+            </span>
+            <div style="position:relative;width:100%;display:flex;justify-content:center">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#ffffff">
+                <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5"></circle><path d="M8 1v3M8 12v3M1 8h3M12 8h3"></path></svg>
+              </span>
+              <span style="position:absolute;left:62px;top:9px;z-index:40;display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:6px;background:#202020;border:1px solid #3a3a3a;white-space:nowrap;font-size:11px;font-weight:700;letter-spacing:.08em;color:#fff">RAIO-X</span>
+            </div>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#8a8a8a">
+              <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="4.5" width="11" height="7"></rect><path d="M4.5 11.5v2M7.5 11.5v2M10.5 11.5v2M4.5 2.5v2M7.5 2.5v2M10.5 2.5v2"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#8a8a8a">
+              <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2h4v4l3 7H3l3-7V2Z"></path><path d="M6 9h4"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#8a8a8a">
+              <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="11" height="11"></rect><path d="M2.5 8h11M8 2.5v11"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#8a8a8a">
+              <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="4.5" width="13" height="7"></rect><path d="M4 6.5v3M2.5 8h3M10 7.5h.01M12 9.5h.01"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#8a8a8a">
+              <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="11" height="11"></rect><path d="M5.5 8.5 7.5 10.5 11 6"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#8a8a8a">
+              <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4.5h12M2 8h12M2 11.5h12"></path><path d="M5.5 3v3M10.5 6.5v3M4 10v3"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#8a8a8a">
+              <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 14V5"></path><path d="M4.5 8.5 8 5l3.5 3.5"></path><path d="M2.5 2.5h11"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#8a8a8a">
+              <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-4 3 8 2-4h4"></path></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#8a8a8a">
+              <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h12L9.5 8v5L6.5 14V8L2 2Z"></path></svg>
+            </span>
+          </div>
+          <div style="width:52px;height:1px;background:#2B2B2B;margin:10px 0"></div>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#8a8a8a">
+            <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="6" height="6"></rect><path d="M8 1v2.5M8 12.5V15M1 8h2.5M12.5 8H15M3 3l1.8 1.8M11.2 11.2 13 13M13 3l-1.8 1.8M4.8 11.2 3 13"></path></svg>
+          </span>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:42px;color:#8a8a8a">
+            <svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="5.5" width="11" height="8"></rect><path d="M2.5 5.5 5 2.5h6l2.5 3M8 8.5v2.5"></path></svg>
+          </span>
+        </div>
+
+        <div style="position:relative;flex:1;min-width:0;display:flex;flex-direction:column">
+          <div style="position:absolute;inset:0;background:radial-gradient(1100px 700px at 38% 42%, rgba(248,232,0,.05), transparent 70%)"></div>
+
+          <div style="position:relative;flex:none;display:flex;align-items:flex-start;gap:24px;padding:34px 40px 0">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span style="display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:.2em;color:#8a8a8a">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F8E800" stroke-width="1.5"><path d="M3 12a5.5 5.5 0 0 1 10 0M8 12 11 7"></path></svg>
+                SISTEMA /
+              </span>
+              <h1 style="margin:0;font-size:88px;font-weight:700;letter-spacing:-.03em;line-height:.92;color:#fff">COCKPIT</h1>
+              <span style="font-size:14px;color:#8a8a8a;max-width:420px;text-wrap:pretty">Leitura ao vivo de CPU, GPU e RAM desta máquina, com 60 s de telemetria.</span>
+            </div>
+            <div style="margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:16px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;color:#8a8a8a">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7.5 8 10.5 11 7.5M2.5 13h11"></path></svg>
+                </span>
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;color:#8a8a8a">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10"></path></svg>
+                </span>
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;color:#8a8a8a">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="10" height="10"></rect></svg>
+                </span>
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;color:#8a8a8a">
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+                </span>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px">
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+                  <span style="font-size:10px;font-weight:600;letter-spacing:.18em;color:#8a8a8a">NÍVEL DE PRONTIDÃO</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:.06em;color:#fff">{{ nivelCodigo }} · {{ nivelNome }}</span>
+                </div>
+                <div style="width:58px;height:52px;background:rgba(248,232,0,.55);clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;align-items:center;justify-content:center">
+                  <div style="width:54px;height:48px;background:#0d0d0d;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;align-items:center;justify-content:center">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:#F8E800">{{ nivelCodigo }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="position:relative;flex:1;min-height:0;display:flex;align-items:center;gap:40px;padding:0 40px">
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center">
+              <div style="position:relative;width:640px;max-width:100%">
+              <svg viewBox="0 0 200 150" style="display:block;width:100%">
+                <path d="M 18.03 130.88 A 87 87 0 1 1 181.97 130.88" fill="none" stroke="#1e1e1e" stroke-width="1"></path>
+                <path d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#262626" stroke-width="4"></path>
+                <path d="M 28.58 126.00 A 76 76 0 1 1 171.42 126.00" fill="none" stroke="#3a3a3a" stroke-width="7" stroke-dasharray="0.8 13.8"></path>
+                <path d="M 176.74 65.84 A 84 84 0 0 1 178.93 128.73" fill="none" stroke="#E5262B" stroke-width="4"></path>
+                <path d="M 21.07 128.73 A 84 84 0 0 1 41.65 39.58" fill="none" stroke="#F8E800" stroke-width="4"></path>
+                <line x1="24.82" y1="127.36" x2="35.16" y2="123.60" stroke="#8a8a8a" stroke-width="1.2"></line>
+                <line x1="34.46" y1="54.11" x2="43.48" y2="60.42" stroke="#8a8a8a" stroke-width="1.2"></line>
+                <line x1="100" y1="20" x2="100" y2="31" stroke="#8a8a8a" stroke-width="1.2"></line>
+                <line x1="165.54" y1="54.11" x2="156.52" y2="60.42" stroke="#8a8a8a" stroke-width="1.2"></line>
+                <line x1="175.18" y1="127.36" x2="164.84" y2="123.60" stroke="#E5262B" stroke-width="1.2"></line>
+                <text x="45.50" y="122.84" text-anchor="middle" font-size="6" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">0</text>
+                <text x="52.49" y="69.73" text-anchor="middle" font-size="6" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">25</text>
+                <text x="100" y="45" text-anchor="middle" font-size="6" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">50</text>
+                <text x="147.51" y="69.73" text-anchor="middle" font-size="6" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#8a8a8a">75</text>
+                <text x="154.50" y="122.84" text-anchor="middle" font-size="6" font-family="'JetBrains Mono',monospace" font-weight="700" fill="#E5262B">100</text>
+                <g transform="rotate(-44 100 100)">
+                  <polygon points="99.2,100 100.8,100 100.3,30 99.7,30" fill="#ffffff"></polygon>
+                  <rect x="99" y="100" width="2" height="9" fill="rgba(255,255,255,.5)"></rect>
+                </g>
+                <circle cx="100" cy="100" r="4.5" fill="#0d0d0d" stroke="rgba(255,255,255,.35)" stroke-width="0.8"></circle>
+                <circle cx="100" cy="100" r="1.4" fill="#F8E800"></circle>
+              </svg>
+                <div style="position:absolute;left:50%;top:360px;transform:translateX(-50%);width:186px;height:118px;background:rgba(248,232,0,.55);clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;align-items:center;justify-content:center">
+                  <div style="width:182px;height:114px;background:#0d0d0d;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.2em;color:#8a8a8a">CPU</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:44px;font-weight:700;line-height:1;color:#fff">30%</span>
+                  </div>
+                </div>
+              </div>
+              <span style="margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;color:#8a8a8a">AMD Ryzen 7 5800X · 3.80 GHz · 53 °C</span>
+              <div style="display:flex;align-items:center;gap:40px;margin-top:8px">
+                <div style="display:flex;align-items:center;gap:16px">
+                  <div style="width:116px;height:104px;background:rgba(248,232,0,.5);clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;align-items:center;justify-content:center">
+                    <div style="width:112px;height:100px;background:#0d0d0d;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+                      <span style="font-size:10px;font-weight:600;letter-spacing:.16em;color:#8a8a8a">GPU</span>
+                      <span style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:#fff">17%</span>
+                    </div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:4px">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#c9c9c9">NVIDIA GeForce RTX 3080</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a">VRAM 10 GB · 45 °C</span>
+                  </div>
+                </div>
+                <span style="width:1px;height:76px;background:#2B2B2B"></span>
+                <div style="display:flex;align-items:center;gap:16px">
+                  <div style="width:116px;height:104px;background:rgba(248,232,0,.5);clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;align-items:center;justify-content:center">
+                    <div style="width:112px;height:100px;background:#0d0d0d;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px">
+                      <span style="font-size:10px;font-weight:600;letter-spacing:.16em;color:#8a8a8a">RAM</span>
+                      <span style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:#fff">43%</span>
+                    </div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:4px">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#c9c9c9">13.7 / 32 GB em uso</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a">18.3 GB disponíveis</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="flex:none;width:420px;align-self:stretch;margin:8px 0 24px;padding:1px;background:rgba(248,232,0,.45);clip-path:polygon(0 18px,18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)">
+              <div style="height:100%;background:#131313;clip-path:polygon(0 18px,18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%);display:flex;flex-direction:column">
+                <div style="display:flex;align-items:center;gap:12px;padding:22px 22px 14px">
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:36px;background:rgba(248,232,0,.14);color:#F8E800;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)">
+                    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-4 3 8 2-4h4"></path></svg>
+                  </span>
+                  <div style="display:flex;flex-direction:column">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.18em;color:#8a8a8a">TELEMETRIA</span>
+                    <span style="font-size:18px;font-weight:700;color:#fff">ÚLTIMOS 60 S</span>
+                  </div>
+                </div>
+                <div style="padding:0 22px">
+                  <svg viewBox="0 0 600 120" preserveAspectRatio="none" style="display:block;width:100%;height:120px">
+                    <line x1="10" y1="4" x2="590" y2="4" stroke="#1f1f1f" stroke-width="1"></line>
+                    <line x1="10" y1="60" x2="590" y2="60" stroke="#1f1f1f" stroke-width="1"></line>
+                    <line x1="10" y1="116" x2="590" y2="116" stroke="#1f1f1f" stroke-width="1"></line>
+                    <polyline points="10,102.6 58,100.3 106,101.4 154,99.2 202,102.6 250,98.1 298,100.3 346,101.4 394,96.9 442,99.2 490,95.8 538,93.6 590,96.9" fill="none" stroke="#8a8a8a" stroke-width="1.5" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"></polyline>
+                    <polyline points="10,89.1 58,91.4 106,86.9 154,90.2 202,84.6 250,88 298,85.8 346,81.3 394,86.9 442,73.4 490,77.9 538,66.7 590,82.4" fill="none" stroke="#F8E800" stroke-width="2" vector-effect="non-scaling-stroke"></polyline>
+                  </svg>
+                  <div style="display:flex;justify-content:space-between;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;color:#8a8a8a">
+                    <span>CPU — PICO 44%</span>
+                    <span>GPU — PICO 20%</span>
+                  </div>
+                </div>
+                <sc-if value="{{ mostrarKillFeed }}" hint-placeholder-val="{{ true }}">
+                  <div style="margin-top:20px;padding:0 22px;display:flex;flex-direction:column;gap:10px">
+                    <div style="display:flex;align-items:center;gap:12px">
+                      <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:36px;background:rgba(248,232,0,.14);color:#F8E800;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)">
+                        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12a5.5 5.5 0 0 1 10 0M8 12 11 7"></path></svg>
+                      </span>
+                      <div style="display:flex;flex-direction:column">
+                        <span style="font-size:11px;font-weight:600;letter-spacing:.18em;color:#8a8a8a">AÇÕES</span>
+                        <span style="font-size:18px;font-weight:700;color:#fff">NESTA SESSÃO</span>
+                      </div>
+                      <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a8a8a">3</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;height:44px;padding:0 14px;border:1px solid rgba(248,232,0,.35);background:rgba(248,232,0,.05);border-radius:6px">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#F8E800" stroke-width="1.6"><path d="M3 8.5 6.5 12 13 4.5"></path></svg>
+                      <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">chrome_updater.exe</span>
+                      <span style="font-size:9px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">ENCERRADO</span>
+                      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#F8E800">212 MB</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;height:44px;padding:0 14px;border:1px solid #2B2B2B;border-radius:6px">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#ffffff" stroke-width="1.6"><path d="M3 8.5 6.5 12 13 4.5"></path></svg>
+                      <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:#e8e8e8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">spotify_helper.exe</span>
+                      <span style="font-size:9px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">ENCERRADO</span>
+                      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#c9c9c9">210 MB</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;height:44px;padding:0 14px;border:1px solid #2B2B2B;border-radius:6px;opacity:.55">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#ffffff" stroke-width="1.6"><path d="M3 8.5 6.5 12 13 4.5"></path></svg>
+                      <span style="flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;color:#e8e8e8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">OneDrive.exe</span>
+                      <span style="font-size:9px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">ENCERRADO</span>
+                      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#c9c9c9">148 MB</span>
+                    </div>
+                  </div>
+                </sc-if>
+                <div style="margin-top:auto;padding:18px 22px 22px;display:flex;flex-direction:column;gap:12px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:#8a8a8a">
+                    <span>UPTIME 6 H</span>
+                    <span>DISCO 610 / 1000 GB</span>
+                  </div>
+                  <span style="display:flex;align-items:center;justify-content:center;gap:10px;height:50px;border:1px solid #F8E800;border-radius:6px;color:#F8E800;font-size:14px;font-weight:700;letter-spacing:.08em">
+                    <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z"></path></svg>
+                    PROVA REAL
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="position:relative;flex:none;display:flex;align-items:center;gap:16px;height:44px;padding:0 40px;border-top:1px solid #2B2B2B;background:#0a0a0a">
+            <span style="display:inline-flex;align-items:center;gap:9px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;color:#8a8a8a">
+              <span style="width:6px;height:6px;border-radius:50%;background:#4a4a4a"></span>IDLE
+            </span>
+            <span style="width:1px;height:18px;background:#2B2B2B"></span>
+            <span style="display:inline-flex;align-items:center;gap:9px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#e8e8e8">
+              <span style="width:7px;height:7px;border-radius:50%;background:#F8E800;box-shadow:0 0 8px rgba(248,232,0,.8)"></span>SISTEMA // PRONTO
+            </span>
+            <sc-if value="{{ mostrarSeloDemo }}" hint-placeholder-val="{{ true }}">
+              <span style="display:inline-flex;align-items:center;gap:8px;height:26px;padding:0 12px;border-radius:999px;border:1px solid rgba(248,232,0,.45);font-size:11px;font-weight:700;letter-spacing:.06em;color:#F8E800">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 14.5 13.5h-13L8 2.5Z"></path><path d="M8 6.5v3M8 11.6v.01"></path></svg>
+                MODO DE DEMONSTRAÇÃO
+              </span>
+            </sc-if>
+            <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:#7d7d7d">PLF CORE v1.9.0 // REV A</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;nivelProntidao&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;L5&quot;,&quot;L4&quot;,&quot;L3&quot;,&quot;L2&quot;,&quot;L1&quot;],&quot;default&quot;:&quot;L5&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Estado&quot;},&quot;mostrarKillFeed&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Estado&quot;},&quot;mostrarSeloDemo&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Estado&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const nivel = this.props.nivelProntidao ?? 'L5'
+    const nomes = { L5: 'STOCK', L4: 'LEVE', L3: 'PADRÃO', L2: 'AGRESSIVO', L1: 'REDLINE' }
+    return {
+      nivelCodigo: nivel,
+      nivelNome: nomes[nivel] ?? 'STOCK',
+      mostrarKillFeed: this.props.mostrarKillFeed ?? true,
+      mostrarSeloDemo: this.props.mostrarSeloDemo ?? true,
+    }
+  }
+}
+</script>
+</body>
+</html>

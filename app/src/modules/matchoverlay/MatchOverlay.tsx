@@ -6,7 +6,7 @@ import { getAdapter, isTauriEnv } from '../../services/adapter'
 import { useJobsStore, isTerminal } from '../../stores/jobs'
 import { useToastsStore } from '../../stores/toasts'
 import { useSettingsStore } from '../../stores/settings'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { EstimatedTag } from '../../components/Tag'
 import { IconX } from '../../components/icons'
 import { sfx } from '../../services/sfx'
@@ -125,7 +125,7 @@ export function MatchOverlay() {
 
   return (
     <div className="fixed bottom-8 right-8 z-[180]" style={{ width: 280 }} role="complementary" aria-label={t('titulo')}>
-      <ChamferSurface cut={6} edge="var(--color-rust)" style={{ height: 96 }}>
+      <Surface cut={6} edge="var(--color-rust)" style={{ height: 96 }}>
         <div className="flex h-full flex-col justify-between p-2.5">
           <div className="flex items-center justify-between">
             <span className="type-kicker">{t('titulo')}</span>
@@ -158,7 +158,7 @@ export function MatchOverlay() {
             {t('stoppar')}
           </button>
         </div>
-      </ChamferSurface>
+      </Surface>
     </div>
   )
 }

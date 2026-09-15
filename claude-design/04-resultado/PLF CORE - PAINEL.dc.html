@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #0a0a0a; color: #e8e8e8; font-family: Inter, sans-serif; }
+  a { color: #F8E800; text-decoration: none; }
+  a:hover { color: #ffffff; text-decoration: underline; }
+</style>
+</helmet>
+
+<div style="display:block;width:max-content;margin:0 auto;background:#0a0a0a">
+  <div data-screen-label="B — Cockpit" style="position:relative;flex:none;box-sizing:border-box;width:1920px;height:1080px;overflow:hidden;background:#101010;border:1px solid #2B2B2B;display:flex;font-family:Inter,sans-serif">
+          <div style="flex:none;width:248px;background:#141414;border-right:1px solid #2B2B2B;display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;gap:10px;height:76px;padding:0 20px;border-bottom:1px solid #2B2B2B">
+              <img src="uploads/logo-pro-league-header.png" alt="PRO LEAGUE" style="height:26px;width:auto">
+              <span style="margin-left:auto;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.12em;color:#8a8a8a">CORE</span>
+            </div>
+            <div style="flex:1;padding:10px 0;display:flex;flex-direction:column;gap:2px;overflow:hidden">
+              <span style="padding:6px 20px 4px;font-size:10px;font-weight:700;letter-spacing:.18em;color:#8a8a8a">MÓDULOS</span>
+              <div onClick="{{ irCockpit }}" style="position:relative;display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;cursor:pointer;background:{{ nav.cockpit.bg }};color:{{ nav.cockpit.fg }};font-size:13px;font-weight:600;letter-spacing:.04em">
+                <span style="position:absolute;left:0;top:0;bottom:0;width:3px;background:{{ nav.cockpit.bar }}"></span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12a5.5 5.5 0 0 1 10 0M8 12 11 7"></path></svg>
+                COCKPIT
+              </div>
+              <div onClick="{{ irFps }}" style="position:relative;display:flex;align-items:center;gap:12px;height:48px;padding:0 20px;cursor:pointer;background:{{ nav.fps.bg }};color:#ffffff;font-size:13px;font-weight:700;letter-spacing:.04em">
+                <span style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#F8E800"></span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F8E800" stroke-width="1.7"><path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z"></path></svg>
+                FPS BOOSTER
+                <span style="margin-left:auto;display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:#F8E800;color:#101010;font-size:10px;font-weight:700;letter-spacing:.04em;font-variant-numeric:tabular-nums">{{ navFpsChip }}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5"></circle><path d="M8 1v3M8 12v3M1 8h3M12 8h3"></path></svg>
+                RAIO-X
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="4.5" width="11" height="7"></rect><path d="M4.5 11.5v2M7.5 11.5v2M10.5 11.5v2M4.5 2.5v2M7.5 2.5v2M10.5 2.5v2"></path></svg>
+                MEMÓRIA
+              </div>
+              <div onClick="{{ irLimpeza }}" style="position:relative;display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;cursor:pointer;background:{{ nav.limpeza.bg }};color:{{ nav.limpeza.fg }};font-size:13px;font-weight:600;letter-spacing:.04em">
+                <span style="position:absolute;left:0;top:0;bottom:0;width:3px;background:{{ nav.limpeza.bar }}"></span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2h4v4l3 7H3l3-7V2Z"></path><path d="M6 9h4"></path></svg>
+                LIMPEZA
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="11" height="11"></rect><path d="M2.5 8h11M8 2.5v11"></path></svg>
+                WINDOWS
+              </div>
+              <div onClick="{{ irFivem }}" style="position:relative;display:flex;align-items:center;gap:12px;height:48px;padding:0 20px;cursor:pointer;background:{{ nav.fivem.bg }};color:#ffffff;font-size:13px;font-weight:700;letter-spacing:.04em">
+                <span style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#F8E800"></span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F8E800" stroke-width="1.7"><rect x="1.5" y="4.5" width="13" height="7"></rect><path d="M4 6.5v3M2.5 8h3M10 7.5h.01M12 9.5h.01"></path></svg>
+                FIVEM
+                <span style="margin-left:auto;display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:#F8E800;color:#101010;font-size:10px;font-weight:700;letter-spacing:.04em;font-variant-numeric:tabular-nums">{{ navFivemChip }}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="11" height="11"></rect><path d="M5.5 8.5 7.5 10.5 11 6"></path></svg>
+                REQUISITOS
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4.5h12M2 8h12M2 11.5h12"></path><path d="M5.5 3v3M10.5 6.5v3M4 10v3"></path></svg>
+                AJUSTES
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 14V5"></path><path d="M4.5 8.5 8 5l3.5 3.5"></path><path d="M2.5 2.5h11"></path></svg>
+                INICIALIZAÇÃO
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8h3l2-4 3 8 2-4h4"></path></svg>
+                LATÊNCIA
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h12L9.5 8v5L6.5 14V8L2 2Z"></path></svg>
+                GARGALO
+              </div>
+            </div>
+            <div style="border-top:1px solid #2B2B2B;padding:8px 0 12px;display:flex;flex-direction:column;gap:2px">
+              <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="6" height="6"></rect><path d="M8 1v2.5M8 12.5V15M1 8h2.5M12.5 8H15M3 3l1.8 1.8M11.2 11.2 13 13M13 3l-1.8 1.8M4.8 11.2 3 13"></path></svg>
+                CONFIGURAÇÕES
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 20px;color:#9a9a9a;font-size:13px;font-weight:600;letter-spacing:.04em">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="5.5" width="11" height="8"></rect><path d="M2.5 5.5 5 2.5h6l2.5 3M8 8.5v2.5"></path></svg>
+                LOG
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 20px 0">
+                <span style="font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.06em;color:#7d7d7d">PLF CORE v1.9.0</span>
+                <span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:rgba(248,232,0,.1);border:1px solid rgba(248,232,0,.4);font-size:9px;font-weight:700;letter-spacing:.1em;color:#F8E800">DEMO</span>
+              </div>
+            </div>
+          </div>
+  
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+            <div style="flex:none;display:flex;align-items:center;gap:16px;height:56px;padding:0 4px 0 24px;background:#141414;border-bottom:1px solid #2B2B2B">
+              <span style="font-size:15px;font-weight:700;letter-spacing:.02em;color:#fff">{{ tituloTela }}</span>
+              <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+                <span style="display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 6px 0 12px;border-radius:999px;background:#1d1d1d;border:1px solid #2B2B2B;font-size:11px;font-weight:600;color:#8a8a8a">
+                  Nível de prontidão
+                  <span style="display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:#282828;font-variant-numeric:tabular-nums;font-size:11px;font-weight:700;color:#fff">{{ nivelCodigo }} {{ nivelNome }}</span>
+                </span>
+                <span style="display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;border-radius:999px;background:#1d1d1d;border:1px solid #2B2B2B;font-variant-numeric:tabular-nums;font-size:11px;font-weight:700;letter-spacing:.06em;color:#c9c9c9">
+                  <span style="width:7px;height:7px;border-radius:50%;background:#F8E800;box-shadow:0 0 7px rgba(248,232,0,.8)"></span>
+                  SISTEMA // PRONTO
+                </span>
+                <span style="width:1px;height:22px;background:#2B2B2B;margin:0 4px"></span>
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:56px;color:#8a8a8a">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7.5 8 10.5 11 7.5M2.5 13h11"></path></svg>
+                </span>
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:56px;color:#8a8a8a">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10"></path></svg>
+                </span>
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:56px;color:#8a8a8a">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="10" height="10"></rect></svg>
+                </span>
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:56px;color:#8a8a8a">
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+                </span>
+              </div>
+            </div>
+  
+            <sc-if value="{{ eCockpit }}" hint-placeholder-val="{{ true }}">
+            <div style="position:relative;flex:1;min-height:0;padding:22px 24px;display:flex;flex-direction:column;gap:16px">
+              <div style="flex:none;display:flex;align-items:flex-end;gap:20px">
+                <div style="display:flex;flex-direction:column;gap:4px">
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.16em;color:#8a8a8a">SISTEMA /</span>
+                  <span style="font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1;color:#fff">Cockpit</span>
+                </div>
+                <span style="margin-bottom:4px;font-size:13px;color:#8a8a8a">3 instrumentos · telemetria de 60 s · 5 processos em segundo plano</span>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+                  <sc-if value="{{ mostrarSeloDemo }}" hint-placeholder-val="{{ true }}">
+                    <span style="display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;border-radius:6px;background:rgba(248,232,0,.07);border:1px solid rgba(248,232,0,.4);font-size:12px;font-weight:700;letter-spacing:.04em;color:#F8E800">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 14.5 13.5h-13L8 2.5Z"></path><path d="M8 6.5v3M8 11.6v.01"></path></svg>
+                      MODO DE DEMONSTRAÇÃO
+                    </span>
+                  </sc-if>
+                  <span style="display:inline-flex;align-items:center;gap:9px;height:38px;padding:0 18px;border-radius:6px;background:#F8E800;color:#101010;font-size:13px;font-weight:700;letter-spacing:.06em">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z"></path></svg>
+                    PROVA REAL
+                  </span>
+                </div>
+              </div>
+  
+              <div style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+                <div style="border-radius:10px;background:#181818;border:1px solid #2B2B2B;overflow:hidden">
+                  <div style="display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 14px;background:#202020;border-bottom:1px solid #2B2B2B">
+                    <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">CPU</span>
+                    <span style="font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.18em;color:#8a8a8a">INST-01</span>
+                  </div>
+                  <div style="display:flex;gap:16px;padding:14px">
+                    <svg viewBox="0 0 200 138" style="display:block;width:186px;flex:none">
+                      <path d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#2A2A2A" stroke-width="7"></path>
+                      <path d="M 28.58 126.00 A 76 76 0 1 1 171.42 126.00" fill="none" stroke="#3d3d3d" stroke-width="6" stroke-dasharray="1.2 13.4"></path>
+                      <path d="M 176.74 65.84 A 84 84 0 0 1 178.93 128.73" fill="none" stroke="#E5262B" stroke-width="7"></path>
+                      <path d="M 21.07 128.73 A 84 84 0 0 1 41.65 39.58" fill="none" stroke="#F8E800" stroke-width="7"></path>
+                      <line x1="24.82" y1="127.36" x2="35.16" y2="123.60" stroke="#7a7a7a" stroke-width="2"></line>
+                      <line x1="34.46" y1="54.11" x2="43.48" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+                      <line x1="100" y1="20" x2="100" y2="31" stroke="#7a7a7a" stroke-width="2"></line>
+                      <line x1="165.54" y1="54.11" x2="156.52" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+                      <line x1="175.18" y1="127.36" x2="164.84" y2="123.60" stroke="#E5262B" stroke-width="2"></line>
+                      <text x="45.50" y="122.84" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#7d7d7d">0</text>
+                      <text x="52.49" y="69.73" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#7d7d7d">25</text>
+                      <text x="100" y="45" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#7d7d7d">50</text>
+                      <text x="147.51" y="69.73" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#7d7d7d">75</text>
+                      <text x="154.50" y="122.84" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#E5262B">100</text>
+                      <g transform="rotate(-44 100 100)">
+                        <polygon points="98.4,100 101.6,100 100.6,26 99.4,26" fill="#ffffff"></polygon>
+                        <rect x="97.8" y="100" width="4.4" height="11" fill="rgba(255,255,255,.5)"></rect>
+                      </g>
+                      <circle cx="100" cy="100" r="8" fill="#181818" stroke="rgba(255,255,255,.26)" stroke-width="1.5"></circle>
+                      <circle cx="100" cy="100" r="2.6" fill="#F8E800"></circle>
+                    </svg>
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px">
+                      <div>
+                        <span style="display:block;font-size:11px;font-weight:600;letter-spacing:.14em;color:#8a8a8a">USO AGORA</span>
+                        <span style="display:block;font-variant-numeric:tabular-nums;font-size:40px;font-weight:700;line-height:1.05;color:#fff;font-variant-numeric:tabular-nums">30%</span>
+                        <span style="display:block;font-variant-numeric:tabular-nums;font-size:11px;color:#8a8a8a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">AMD Ryzen 7 5800X</span>
+                      </div>
+                      <div style="margin-top:auto;display:flex;flex-direction:column;gap:1px;border-radius:6px;overflow:hidden">
+                        <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;background:#202020">
+                          <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">CLOCK BASE</span>
+                          <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">3.80 GHz</span>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;background:#202020">
+                          <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">TEMP CPU</span>
+                          <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">53 °C</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+                <div style="border-radius:10px;background:#181818;border:1px solid #2B2B2B;overflow:hidden">
+                  <div style="display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 14px;background:#202020;border-bottom:1px solid #2B2B2B">
+                    <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">GPU</span>
+                    <span style="font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.18em;color:#8a8a8a">INST-02</span>
+                  </div>
+                  <div style="display:flex;gap:16px;padding:14px">
+                    <svg viewBox="0 0 200 138" style="display:block;width:186px;flex:none">
+                      <path d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#2A2A2A" stroke-width="7"></path>
+                      <path d="M 28.58 126.00 A 76 76 0 1 1 171.42 126.00" fill="none" stroke="#3d3d3d" stroke-width="6" stroke-dasharray="1.2 13.4"></path>
+                      <path d="M 176.74 65.84 A 84 84 0 0 1 178.93 128.73" fill="none" stroke="#E5262B" stroke-width="7"></path>
+                      <path d="M 21.07 128.73 A 84 84 0 0 1 19.85 74.87" fill="none" stroke="#F8E800" stroke-width="7"></path>
+                      <line x1="24.82" y1="127.36" x2="35.16" y2="123.60" stroke="#7a7a7a" stroke-width="2"></line>
+                      <line x1="34.46" y1="54.11" x2="43.48" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+                      <line x1="100" y1="20" x2="100" y2="31" stroke="#7a7a7a" stroke-width="2"></line>
+                      <line x1="165.54" y1="54.11" x2="156.52" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+                      <line x1="175.18" y1="127.36" x2="164.84" y2="123.60" stroke="#E5262B" stroke-width="2"></line>
+                      <text x="45.50" y="122.84" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#7d7d7d">0</text>
+                      <text x="52.49" y="69.73" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#7d7d7d">25</text>
+                      <text x="100" y="45" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#7d7d7d">50</text>
+                      <text x="147.51" y="69.73" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#7d7d7d">75</text>
+                      <text x="154.50" y="122.84" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#E5262B">100</text>
+                      <g transform="rotate(-72.6 100 100)">
+                        <polygon points="98.4,100 101.6,100 100.6,26 99.4,26" fill="#ffffff"></polygon>
+                        <rect x="97.8" y="100" width="4.4" height="11" fill="rgba(255,255,255,.5)"></rect>
+                      </g>
+                      <circle cx="100" cy="100" r="8" fill="#181818" stroke="rgba(255,255,255,.26)" stroke-width="1.5"></circle>
+                      <circle cx="100" cy="100" r="2.6" fill="#F8E800"></circle>
+                    </svg>
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px">
+                      <div>
+                        <span style="display:block;font-size:11px;font-weight:600;letter-spacing:.14em;color:#8a8a8a">USO AGORA</span>
+                        <span style="display:block;font-variant-numeric:tabular-nums;font-size:40px;font-weight:700;line-height:1.05;color:#fff;font-variant-numeric:tabular-nums">17%</span>
+                        <span style="display:block;font-variant-numeric:tabular-nums;font-size:11px;color:#8a8a8a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">NVIDIA GeForce RTX 3080</span>
+                      </div>
+                      <div style="margin-top:auto;display:flex;flex-direction:column;gap:1px;border-radius:6px;overflow:hidden">
+                        <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;background:#202020">
+                          <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">VRAM</span>
+                          <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">10 GB</span>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;background:#202020">
+                          <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">TEMP GPU</span>
+                          <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">45 °C</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+                <div style="border-radius:10px;background:#181818;border:1px solid #2B2B2B;overflow:hidden">
+                  <div style="display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 14px;background:#202020;border-bottom:1px solid #2B2B2B">
+                    <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">RAM</span>
+                    <span style="font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.18em;color:#8a8a8a">INST-03</span>
+                  </div>
+                  <div style="display:flex;gap:16px;padding:14px">
+                    <svg viewBox="0 0 200 138" style="display:block;width:186px;flex:none">
+                      <path d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#2A2A2A" stroke-width="7"></path>
+                      <path d="M 28.58 126.00 A 76 76 0 1 1 171.42 126.00" fill="none" stroke="#3d3d3d" stroke-width="6" stroke-dasharray="1.2 13.4"></path>
+                      <path d="M 176.74 65.84 A 84 84 0 0 1 178.93 128.73" fill="none" stroke="#E5262B" stroke-width="7"></path>
+                      <path d="M 21.07 128.73 A 84 84 0 0 1 77.69 19.02" fill="none" stroke="#F8E800" stroke-width="7"></path>
+                      <line x1="24.82" y1="127.36" x2="35.16" y2="123.60" stroke="#7a7a7a" stroke-width="2"></line>
+                      <line x1="34.46" y1="54.11" x2="43.48" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+                      <line x1="100" y1="20" x2="100" y2="31" stroke="#7a7a7a" stroke-width="2"></line>
+                      <line x1="165.54" y1="54.11" x2="156.52" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+                      <line x1="175.18" y1="127.36" x2="164.84" y2="123.60" stroke="#E5262B" stroke-width="2"></line>
+                      <text x="45.50" y="122.84" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#7d7d7d">0</text>
+                      <text x="52.49" y="69.73" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#7d7d7d">25</text>
+                      <text x="100" y="45" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#7d7d7d">50</text>
+                      <text x="147.51" y="69.73" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#7d7d7d">75</text>
+                      <text x="154.50" y="122.84" text-anchor="middle" font-size="9" font-family="Inter,sans-serif" font-weight="700" fill="#E5262B">100</text>
+                      <g transform="rotate(-15.4 100 100)">
+                        <polygon points="98.4,100 101.6,100 100.6,26 99.4,26" fill="#ffffff"></polygon>
+                        <rect x="97.8" y="100" width="4.4" height="11" fill="rgba(255,255,255,.5)"></rect>
+                      </g>
+                      <circle cx="100" cy="100" r="8" fill="#181818" stroke="rgba(255,255,255,.26)" stroke-width="1.5"></circle>
+                      <circle cx="100" cy="100" r="2.6" fill="#F8E800"></circle>
+                    </svg>
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px">
+                      <div>
+                        <span style="display:block;font-size:11px;font-weight:600;letter-spacing:.14em;color:#8a8a8a">USO AGORA</span>
+                        <span style="display:block;font-variant-numeric:tabular-nums;font-size:40px;font-weight:700;line-height:1.05;color:#fff;font-variant-numeric:tabular-nums">43%</span>
+                        <span style="display:block;font-variant-numeric:tabular-nums;font-size:11px;color:#8a8a8a">13.7 / 32 GB</span>
+                      </div>
+                      <div style="margin-top:auto;display:flex;flex-direction:column;gap:1px;border-radius:6px;overflow:hidden">
+                        <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;background:#202020">
+                          <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">EM USO</span>
+                          <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">13.7 GB</span>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;background:#202020">
+                          <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">DISPONÍVEL</span>
+                          <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">18.3 GB</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <div style="flex:none;height:232px;border-radius:10px;background:#181818;border:1px solid #2B2B2B;display:flex;flex-direction:column;overflow:hidden">
+                <div style="display:flex;align-items:center;gap:16px;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                  <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">TELEMETRIA — ÚLTIMOS 60 S</span>
+                  <div style="margin-left:auto;display:flex;align-items:center;gap:18px">
+                    <span style="display:inline-flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;font-size:10px;font-weight:700;letter-spacing:.1em;color:#9a9a9a">
+                      <span style="width:16px;height:2px;background:#F8E800"></span>CPU
+                    </span>
+                    <span style="display:inline-flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;font-size:10px;font-weight:700;letter-spacing:.1em;color:#9a9a9a">
+                      <span style="width:16px;height:2px;background:repeating-linear-gradient(90deg,#7a7a7a 0 4px,transparent 4px 8px)"></span>GPU
+                    </span>
+                    <span style="font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.06em;color:#8a8a8a">PICO CPU 44% · PICO GPU 20%</span>
+                  </div>
+                </div>
+                <div style="position:relative;flex:1;min-height:0;padding:12px 16px">
+                  <sc-if value="{{ mostrarKillFeed }}" hint-placeholder-val="{{ true }}">
+                    <div style="position:absolute;top:8px;right:12px;z-index:20;width:300px;display:flex;flex-direction:column;gap:6px">
+                      <div style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:6px;background:#1c1c1c;border:1px solid #2B2B2B;border-left:3px solid #F8E800">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#ffffff" stroke-width="1.6"><path d="M3 8.5 6.5 12 13 4.5"></path></svg>
+                        <span style="flex:1;font-variant-numeric:tabular-nums;font-size:11px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">chrome_updater.exe</span>
+                        <span style="font-size:9px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">ENCERRADO</span>
+                        <span style="font-variant-numeric:tabular-nums;font-size:11px;font-weight:700;color:#F8E800">212 MB</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:10px;height:38px;padding:0 12px;border-radius:6px;background:#1c1c1c;border:1px solid #2B2B2B;border-left:3px solid #F8E800;opacity:.6">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#ffffff" stroke-width="1.6"><path d="M3 8.5 6.5 12 13 4.5"></path></svg>
+                        <span style="flex:1;font-variant-numeric:tabular-nums;font-size:11px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">OneDrive.exe</span>
+                        <span style="font-size:9px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">ENCERRADO</span>
+                        <span style="font-variant-numeric:tabular-nums;font-size:11px;font-weight:700;color:#F8E800">148 MB</span>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <svg viewBox="0 0 600 120" preserveAspectRatio="none" style="display:block;width:100%;height:100%">
+                    <line x1="10" y1="4" x2="590" y2="4" stroke="#242424" stroke-width="1"></line>
+                    <line x1="10" y1="32" x2="590" y2="32" stroke="#242424" stroke-width="1"></line>
+                    <line x1="10" y1="60" x2="590" y2="60" stroke="#242424" stroke-width="1"></line>
+                    <line x1="10" y1="88" x2="590" y2="88" stroke="#242424" stroke-width="1"></line>
+                    <line x1="10" y1="116" x2="590" y2="116" stroke="#242424" stroke-width="1"></line>
+                    <polyline points="10,102.6 58,100.3 106,101.4 154,99.2 202,102.6 250,98.1 298,100.3 346,101.4 394,96.9 442,99.2 490,95.8 538,93.6 590,96.9" fill="none" stroke="#7a7a7a" stroke-width="1.5" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"></polyline>
+                    <polyline points="10,89.1 58,91.4 106,86.9 154,90.2 202,84.6 250,88 298,85.8 346,81.3 394,86.9 442,73.4 490,77.9 538,66.7 590,82.4" fill="none" stroke="#F8E800" stroke-width="2" vector-effect="non-scaling-stroke"></polyline>
+                  </svg>
+                </div>
+              </div>
+  
+              <div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px">
+                <div style="border-radius:10px;background:#181818;border:1px solid #2B2B2B;display:flex;flex-direction:column;overflow:hidden">
+                  <div style="display:flex;align-items:center;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                    <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">LEITURAS DO SISTEMA</span>
+                  </div>
+                  <div style="flex:1;min-height:0;display:flex;flex-direction:column">
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">UPTIME</span>
+                      <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">6 h · INICIALIZAÇÃO RECENTE</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">PLANO DE ENERGIA</span>
+                      <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">Equilibrado</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">REDE</span>
+                      <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">Realtek Gaming 2.5GbE · 1000 Mbps</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">DISCO PRINCIPAL</span>
+                      <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">610 / 1000 GB</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">SISTEMA</span>
+                      <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">Windows 11 Pro 23H2 · 22631</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">MONITOR</span>
+                      <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">1920×1080 @ 165 Hz</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">REGISTROS NA SESSÃO</span>
+                      <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#fff">0</span>
+                    </div>
+                  </div>
+                </div>
+  
+                <div style="border-radius:10px;background:#181818;border:1px solid #2B2B2B;display:flex;flex-direction:column;overflow:hidden">
+                  <div style="display:flex;align-items:center;gap:12px;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                    <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">PROCESSOS EM SEGUNDO PLANO</span>
+                    <span style="margin-left:auto;display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:#282828;font-variant-numeric:tabular-nums;font-size:10px;letter-spacing:.08em;color:#9a9a9a">5 LIDOS</span>
+                  </div>
+                  <div style="flex:1;min-height:0;display:flex;flex-direction:column">
+                    <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="flex:1;font-variant-numeric:tabular-nums;font-size:12px;color:#fff">chrome_updater.exe</span>
+                      <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#F8E800">212 MB</span>
+                      <span style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:6px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="flex:1;font-variant-numeric:tabular-nums;font-size:12px;color:#fff">spotify_helper.exe</span>
+                      <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#F8E800">210 MB</span>
+                      <span style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:6px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="flex:1;font-variant-numeric:tabular-nums;font-size:12px;color:#fff">teams_background.exe</span>
+                      <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#F8E800">178 MB</span>
+                      <span style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:6px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="flex:1;font-variant-numeric:tabular-nums;font-size:12px;color:#fff">OneDrive.exe</span>
+                      <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#F8E800">148 MB</span>
+                      <span style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:6px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;gap:12px;padding:0 16px">
+                      <span style="flex:1;font-variant-numeric:tabular-nums;font-size:12px;color:#fff">AdobeUpdater.exe</span>
+                      <span style="font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;color:#F8E800">96 MB</span>
+                      <span style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:6px;background:#282828;border:1px solid #3a3a3a;font-size:11px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">ENCERRAR</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+            </div>
+  
+            </sc-if>
+
+            <sc-if value="{{ eFps }}">
+            <div style="position:relative;flex:1;min-height:0;padding:22px 24px;display:flex;flex-direction:column;gap:14px;overflow:hidden">
+              <div style="flex:none;display:flex;align-items:flex-end;gap:20px">
+                <div style="display:flex;flex-direction:column;gap:4px">
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.16em;color:#8a8a8a">ACELERAÇÃO /</span>
+                  <span style="font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1;color:#fff">FPS Booster</span>
+                </div>
+                <span style="margin-bottom:4px;font-size:13px;color:#8a8a8a">21 pacotes no acervo · 8 grupos · zona de risco separada</span>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+                  <sc-if value="{{ mostrarSeloDemo }}" hint-placeholder-val="{{ true }}">
+                    <span style="display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;border-radius:6px;background:rgba(248,232,0,.07);border:1px solid rgba(248,232,0,.4);font-size:12px;font-weight:700;letter-spacing:.04em;color:#F8E800">
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 14.5 13.5h-13L8 2.5Z"></path><path d="M8 6.5v3M8 11.6v.01"></path></svg>
+                      MODO DE DEMONSTRAÇÃO
+                    </span>
+                  </sc-if>
+                  <span style="display:inline-flex;align-items:center;height:38px;padding:0 16px;border-radius:6px;background:#202020;border:1px solid #3a3a3a;font-size:12px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">LER DE NOVO</span>
+                </div>
+              </div>
+
+              <div style="flex:none;display:flex;flex-direction:column;gap:14px;padding:18px 22px;border-radius:10px;background:#181818;border:1px solid #2B2B2B">
+                <div style="display:flex;align-items:center;gap:26px">
+                  <div style="flex:none;display:flex;flex-direction:column;gap:2px">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.16em;color:#8a8a8a">PRONTOS PARA LIGAR</span>
+                    <span style="font-size:60px;font-weight:700;line-height:1;color:{{ fpsHeroCor }};font-variant-numeric:tabular-nums">{{ fpsPendentes }}</span>
+                  </div>
+                  <span style="flex:1;min-width:0;font-size:14px;line-height:1.5;color:#c9c9c9;text-wrap:pretty">{{ fpsHeroDesc }}</span>
+                  <div style="flex:none;display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+                    <span onClick="{{ ligarTurbo }}" style="display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 26px;border-radius:6px;cursor:pointer;background:{{ turboBg }};color:{{ turboFg }};border:1px solid {{ turboBd }};font-size:15px;font-weight:700;letter-spacing:.08em">
+                      <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z"></path></svg>
+                      {{ turboLabel }}
+                    </span>
+                    <span style="font-size:11px;color:#8a8a8a">Tudo é reversível pelo mesmo interruptor.</span>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:18px;padding-top:12px;border-top:1px solid #2B2B2B;font-size:11px;font-weight:600;letter-spacing:.08em;color:#8a8a8a">
+                  <span>MEDIDO NESTA MÁQUINA</span>
+                  <span style="color:#e8e8e8">RAM 32 GB</span>
+                  <span style="color:#e8e8e8">DISCO DO SISTEMA SSD/NVMe</span>
+                  <span style="margin-left:auto;color:#8a8a8a">OS MARCADOS OPCIONAL FICAM FORA DO TURBO</span>
+                </div>
+              </div>
+
+              <div style="flex:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+                <sc-for list="{{ grupos }}" as="g" hint-placeholder-count="8">
+                  <div style="display:flex;flex-direction:column;gap:9px;padding:12px 14px;border-radius:8px;background:#181818;border:1px solid #2B2B2B">
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <span style="width:7px;height:7px;border-radius:50%;background:{{ g.led }}"></span>
+                      <span style="font-size:12px;font-weight:700;letter-spacing:.05em;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ g.nome }}</span>
+                    </div>
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a;font-variant-numeric:tabular-nums">{{ g.contagem }}</span>
+                    <span style="align-self:flex-start;display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:6px;background:{{ g.btnBg }};color:{{ g.btnFg }};font-size:11px;font-weight:700;letter-spacing:.06em">{{ g.btn }}</span>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:14px">
+                <div style="min-width:0;border-radius:10px;background:#181818;border:1px solid #2B2B2B;display:flex;flex-direction:column;overflow:hidden">
+                  <div style="flex:none;display:flex;align-items:center;gap:12px;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                    <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">STACK DE JOGOS DO WINDOWS</span>
+                    <span style="margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.06em;color:#8a8a8a">ESCONDER</span>
+                  </div>
+                  <div style="flex:1;min-height:0;display:flex;flex-direction:column;overflow:auto">
+                    <sc-for list="{{ fpsRows }}" as="r" hint-placeholder-count="4">
+                      <div style="flex:none;display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr) 128px;gap:16px;align-items:center;padding:0 16px;min-height:70px;border-bottom:1px solid #222">
+                        <div style="min-width:0;display:flex;flex-direction:column;gap:5px">
+                          <span style="font-size:12px;font-weight:700;letter-spacing:.04em;color:#fff">{{ r.nome }}</span>
+                          <sc-if value="{{ r.temTags }}">
+                            <span style="align-self:flex-start;display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:3px;background:#282828;font-size:10px;font-weight:700;letter-spacing:.08em;color:#c9c9c9">{{ r.tags }}</span>
+                          </sc-if>
+                        </div>
+                        <span style="min-width:0;font-size:12px;line-height:1.45;color:#8a8a8a;text-wrap:pretty">{{ r.desc }}</span>
+                        <span onClick="{{ r.toggle }}" style="display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:6px;cursor:pointer;background:{{ r.swBg }};border:1px solid {{ r.swBd }};color:{{ r.swFg }};font-size:11px;font-weight:700;letter-spacing:.06em">
+                          <span style="width:7px;height:7px;border-radius:50%;background:{{ r.swLed }}"></span>{{ r.estado }}
+                        </span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <div style="min-width:0;border-radius:10px;overflow:hidden;background:#181818;border:1px solid #2B2B2B;display:flex;flex-direction:column">
+                  <div style="flex:none;height:6px;background:repeating-linear-gradient(45deg,#F8E800 0 10px,#101010 10px 20px)"></div>
+                  <div style="flex:1;min-height:0;padding:16px;display:flex;flex-direction:column;gap:10px">
+                    <div style="display:flex;align-items:center;gap:12px">
+                      <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">ZONA DE RISCO</span>
+                      <span style="margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.06em;color:#8a8a8a">
+                        <span style="width:7px;height:7px;border-radius:50%;background:{{ riscoLed }}"></span>{{ riscoEstado }}
+                      </span>
+                    </div>
+                    <span style="font-size:12px;font-weight:700;letter-spacing:.03em;color:#fff">MITIGAÇÕES DE CPU (SPECTRE E MELTDOWN)</span>
+                    <span style="font-size:12px;line-height:1.45;color:#8a8a8a;text-wrap:pretty">Desliga as mitigações de execução especulativa. Rende em CPU antiga e remove uma proteção real contra código malicioso. Exige reiniciar.</span>
+                    <span style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#F8E800;text-wrap:pretty">ISTO DESLIGA UMA PROTEÇÃO DE SEGURANÇA DA CPU. DECISÃO SUA.</span>
+                    <div style="margin-top:auto;display:flex;align-items:center;gap:12px">
+                      <span onClick="{{ alternarArmado }}" style="display:inline-flex;align-items:center;gap:9px;height:40px;padding:0 12px;border-radius:6px;cursor:pointer;background:{{ armBg }};border:1px solid {{ armBd }}">
+                        <span style="position:relative;width:34px;height:18px;border-radius:999px;background:{{ armTrilha }}">
+                          <span style="position:absolute;top:2px;left:{{ armKnob }};width:14px;height:14px;border-radius:50%;background:#101010;transition:left 140ms ease"></span>
+                        </span>
+                        <span style="font-size:11px;font-weight:700;letter-spacing:.08em;color:{{ armFg }}">ARMAR</span>
+                      </span>
+                      <span onPointerDown="{{ segurarRisco }}" onPointerUp="{{ soltar }}" onPointerLeave="{{ soltar }}" style="position:relative;flex:1;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;height:40px;border-radius:6px;cursor:pointer;background:{{ holdBg }};border:1px solid {{ holdBd }};color:{{ holdFg }};font-size:11px;font-weight:700;letter-spacing:.08em">
+                        <span style="position:absolute;left:0;top:0;bottom:0;width:{{ holdW }};background:rgba(229,38,43,.4);transition:width 900ms linear"></span>
+                        <span style="position:relative">{{ rotuloRisco }}</span>
+                      </span>
+                    </div>
+                    <span style="font-size:10px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">ARME E SEGURE 0,9 S PARA CONFIRMAR</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </sc-if>
+
+            <sc-if value="{{ eFivem }}">
+            <div style="position:relative;flex:1;min-height:0;padding:22px 24px;display:flex;flex-direction:column;gap:14px;overflow:hidden">
+              <div style="flex:none;display:flex;align-items:flex-end;gap:20px">
+                <div style="display:flex;flex-direction:column;gap:4px">
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.16em;color:#8a8a8a">CFX.RE /</span>
+                  <span style="font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1;color:#fff">Central FiveM</span>
+                </div>
+                <span style="margin-bottom:4px;font-size:13px;color:#8a8a8a">Cache medido, canal do cliente e isolamento de mod — nunca instalação de mod.</span>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+                  <span style="display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;border-radius:6px;background:#202020;border:1px solid #3a3a3a;font-size:12px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">CLIENTE INSTALADO</span>
+                  <span style="display:inline-flex;align-items:center;height:38px;padding:0 16px;border-radius:6px;background:#202020;border:1px solid #3a3a3a;font-size:12px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">LER DE NOVO</span>
+                </div>
+              </div>
+
+              <div style="flex:none;display:flex;flex-direction:column;gap:14px;padding:18px 22px;border-radius:10px;background:#181818;border:1px solid #2B2B2B">
+                <div style="display:flex;align-items:center;gap:26px">
+                  <div style="flex:none;display:flex;flex-direction:column;gap:2px">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.16em;color:#8a8a8a">CACHE ACUMULADO</span>
+                    <span style="font-size:52px;font-weight:700;line-height:1;color:#fff;font-variant-numeric:tabular-nums">{{ fmTotal }}</span>
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a">{{ fmPastas }}</span>
+                  </div>
+                  <span style="flex:1;min-width:0;font-size:14px;line-height:1.5;color:#c9c9c9;text-wrap:pretty">Medido agora nas pastas do cliente. O FiveM recria tudo — o custo é um loading mais lento no próximo servidor.</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="display:flex;gap:2px;height:14px">
+                    <sc-for list="{{ fmCaches }}" as="c" hint-placeholder-count="6">
+                      <span style="height:14px;width:{{ c.pct }};background:{{ c.cor }}"></span>
+                    </sc-for>
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px">
+                    <sc-for list="{{ fmCaches }}" as="c" hint-placeholder-count="6">
+                      <div style="display:flex;flex-direction:column;gap:3px">
+                        <span style="display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;letter-spacing:.06em;color:#8a8a8a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                          <span style="flex:none;width:8px;height:8px;background:{{ c.cor }}"></span>{{ c.nome }}
+                        </span>
+                        <span style="font-size:13px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums">{{ c.valor }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <span style="font-size:11px;line-height:1.45;color:#8a8a8a;text-wrap:pretty">Esvazia o conteúdo, nunca a pasta: o FiveM usa a data de criação de crashes para decidir onde guardar as configurações gráficas.</span>
+                </div>
+              </div>
+
+              <div style="flex:1;min-height:0;display:grid;grid-template-columns:380px minmax(0,1fr);gap:14px">
+                <div style="border-radius:10px;background:#181818;border:1px solid #2B2B2B;display:flex;flex-direction:column;overflow:hidden">
+                  <div style="flex:none;display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                    <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">CLIENTE</span>
+                    <span style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:#F8E800"></span>
+                  </div>
+                  <div style="flex:1;min-height:0;display:flex;flex-direction:column">
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">VERSÃO</span>
+                      <span style="font-size:13px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums">10309</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">CANAL</span>
+                      <span style="font-size:13px;font-weight:700;color:#fff">production</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">DUMP COMPLETO</span>
+                      <span style="font-size:13px;font-weight:700;color:#fff">DESLIGADO</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid #222">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">fivem.cfg</span>
+                      <span style="font-size:13px;font-weight:700;color:#fff">PRESENTE</span>
+                    </div>
+                    <div style="flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 16px">
+                      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;color:#8a8a8a">gta5_settings.xml</span>
+                      <span style="font-size:13px;font-weight:700;color:#fff">PRESENTE</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="min-width:0;display:flex;flex-direction:column;gap:14px">
+                  <div style="flex:1;min-height:0;border-radius:10px;background:#181818;border:1px solid #2B2B2B;display:flex;flex-direction:column;overflow:hidden">
+                    <div style="flex:none;display:flex;align-items:center;gap:12px;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                      <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">MODS E PLUGINS</span>
+                      <span style="margin-left:auto;display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:rgba(229,38,43,.14);border:1px solid rgba(229,38,43,.45);font-size:10px;font-weight:700;letter-spacing:.06em;color:#ff8a8f">2 PASTAS COM CONTEÚDO</span>
+                    </div>
+                    <div style="flex:none;padding:12px 16px 10px">
+                      <span style="font-size:11px;line-height:1.5;color:#8a8a8a;text-wrap:pretty">Servidor com pure mode recusa arquivo de jogo modificado: no nível 1 só passam quatro caminhos de áudio, no nível 2 nenhum, e no FiveM para GTA V Enhanced o pure é sempre ligado. Se você não entra em algum servidor, começa por aqui.</span>
+                    </div>
+                    <div style="flex:1;min-height:0;display:flex;flex-direction:column">
+                      <sc-for list="{{ fmMods }}" as="m" hint-placeholder-count="3">
+                        <div style="flex:1;display:flex;align-items:center;gap:14px;padding:0 16px;border-top:1px solid #222">
+                          <span style="width:92px;font-size:12px;font-weight:700;letter-spacing:.06em;color:#fff">{{ m.nome }}</span>
+                          <span style="flex:1;font-size:12px;color:#c9c9c9;font-variant-numeric:tabular-nums">{{ m.info }}</span>
+                          <span style="display:inline-flex;align-items:center;height:30px;padding:0 14px;border-radius:6px;background:{{ m.btnBg }};border:1px solid {{ m.btnBd }};font-size:11px;font-weight:700;letter-spacing:.06em;color:{{ m.btnFg }}">MOVER PRA BACKUP</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <span style="flex:none;padding:10px 16px;border-top:1px solid #222;font-size:10px;letter-spacing:.04em;color:#8a8a8a">Backup em C:\Users\demo\AppData\Local\Resync\fivem-backup. Movido, nunca apagado.</span>
+                  </div>
+
+                  <div style="flex:none;border-radius:10px;overflow:hidden;background:#181818;border:1px solid #2B2B2B;display:flex;flex-direction:column">
+                    <div style="height:6px;background:repeating-linear-gradient(45deg,#F8E800 0 10px,#101010 10px 20px)"></div>
+                    <div style="display:flex;align-items:center;gap:20px;padding:14px 16px">
+                      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                        <span style="font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff">LIMPEZA TOTAL DO CACHE</span>
+                        <span style="font-size:11px;color:#8a8a8a;text-wrap:pretty">Esvazia todas as pastas de cache de uma vez. O primeiro join em cada servidor vai baixar tudo de novo.</span>
+                      </div>
+                      <span onClick="{{ alternarArmado }}" style="flex:none;display:inline-flex;align-items:center;gap:9px;height:40px;padding:0 12px;border-radius:6px;cursor:pointer;background:{{ armBg }};border:1px solid {{ armBd }}">
+                        <span style="position:relative;width:34px;height:18px;border-radius:999px;background:{{ armTrilha }}">
+                          <span style="position:absolute;top:2px;left:{{ armKnob }};width:14px;height:14px;border-radius:50%;background:#101010;transition:left 140ms ease"></span>
+                        </span>
+                        <span style="font-size:11px;font-weight:700;letter-spacing:.08em;color:{{ armFg }}">ARMAR</span>
+                      </span>
+                      <span onPointerDown="{{ segurarFivem }}" onPointerUp="{{ soltar }}" onPointerLeave="{{ soltar }}" style="position:relative;flex:none;width:210px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;height:40px;border-radius:6px;cursor:pointer;background:{{ holdBg }};border:1px solid {{ holdBd }};color:{{ holdFg }};font-size:11px;font-weight:700;letter-spacing:.08em">
+                        <span style="position:absolute;left:0;top:0;bottom:0;width:{{ holdW }};background:rgba(229,38,43,.4);transition:width 900ms linear"></span>
+                        <span style="position:relative">{{ rotuloFivem }}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </sc-if>
+
+            <sc-if value="{{ eLimpeza }}">
+            <div style="position:relative;flex:1;min-height:0;padding:22px 24px;display:flex;flex-direction:column;gap:14px;overflow:hidden">
+              <div style="flex:none;display:flex;align-items:flex-end;gap:20px">
+                <div style="display:flex;flex-direction:column;gap:4px">
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.16em;color:#8a8a8a">MANUTENÇÃO /</span>
+                  <span style="font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1;color:#fff">Limpeza de disco</span>
+                </div>
+                <span style="margin-bottom:4px;font-size:13px;color:#8a8a8a">1 disco lido · 12 categorias medidas · nada removido na análise</span>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+                  <span style="display:inline-flex;align-items:center;height:38px;padding:0 16px;border-radius:6px;background:#202020;border:1px solid #3a3a3a;font-size:12px;font-weight:700;letter-spacing:.06em;color:#e8e8e8">ANALISAR</span>
+                </div>
+              </div>
+
+              <div style="flex:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:12px">
+                <div style="display:flex;flex-direction:column;gap:5px;padding:14px 16px;border-radius:10px;background:#181818;border:1px solid #2B2B2B">
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.14em;color:#8a8a8a">ESPAÇO RECUPERÁVEL</span>
+                  <span style="font-size:32px;font-weight:700;line-height:1;color:#fff;font-variant-numeric:tabular-nums">{{ limpTotal }}</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:5px;padding:14px 16px;border-radius:10px;background:#181818;border:1px solid #2B2B2B">
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.14em;color:#8a8a8a">ARQUIVOS ANALISADOS</span>
+                  <span style="font-size:32px;font-weight:700;line-height:1;color:#fff;font-variant-numeric:tabular-nums">{{ limpArquivos }}</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:5px;padding:14px 16px;border-radius:10px;background:#181818;border:1px solid #2B2B2B">
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.14em;color:#8a8a8a">DISCO PRINCIPAL</span>
+                  <span style="font-size:32px;font-weight:700;line-height:1;color:#fff;font-variant-numeric:tabular-nums">610 / 1000 GB</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:5px;padding:14px 16px;border-radius:10px;background:#181818;border:1px solid #2B2B2B">
+                  <span style="font-size:11px;font-weight:600;letter-spacing:.14em;color:#8a8a8a">TEMPO DECORRIDO</span>
+                  <span style="font-size:32px;font-weight:700;line-height:1;color:#fff;font-variant-numeric:tabular-nums">1.4 s</span>
+                </div>
+              </div>
+
+              <div style="flex:1;min-height:0;border-radius:10px;background:#181818;border:1px solid #2B2B2B;display:flex;flex-direction:column;overflow:hidden">
+                <div style="flex:none;display:flex;align-items:center;gap:12px;height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2B2B2B">
+                  <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#fff">CATEGORIAS</span>
+                  <span style="margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.06em;color:#8a8a8a;font-variant-numeric:tabular-nums">{{ limpSelInfo }}</span>
+                </div>
+                <div style="flex:1;min-height:0;display:flex;flex-direction:column;overflow:auto">
+                  <sc-for list="{{ cats }}" as="c" hint-placeholder-count="12">
+                    <div onClick="{{ c.toggle }}" style="flex:none;display:flex;align-items:center;gap:14px;height:47px;padding:0 16px;cursor:pointer;border-bottom:1px solid #222;background:{{ c.bg }}">
+                      <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:3px;background:{{ c.boxBg }};border:1px solid {{ c.boxBd }}">
+                        <sc-if value="{{ c.marcado }}">
+                          <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#101010" stroke-width="2.6"><path d="M3 8.5 6.5 12 13 4.5"></path></svg>
+                        </sc-if>
+                      </span>
+                      <span style="width:230px;font-size:12px;font-weight:700;letter-spacing:.04em;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ c.nome }}</span>
+                      <sc-if value="{{ c.sensivel }}">
+                        <span style="flex:none;display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:3px;background:rgba(229,38,43,.14);border:1px solid rgba(229,38,43,.4);font-size:10px;font-weight:700;letter-spacing:.06em;color:#ff8a8f">SENSÍVEL</span>
+                      </sc-if>
+                      <span style="flex:1;min-width:0;font-size:12px;color:#8a8a8a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ c.desc }}</span>
+                      <span style="flex:none;width:96px;text-align:right;font-size:13px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums">{{ c.tam }}</span>
+                      <span style="flex:none;width:96px;text-align:right;font-size:11px;color:#8a8a8a;font-variant-numeric:tabular-nums">{{ c.arq }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="flex:none;border-radius:10px;overflow:hidden;background:#181818;border:1px solid #2B2B2B">
+                <div style="height:6px;background:repeating-linear-gradient(45deg,#F8E800 0 10px,#101010 10px 20px)"></div>
+                <div style="display:flex;align-items:center;gap:20px;padding:14px 16px">
+                  <div style="flex:none;display:flex;flex-direction:column;gap:3px">
+                    <span style="font-size:11px;font-weight:600;letter-spacing:.14em;color:#8a8a8a">SELECIONADO</span>
+                    <span style="font-size:18px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums">{{ limpSel }}</span>
+                  </div>
+                  <span onClick="{{ alternarRestauracao }}" style="flex:1;min-width:0;display:flex;align-items:center;gap:10px;cursor:pointer">
+                    <span style="flex:none;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:3px;background:{{ restBoxBg }};border:1px solid {{ restBoxBd }}">
+                      <sc-if value="{{ restauracao }}">
+                        <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="#101010" stroke-width="2.6"><path d="M3 8.5 6.5 12 13 4.5"></path></svg>
+                      </sc-if>
+                    </span>
+                    <span style="display:flex;flex-direction:column;gap:2px">
+                      <span style="font-size:12px;font-weight:700;letter-spacing:.04em;color:#fff">CRIAR PONTO DE RESTAURAÇÃO</span>
+                      <span style="font-size:11px;color:#8a8a8a">A seleção inclui categorias de sistema.</span>
+                    </span>
+                  </span>
+                  <span onPointerDown="{{ segurarLimpeza }}" onPointerUp="{{ soltar }}" onPointerLeave="{{ soltar }}" style="position:relative;flex:none;width:240px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;height:44px;border-radius:6px;cursor:pointer;background:{{ limpBtnBg }};border:1px solid {{ limpBtnBd }};color:{{ limpBtnFg }};font-size:12px;font-weight:700;letter-spacing:.08em">
+                    <span style="position:absolute;left:0;top:0;bottom:0;width:{{ holdW }};background:rgba(248,232,0,.35);transition:width 900ms linear"></span>
+                    <span style="position:relative">{{ rotuloLimpeza }}</span>
+                  </span>
+                </div>
+                <div style="display:flex;align-items:baseline;gap:12px;padding:0 16px 14px">
+                  <span style="flex:none;font-size:11px;font-weight:700;letter-spacing:.14em;color:#8a8a8a">ZONA PROTEGIDA</span>
+                  <span style="font-size:11px;color:#8a8a8a">Downloads, Documentos, Desktop, fotos, vídeos e saves nunca são tocados.</span>
+                </div>
+              </div>
+            </div>
+            </sc-if>
+
+            <div style="flex:none;display:flex;align-items:center;gap:12px;height:28px;padding:0 16px;background:#141414;border-top:1px solid #2B2B2B;font-variant-numeric:tabular-nums;font-size:10px;font-weight:700;letter-spacing:.14em;color:#8a8a8a">
+              <span style="width:6px;height:6px;border-radius:50%;background:#4a4a4a"></span>
+              IDLE
+              <span style="margin-left:auto;color:#7d7d7d">FONTE: ADAPTADOR DE DEMONSTRAÇÃO</span>
+            </div>
+          </div>
+        </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1920,&quot;height&quot;:1080},&quot;telaInicial&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Cockpit&quot;,&quot;FPS Booster&quot;,&quot;FiveM&quot;,&quot;Limpeza&quot;],&quot;default&quot;:&quot;Cockpit&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Estado&quot;},&quot;nivelProntidao&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;L5&quot;,&quot;L4&quot;,&quot;L3&quot;,&quot;L2&quot;,&quot;L1&quot;],&quot;default&quot;:&quot;L5&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Estado&quot;},&quot;mostrarKillFeed&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Estado&quot;},&quot;mostrarSeloDemo&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Estado&quot;}}">
+class Component extends DCLogic {
+  state = {
+    tela: 'cockpit',
+    turbo: false,
+    jogos: { dvr: true, modo: false, agend: false, preemp: false },
+    armado: false,
+    riscoOff: false,
+    holdW: '0%',
+    sel: ['temp-usuario', 'temp-windows', 'cache-apps', 'miniaturas', 'logs-antigos', 'relatorios-erro', 'restos-instalacao'],
+    restauracao: true,
+    removidos: [],
+    limpou: false,
+    fivemLimpo: false,
+  }
+
+  componentDidMount() {
+    const mapa = { 'Cockpit': 'cockpit', 'FPS Booster': 'fps', 'FiveM': 'fivem', 'Limpeza': 'limpeza' }
+    const alvo = mapa[this.props.telaInicial]
+    if (alvo && alvo !== this.state.tela) this.setState({ tela: alvo })
+  }
+
+  componentWillUnmount() { clearTimeout(this._t) }
+
+  mb(v) { return v >= 1024 ? (v / 1024).toFixed(2) + ' GB' : Math.round(v) + ' MB' }
+  bytes(b) {
+    const GB = 1073741824, MB = 1048576
+    if (b >= GB) return (b / GB).toFixed(2) + ' GB'
+    if (b >= MB) return Math.round(b / MB) + ' MB'
+    return Math.round(b / 1024) + ' KB'
+  }
+
+  catalogo() {
+    return [
+      ['temp-usuario', 'TEMPORÁRIOS DO USUÁRIO', 'Arquivos temporários do seu perfil (%TEMP%).', 612, 1842, false],
+      ['temp-windows', 'TEMPORÁRIOS DO WINDOWS', 'Arquivos temporários do sistema (C:\\Windows\\Temp).', 488, 973, false],
+      ['cache-apps', 'CACHE DE APLICATIVOS', 'Caches de shaders e pacotes de aplicativos.', 356, 512, false],
+      ['cache-navegadores', 'CACHE DE NAVEGADORES', 'Arquivos salvos por Chrome e Edge. Logins não são afetados.', 924, 6210, true],
+      ['miniaturas', 'MINIATURAS', 'Cache de miniaturas do Explorer. Serão regeradas.', 148, 388, false],
+      ['logs-antigos', 'LOGS ANTIGOS', 'Registros de instalação e manutenção do sistema.', 96, 214, false],
+      ['lixeira', 'LIXEIRA', 'Itens excluídos. A remoção aqui é definitiva.', 402, 57, true],
+      ['relatorios-erro', 'RELATÓRIOS DE ERRO', 'Relatórios de falha do Windows (WER).', 84, 129, false],
+      ['restos-instalacao', 'RESTOS DE INSTALAÇÃO', 'Pacotes e arquivos de atualizações já concluídas.', 121, 46, false],
+      ['cache-shader', 'CACHE DE SHADERS', 'Shaders compilados (DirectX, NVIDIA, AMD, Intel). Os jogos recompilam.', 1310, 842, false],
+      ['cache-update', 'CACHE DO WINDOWS UPDATE', 'Instaladores de atualização já baixados.', 690, 118, false],
+      ['cache-delivery', 'OTIMIZAÇÃO DE ENTREGA', 'Cache de compartilhamento de atualizações entre computadores.', 233, 61, false],
+    ]
+  }
+
+  ir(tela) { return () => this.setState({ tela, armado: false, holdW: '0%' }) }
+
+  segurar(alvo, liberado) {
+    return () => {
+      if (!liberado) return
+      this.setState({ holdW: '100%' })
+      clearTimeout(this._t)
+      this._t = setTimeout(() => this.confirmar(alvo), 900)
+    }
+  }
+
+  confirmar(alvo) {
+    if (alvo === 'risco') this.setState((s) => ({ riscoOff: !s.riscoOff, armado: false, holdW: '0%' }))
+    if (alvo === 'fivem') this.setState({ fivemLimpo: true, armado: false, holdW: '0%' })
+    if (alvo === 'limpeza') this.setState((s) => ({ limpou: true, removidos: s.removidos.concat(s.sel), sel: [], holdW: '0%' }))
+  }
+
+  renderVals() {
+    const s = this.state
+    const nivel = this.props.nivelProntidao ?? 'L5'
+    const nomes = { L5: 'STOCK', L4: 'LEVE', L3: 'PADRÃO', L2: 'AGRESSIVO', L1: 'REDLINE' }
+
+    const jogosAtivos = Object.values(s.jogos).filter(Boolean).length
+    const gruposBase = [
+      ['AGENDADOR MULTIMÍDIA', 2, 2, 2],
+      ['STACK DE JOGOS DO WINDOWS', 4, jogosAtivos, 3],
+      ['ENERGIA', 3, 1, 2],
+      ['MEMÓRIA', 3, 0, 2],
+      ['DISCO', 2, 2, 2],
+      ['REDE', 2, 1, 2],
+      ['ENTRADA', 4, 1, 4],
+      ['INTERFACE', 1, 0, 1],
+    ]
+    const grupos = gruposBase.map(([nome, total, ativos, alvo]) => {
+      const n = s.turbo ? Math.max(ativos, alvo) : ativos
+      const feito = n >= alvo
+      return {
+        nome,
+        led: feito ? '#F8E800' : '#4a4a4a',
+        contagem: feito ? n + '/' + total + ' · RECOMENDADOS OK' : n + '/' + total + ' ATIVOS',
+        btn: feito ? 'LIGADO' : 'LIGAR',
+        btnBg: feito ? '#202020' : '#F8E800',
+        btnFg: feito ? '#8a8a8a' : '#101010',
+      }
+    })
+    const ativosRec = gruposBase.reduce((t, [, , a, alvo]) => t + (s.turbo ? Math.max(a, alvo) : a), 0)
+    const pendentes = 18 - ativosRec
+
+    const sw = (on) => ({
+      estado: on ? 'ATIVO' : 'PADRÃO',
+      swBg: on ? 'rgba(248,232,0,.10)' : '#202020',
+      swBd: on ? 'rgba(248,232,0,.5)' : '#3a3a3a',
+      swFg: on ? '#F8E800' : '#c9c9c9',
+      swLed: on ? '#F8E800' : '#4a4a4a',
+    })
+    const linha = (chave, nome, tags, desc) => {
+      const on = s.turbo && chave !== 'preemp' ? true : s.jogos[chave]
+      return Object.assign({
+        nome, tags, desc, temTags: tags.length > 0,
+        toggle: () => this.setState((p) => ({ jogos: Object.assign({}, p.jogos, { [chave]: !(p.turbo && chave !== 'preemp' ? true : p.jogos[chave]) }) })),
+      }, sw(on))
+    }
+    const fpsRows = [
+      linha('dvr', 'GAME DVR E TELA CHEIA', '', 'Desliga gravação em segundo plano, painel da Game Bar e otimização de tela cheia. Devolve a tela cheia exclusiva ao jogo — o caminho mais curto entre o quadro e o monitor.'),
+      linha('modo', 'MODO DE JOGO', '', 'Liga o Modo de Jogo do Windows, que segura atualização e serviço em segundo plano enquanto o jogo está em foco.'),
+      linha('agend', 'AGENDAMENTO DE GPU POR HARDWARE', 'EXIGE REINÍCIO', 'Passa o agendamento de trabalho da GPU para a própria placa. Exige GPU e driver compatíveis e só vale depois de reiniciar.'),
+      linha('preemp', 'PREEMPÇÃO DA GPU', 'OPCIONAL · EXIGE REINÍCIO', 'Impede o Windows de interromper trabalho da GPU no meio. Reduz engasgo em alguns cenários e pode causar travamento em outros — por isso fica fora do TURBO.'),
+    ]
+
+    const cachesBase = [
+      ['SERVER-CACHE', 4812331008], ['SERVER-CACHE-PRIV', 812004352], ['NUI-STORAGE', 431226880],
+      ['CACHE', 92274688], ['CRASHES', 1207959552], ['LOGS', 18874368],
+    ]
+    const cores = ['#F8E800', '#C4B814', '#7E7818']
+    const fmTotalBytes = s.fivemLimpo ? 0 : cachesBase.reduce((t, [, b]) => t + b, 0)
+    const fmCaches = cachesBase.map(([nome, b], i) => ({
+      nome,
+      valor: s.fivemLimpo ? 'VAZIO' : this.bytes(b),
+      pct: s.fivemLimpo ? '0%' : ((b / cachesBase.reduce((t, [, x]) => t + x, 0)) * 100).toFixed(2) + '%',
+      cor: cores[i % 3],
+    }))
+    const fmMods = [
+      { nome: 'MODS', info: '3 arquivos · 252 MB', btnBg: '#282828', btnBd: '#3a3a3a', btnFg: '#e8e8e8' },
+      { nome: 'PLUGINS', info: '1 arquivo · 2 MB', btnBg: '#282828', btnBd: '#3a3a3a', btnFg: '#e8e8e8' },
+      { nome: 'ADDONS', info: 'VAZIO', btnBg: '#1c1c1c', btnBd: '#2B2B2B', btnFg: '#7d7d7d' },
+    ]
+
+    const cats = this.catalogo()
+      .filter(([id]) => !s.removidos.includes(id))
+      .map(([id, nome, desc, mb, arq, sensivel]) => {
+        const marcado = s.sel.includes(id)
+        return {
+          id, nome, desc, sensivel, marcado,
+          tam: this.mb(mb),
+          arq: arq + ' arquivos',
+          bg: marcado ? '#1c1c1c' : 'transparent',
+          boxBg: marcado ? '#F8E800' : '#202020',
+          boxBd: marcado ? '#F8E800' : '#3a3a3a',
+          toggle: () => this.setState((p) => ({ sel: p.sel.includes(id) ? p.sel.filter((x) => x !== id) : p.sel.concat(id) })),
+        }
+      })
+    const selMb = this.catalogo().filter(([id]) => s.sel.includes(id)).reduce((t, c) => t + c[3], 0)
+    const totalMb = cats.reduce((t, c) => t + this.catalogo().find(([id]) => id === c.id)[3], 0)
+    const totalArq = cats.reduce((t, c) => t + this.catalogo().find(([id]) => id === c.id)[4], 0)
+
+    const armado = s.armado
+    const holdLiberado = (alvo) => (alvo === 'limpeza' ? s.sel.length > 0 : armado)
+
+    return {
+      nivelCodigo: nivel,
+      nivelNome: nomes[nivel] ?? 'STOCK',
+      mostrarKillFeed: this.props.mostrarKillFeed ?? true,
+      mostrarSeloDemo: this.props.mostrarSeloDemo ?? true,
+
+      eCockpit: s.tela === 'cockpit',
+      eFps: s.tela === 'fps',
+      eFivem: s.tela === 'fivem',
+      eLimpeza: s.tela === 'limpeza',
+      tituloTela: { cockpit: 'Cockpit', fps: 'FPS Booster', fivem: 'Central FiveM', limpeza: 'Limpeza de disco' }[s.tela],
+      irCockpit: this.ir('cockpit'),
+      irFps: this.ir('fps'),
+      irFivem: this.ir('fivem'),
+      irLimpeza: this.ir('limpeza'),
+      nav: {
+        cockpit: { bg: s.tela === 'cockpit' ? '#202020' : 'transparent', fg: s.tela === 'cockpit' ? '#ffffff' : '#9a9a9a', bar: s.tela === 'cockpit' ? '#F8E800' : 'transparent' },
+        limpeza: { bg: s.tela === 'limpeza' ? '#202020' : 'transparent', fg: s.tela === 'limpeza' ? '#ffffff' : '#9a9a9a', bar: s.tela === 'limpeza' ? '#F8E800' : 'transparent' },
+        fps: { bg: s.tela === 'fps' ? '#2a2807' : 'rgba(248,232,0,.07)' },
+        fivem: { bg: s.tela === 'fivem' ? '#2a2807' : 'rgba(248,232,0,.07)' },
+      },
+      navFpsChip: pendentes > 0 ? String(pendentes) : 'OK',
+      navFivemChip: s.fivemLimpo ? 'VAZIO' : this.bytes(fmTotalBytes),
+
+      grupos,
+      fpsRows,
+      fpsPendentes: pendentes,
+      fpsAtivos: ativosRec,
+      fpsHeroCor: pendentes > 0 ? '#F8E800' : '#ffffff',
+      fpsHeroDesc: pendentes > 0
+        ? pendentes + ' pacotes recomendados ainda não estão ligados. ' + ativosRec + ' já estão. TURBO liga de uma vez os recomendados; os marcados OPCIONAL têm custo e ficam de fora.'
+        : 'Todos os pacotes recomendados estão ligados. ' + ativosRec + ' ativos. Os marcados OPCIONAL continuam fora — ligue um a um nos detalhes.',
+      turboLabel: pendentes > 0 ? 'LIGAR TURBO' : 'RECOMENDADOS OK',
+      turboBg: pendentes > 0 ? '#F8E800' : '#202020',
+      turboFg: pendentes > 0 ? '#101010' : '#8a8a8a',
+      turboBd: pendentes > 0 ? '#F8E800' : '#3a3a3a',
+      ligarTurbo: () => this.setState({ turbo: true }),
+
+      riscoEstado: s.riscoOff ? 'MITIGAÇÕES DESLIGADAS' : 'PADRÃO',
+      riscoLed: s.riscoOff ? '#E5262B' : '#4a4a4a',
+      rotuloRisco: s.riscoOff ? 'RELIGAR MITIGAÇÕES' : 'DESLIGAR MITIGAÇÕES',
+      rotuloFivem: s.fivemLimpo ? 'CACHE JÁ VAZIO' : 'LIMPAR TUDO',
+      rotuloLimpeza: s.limpou ? 'LIMPEZA CONCLUÍDA' : 'LIMPAR SELECIONADOS',
+
+      alternarArmado: () => this.setState((p) => ({ armado: !p.armado, holdW: '0%' })),
+      armBg: armado ? 'rgba(229,38,43,.14)' : '#202020',
+      armBd: armado ? '#E5262B' : '#3a3a3a',
+      armFg: armado ? '#ff8a8f' : '#c9c9c9',
+      armTrilha: armado ? '#E5262B' : '#4a4a4a',
+      armKnob: armado ? '18px' : '2px',
+      segurarRisco: this.segurar('risco', holdLiberado('risco')),
+      segurarFivem: this.segurar('fivem', holdLiberado('fivem') && !s.fivemLimpo),
+      segurarLimpeza: this.segurar('limpeza', holdLiberado('limpeza')),
+      soltar: () => { clearTimeout(this._t); if (s.holdW !== '0%') this.setState({ holdW: '0%' }) },
+      holdW: s.holdW,
+      holdBg: armado ? 'rgba(229,38,43,.12)' : '#1c1c1c',
+      holdBd: armado ? '#E5262B' : '#2B2B2B',
+      holdFg: armado ? '#ff8a8f' : '#8a8a8a',
+
+      fmTotal: this.bytes(fmTotalBytes),
+      fmPastas: s.fivemLimpo ? 'CACHE JÁ VAZIO' : '6 de 6 pastas com conteúdo',
+      fmCaches,
+      fmMods,
+
+      cats,
+      limpTotal: this.mb(totalMb),
+      limpArquivos: totalArq.toLocaleString('pt-BR'),
+      limpSel: s.sel.length > 0 ? this.mb(selMb) + ' · ' + s.sel.length : '—',
+      limpSelInfo: s.sel.length + ' de ' + cats.length + ' selecionadas',
+      restauracao: s.restauracao,
+      alternarRestauracao: () => this.setState((p) => ({ restauracao: !p.restauracao })),
+      restBoxBg: s.restauracao ? '#F8E800' : '#202020',
+      restBoxBd: s.restauracao ? '#F8E800' : '#3a3a3a',
+      limpBtnBg: s.sel.length > 0 ? '#F8E800' : '#202020',
+      limpBtnFg: s.sel.length > 0 ? '#101010' : '#8a8a8a',
+      limpBtnBd: s.sel.length > 0 ? '#F8E800' : '#3a3a3a',
+    }
+  }
+}
+</script>
+</body>
+</html>

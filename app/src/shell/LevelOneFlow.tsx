@@ -3,7 +3,7 @@ import { ArmSwitch } from '../components/ArmSwitch'
 import { Button } from '../components/Button'
 import { HoldButton } from '../components/HoldButton'
 import { Modal, ResultModal } from '../components/Modal'
-import { SegmentedProgress } from '../components/SegmentedProgress'
+import { ProgressBar } from '../components/ProgressBar'
 import { useT } from '../i18n'
 import { getAdapter } from '../services/adapter'
 import {
@@ -332,7 +332,7 @@ export function LevelOneFlow({ open, onCancel }: { open: boolean; onCancel: () =
             {(phase === 'applying' || phase === 'debloating') && phaseDetail && (
               <p className="type-mono mt-2 text-xs text-ink-3">{phaseDetail}</p>
             )}
-            <SegmentedProgress pct={progress} hot className="mt-5" />
+            <ProgressBar pct={progress} hot className="mt-5" />
             <p className="type-mono mt-3 text-[11px] leading-5 text-ink-3">{t('level.l1.doNotClose')}</p>
           </div>
         ) : (

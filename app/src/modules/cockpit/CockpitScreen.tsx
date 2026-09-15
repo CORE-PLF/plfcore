@@ -1,6 +1,6 @@
 import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { Gauge } from '../../components/Gauge'
 import { Kicker, ScreenTitle } from '../../components/Kicker'
 import { MetricRow } from '../../components/MetricRow'
@@ -64,7 +64,7 @@ function TempMarker({ c, label, labelY }: { c: number; label: string; labelY: nu
 // Moldura de instrumento: parafusos nos cantos + código decorativo.
 function Housing({ code, children }: { code: string; children: React.ReactNode }) {
   return (
-    <ChamferSurface cut={8} flat className="relative p-3 pt-4">
+    <Surface cut={8} flat className="relative p-3 pt-4">
       {(
         [
           { top: 5, left: 5 },
@@ -77,7 +77,7 @@ function Housing({ code, children }: { code: string; children: React.ReactNode }
       ))}
       <p className="type-mono pointer-events-none absolute right-4 top-2 text-[8px] tracking-[0.24em] text-ink-4">{code}</p>
       {children}
-    </ChamferSurface>
+    </Surface>
   )
 }
 
@@ -234,7 +234,7 @@ export default function CockpitScreen() {
           </div>
 
           {/* linha do tempo 60 s */}
-          <ChamferSurface cut={8} className="mt-6 p-5">
+          <Surface cut={8} className="mt-6 p-5">
             <div className="flex items-center justify-between">
               <Kicker>{t('telemetria')}</Kicker>
               <div className="flex items-center gap-4">
@@ -331,11 +331,11 @@ export default function CockpitScreen() {
                 <MetricRow label={t('tempGpu')} value={atual?.gpuTempC != null ? `${Math.round(atual.gpuTempC)} °C` : null} />
               </div>
             </div>
-          </ChamferSurface>
+          </Surface>
 
           {/* leituras densas + processos em segundo plano */}
           <div className="mt-6 grid grid-cols-2 gap-6">
-            <ChamferSurface cut={8} flat className="scanlines p-5">
+            <Surface cut={8} flat className="scanlines p-5">
               <Kicker>{t('leituras')}</Kicker>
               <div className="mt-2">
                 <MetricRow
@@ -374,9 +374,9 @@ export default function CockpitScreen() {
                 />
                 <MetricRow label={t('registros')} value={String(registros)} />
               </div>
-            </ChamferSurface>
+            </Surface>
 
-            <ChamferSurface cut={8} flat className="p-5">
+            <Surface cut={8} flat className="p-5">
               <div className="flex items-baseline justify-between">
                 <Kicker>{t('procTitulo')}</Kicker>
                 {procs?.[0]?.origin === 'demo' && <DemoTag />}
@@ -396,7 +396,7 @@ export default function CockpitScreen() {
                   </div>
                 ))}
               </div>
-            </ChamferSurface>
+            </Surface>
           </div>
         </div>
 

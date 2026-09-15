@@ -22,9 +22,10 @@ export function LevelBadge() {
         go('windows')
       }}
     >
-      <span className="type-kicker hidden xl:block">{t('level.title')}</span>
-      <span className="levelbadge-code">L{atual}</span>
-      <span className="levelbadge-name hidden lg:block">{t(`level.nome.${atual}` as const)}</span>
+      <span className="hidden xl:inline">{t('level.titleCurto')}</span>
+      <span className="levelbadge-value">
+        L{atual} <span className="hidden lg:inline">{t(`level.nome.${atual}` as const)}</span>
+      </span>
     </button>
   )
 }

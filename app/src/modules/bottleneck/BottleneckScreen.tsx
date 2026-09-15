@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { HoldButton } from '../../components/HoldButton'
 import { ScreenTitle } from '../../components/Kicker'
 import { MetricRow } from '../../components/MetricRow'
 import { Modal } from '../../components/Modal'
 import { Odometer } from '../../components/Odometer'
-import { SegmentedProgress } from '../../components/SegmentedProgress'
+import { ProgressBar } from '../../components/ProgressBar'
 import { DemoTag, EstimatedTag } from '../../components/Tag'
 import { kitDict } from '../../components/i18n'
 import { IconCheck, IconChevron, IconX } from '../../components/icons'
@@ -84,7 +84,7 @@ function JobProgress({ jobId }: { jobId: string | null }) {
         {stateKey ? t(stateKey) : ''}
         {etapaKey ? ` — ${t(etapaKey)}` : ''}
       </p>
-      <SegmentedProgress pct={job.progressoPct} className="mt-3" />
+      <ProgressBar pct={job.progressoPct} className="mt-3" />
       <p className="type-mono mt-3 text-[11px] text-ink-3">
         {tk('tempoDecorrido')} {mmss(elapsed)}
       </p>
@@ -139,7 +139,7 @@ function ChipCard({
 }) {
   const tk = useT(kitDict)
   return (
-    <ChamferSurface cut={6} flat className="p-4">
+    <Surface cut={6} flat className="p-4">
       <p className="type-kicker">{tag}</p>
       {carregando ? (
         <Skeleton className="mt-2 h-6 w-3/4" />
@@ -153,7 +153,7 @@ function ChipCard({
           <MetricRow key={r.label} label={r.label} value={r.value} origin={r.origin} />
         ))}
       </div>
-    </ChamferSurface>
+    </Surface>
   )
 }
 
@@ -185,7 +185,7 @@ function BoostFeito({ titulo, nota }: { titulo: string; nota: string }) {
 type FaseModal = 'confirm' | 'run' | 'done' | 'error'
 
 /** Sobrevive à troca de tela e morre quando o app fecha: depois do BOOST a tela
- *  vira "já feito" e só reabrindo o RESYNC dá para medir e aplicar de novo. */
+ *  vira "já feito" e só reabrindo o PLF CORE dá para medir e aplicar de novo. */
 const sessao: {
   feito: boolean
   resultado: BottleneckResult | null
@@ -404,7 +404,7 @@ export default function BottleneckScreen() {
       <ScreenTitle kicker={t('kicker')} title={t('titulo')} />
 
       {/* ===== palco dominante: CPU ◂ fluxo ▸ GPU ===== */}
-      <ChamferSurface cut={12} allCorners className="relative">
+      <Surface cut={12} allCorners className="relative">
         <div className="stage-grid p-6">
           <div className="mb-4 flex items-center justify-between">
             <span className="type-kicker">{t('fluxo')}</span>
@@ -455,11 +455,11 @@ export default function BottleneckScreen() {
             />
           </div>
         </div>
-      </ChamferSurface>
+      </Surface>
 
       {/* ===== medição + boost ===== */}
       <div className="mt-6 grid gap-6 lg:grid-cols-[2fr_1fr]">
-        <ChamferSurface cut={8} className="p-6" aria-live="polite">
+        <Surface cut={8} className="p-6" aria-live="polite">
           <p className="type-kicker mb-4">{t('resultadoTitulo')}</p>
 
           {medindo ? (
@@ -531,10 +531,10 @@ export default function BottleneckScreen() {
               </Button>
             </>
           )}
-        </ChamferSurface>
+        </Surface>
 
         {/* zona hazard: perfil BOOST */}
-        <ChamferSurface cut={8} edge="var(--color-rust)">
+        <Surface cut={8} edge="var(--color-rust)">
           <div className="hazard h-2 w-full" aria-hidden />
           <div className="p-5">
             <p className="type-display text-2xl">{t('boost')}</p>
@@ -571,7 +571,7 @@ export default function BottleneckScreen() {
               </>
             )}
           </div>
-        </ChamferSurface>
+        </Surface>
       </div>
 
       {/* ===== modal REDUZIR ===== */}
@@ -648,7 +648,7 @@ export default function BottleneckScreen() {
         {boostFase === 'run' && (
           <div aria-live="polite">
             <p className="type-mono text-xs font-bold tracking-[0.1em] text-ink-2">{t(boostEtapa)}</p>
-            <SegmentedProgress pct={boostPct} className="mt-3" />
+            <ProgressBar pct={boostPct} className="mt-3" />
             <p className="type-mono mt-3 text-right text-[11px] text-ink-3">{boostPct}%</p>
           </div>
         )}

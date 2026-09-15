@@ -2,10 +2,10 @@ import { defineDict } from '../../i18n'
 
 const pt = {
   kicker: 'AUTORIZAÇÃO /',
-  title: 'ATIVAR RESYNC',
+  title: 'ATIVAR PLF CORE',
   subtitle: 'INSIRA A KEY DISPONÍVEL NO SEU PAINEL.',
   label: 'KEY DE LICENÇA',
-  placeholder: 'RESYNC-XXXX-XXXX-XXXX-XXXX',
+  placeholder: 'PLF CORE-XXXX-XXXX-XXXX-XXXX',
   activate: 'ATIVAR',
   activating: 'VALIDANDO',
   checking: 'VERIFICANDO LICENÇA',
@@ -34,8 +34,8 @@ type Key = keyof typeof pt
 export const licenseDict = defineDict<Key>({
   pt,
   en: {
-    kicker: 'AUTHORIZATION /', title: 'ACTIVATE RESYNC', subtitle: 'ENTER THE KEY AVAILABLE IN YOUR ACCOUNT.',
-    label: 'LICENSE KEY', placeholder: 'RESYNC-XXXX-XXXX-XXXX-XXXX', activate: 'ACTIVATE', activating: 'VALIDATING',
+    kicker: 'AUTHORIZATION /', title: 'ACTIVATE PLF CORE', subtitle: 'ENTER THE KEY AVAILABLE IN YOUR ACCOUNT.',
+    label: 'LICENSE KEY', placeholder: 'PLF CORE-XXXX-XXXX-XXXX-XXXX', activate: 'ACTIVATE', activating: 'VALIDATING',
     checking: 'CHECKING LICENSE', secure: 'THE KEY WILL BE LINKED TO THIS WINDOWS INSTALLATION.', noKey: 'DO NOT HAVE A KEY YET?',
     panel: 'OPEN THE PURCHASE PANEL ON THE WEBSITE.', buy: 'BUY A LICENSE', myPanel: 'ALREADY BOUGHT — OPEN MY PANEL', retry: 'TRY AGAIN', minimize: 'MINIMIZE', close: 'CLOSE', errInvalid: 'ENTER A VALID KEY.',
     errNotFound: 'KEY NOT FOUND. COPY IT AGAIN FROM YOUR ACCOUNT.', errExpired: 'LICENSE EXPIRED. RENEW IT IN YOUR ACCOUNT.',
@@ -45,8 +45,8 @@ export const licenseDict = defineDict<Key>({
     errGeneric: 'VALIDATION FAILED. TRY AGAIN.',
   },
   es: {
-    kicker: 'AUTORIZACIÓN /', title: 'ACTIVAR RESYNC', subtitle: 'INTRODUCE LA KEY DISPONIBLE EN TU PANEL.',
-    label: 'KEY DE LICENCIA', placeholder: 'RESYNC-XXXX-XXXX-XXXX-XXXX', activate: 'ACTIVAR', activating: 'VALIDANDO',
+    kicker: 'AUTORIZACIÓN /', title: 'ACTIVAR PLF CORE', subtitle: 'INTRODUCE LA KEY DISPONIBLE EN TU PANEL.',
+    label: 'KEY DE LICENCIA', placeholder: 'PLF CORE-XXXX-XXXX-XXXX-XXXX', activate: 'ACTIVAR', activating: 'VALIDANDO',
     checking: 'VERIFICANDO LICENCIA', secure: 'LA KEY QUEDARÁ VINCULADA A ESTA INSTALACIÓN DE WINDOWS.', noKey: '¿TODAVÍA NO TIENES UNA KEY?',
     panel: 'ACCEDE AL PANEL DE COMPRA EN EL SITIO.', buy: 'COMPRAR LICENCIA', myPanel: 'YA COMPRÉ — ABRIR MI PANEL', retry: 'INTENTAR DE NUEVO', minimize: 'MINIMIZAR', close: 'CERRAR', errInvalid: 'INTRODUCE UNA KEY VÁLIDA.',
     errNotFound: 'KEY NO ENCONTRADA. CÓPIALA DE NUEVO DESDE EL PANEL.', errExpired: 'LICENCIA VENCIDA. RENUEVA EL PLAN EN EL PANEL.',
@@ -56,8 +56,8 @@ export const licenseDict = defineDict<Key>({
     errGeneric: 'NO FUE POSIBLE VALIDAR. INTÉNTALO DE NUEVO.',
   },
   fr: {
-    kicker: 'AUTORISATION /', title: 'ACTIVER RESYNC', subtitle: 'SAISISSEZ LA CLÉ DISPONIBLE DANS VOTRE COMPTE.',
-    label: 'CLÉ DE LICENCE', placeholder: 'RESYNC-XXXX-XXXX-XXXX-XXXX', activate: 'ACTIVER', activating: 'VALIDATION',
+    kicker: 'AUTORISATION /', title: 'ACTIVER PLF CORE', subtitle: 'SAISISSEZ LA CLÉ DISPONIBLE DANS VOTRE COMPTE.',
+    label: 'CLÉ DE LICENCE', placeholder: 'PLF CORE-XXXX-XXXX-XXXX-XXXX', activate: 'ACTIVER', activating: 'VALIDATION',
     checking: 'VÉRIFICATION DE LA LICENCE', secure: 'LA CLÉ SERA LIÉE À CETTE INSTALLATION WINDOWS.', noKey: 'VOUS N’AVEZ PAS ENCORE DE CLÉ ?',
     panel: 'OUVREZ LE PANNEAU D’ACHAT SUR LE SITE.', buy: 'ACHETER UNE LICENCE', myPanel: 'DÉJÀ ACHETÉ — OUVRIR MON PANNEAU', retry: 'RÉESSAYER', minimize: 'RÉDUIRE', close: 'FERMER', errInvalid: 'SAISISSEZ UNE CLÉ VALIDE.',
     errNotFound: 'CLÉ INTROUVABLE. COPIEZ-LA À NOUVEAU DEPUIS VOTRE COMPTE.', errExpired: 'LICENCE EXPIRÉE. RENOUVELEZ-LA DANS VOTRE COMPTE.',
@@ -67,8 +67,8 @@ export const licenseDict = defineDict<Key>({
     errGeneric: 'ÉCHEC DE LA VALIDATION. RÉESSAYEZ.',
   },
   it: {
-    kicker: 'AUTORIZZAZIONE /', title: 'ATTIVA RESYNC', subtitle: 'INSERISCI LA KEY DISPONIBILE NEL TUO ACCOUNT.',
-    label: 'KEY DI LICENZA', placeholder: 'RESYNC-XXXX-XXXX-XXXX-XXXX', activate: 'ATTIVA', activating: 'VALIDAZIONE',
+    kicker: 'AUTORIZZAZIONE /', title: 'ATTIVA PLF CORE', subtitle: 'INSERISCI LA KEY DISPONIBILE NEL TUO ACCOUNT.',
+    label: 'KEY DI LICENZA', placeholder: 'PLF CORE-XXXX-XXXX-XXXX-XXXX', activate: 'ATTIVA', activating: 'VALIDAZIONE',
     checking: 'VERIFICA LICENZA', secure: 'LA KEY SARÀ COLLEGATA A QUESTA INSTALLAZIONE DI WINDOWS.', noKey: 'NON HAI ANCORA UNA KEY?',
     panel: 'APRI IL PANNELLO DI ACQUISTO SUL SITO.', buy: 'ACQUISTA UNA LICENZA', myPanel: 'GIÀ ACQUISTATO — APRI IL MIO PANNELLO', retry: 'RIPROVA', minimize: 'RIDUCI', close: 'CHIUDI', errInvalid: 'INSERISCI UNA KEY VALIDA.',
     errNotFound: 'KEY NON TROVATA. COPIALA DI NUOVO DAL TUO ACCOUNT.', errExpired: 'LICENZA SCADUTA. RINNOVA IL PIANO NEL TUO ACCOUNT.',

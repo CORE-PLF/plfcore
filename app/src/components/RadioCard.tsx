@@ -1,4 +1,4 @@
-import { ChamferSurface } from './ChamferSurface'
+import { Surface } from './Surface'
 import { sfx } from '../services/sfx'
 import './kit.css'
 
@@ -12,7 +12,7 @@ interface Props {
 
 export function RadioCard({ checked, onSelect, title, description, badge }: Props) {
   return (
-    <ChamferSurface cut={6} brackets={checked} edge={checked ? 'var(--color-rust)' : undefined} className="w-full">
+    <Surface cut={6} brackets={checked} edge={checked ? 'var(--color-rust)' : undefined} className="w-full">
       <button
         role="radio"
         aria-checked={checked}
@@ -33,6 +33,6 @@ export function RadioCard({ checked, onSelect, title, description, badge }: Prop
         </span>
         <span className="mt-1.5 block text-xs leading-relaxed text-ink-3">{description}</span>
       </button>
-    </ChamferSurface>
+    </Surface>
   )
 }

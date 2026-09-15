@@ -7,6 +7,7 @@ import { isTauriEnv } from '../services/adapter'
 import { BRAND } from '../brand'
 import { sfx } from '../services/sfx'
 import { IconChevron } from '../components/icons'
+import logo from '../assets/logo-header.png'
 import './shell.css'
 
 // Ícones geométricos no grid do sistema, 16×16, traço 1.5.
@@ -30,6 +31,8 @@ const NAV_ICONS: Record<ScreenId, React.ReactNode> = {
 
 const MAIN: ScreenId[] = ['cockpit', 'fpsboost', 'xray', 'memory', 'cleanup', 'windows', 'games', 'runtimes', 'tweaks', 'startup', 'latency', 'bottleneck']
 const FOOTER: ScreenId[] = ['settings', 'log']
+/** módulos-chave: barra amarela permanente e ícone amarelo */
+const CRITICAL: ReadonlyArray<ScreenId> = ['fpsboost', 'games']
 
 function NavIcon({ id }: { id: ScreenId }) {
   return (
@@ -49,7 +52,7 @@ export function Sidebar({ collapsed, onToggle, stagger }: { collapsed: boolean; 
   const item = (id: ScreenId) => (
     <button
       key={id}
-      className={`navitem ${id === 'fpsboost' ? 'navitem--critical' : ''} ${screen === id ? 'active' : ''}`}
+      className={`navitem ${CRITICAL.includes(id) ? 'navitem--critical' : ''} ${screen === id ? 'active' : ''}`}
       title={collapsed ? t(`nav.${id}`) : undefined}
       aria-current={screen === id ? 'page' : undefined}
       onClick={() => {
@@ -64,14 +67,15 @@ export function Sidebar({ collapsed, onToggle, stagger }: { collapsed: boolean; 
 
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${stagger ? 'hud-in' : ''}`} style={{ animationDelay: '0ms' }}>
-      <div className="flex min-h-[52px] items-center gap-2 border-b border-line px-4">
-        <span className="type-display whitespace-nowrap text-xl text-ink-1">
-          {collapsed ? BRAND.shortName.slice(0, 2) : BRAND.name}
-        </span>
-        {!collapsed && <span className="led circle led--live" style={{ width: 5, height: 5 }} aria-hidden />}
+      <div className="sidebar-brand">
+        <img src={logo} alt={BRAND.name} draggable={false} />
+        {!collapsed && <span className="ml-auto text-[10px] tracking-[0.12em] text-ink-3">CORE</span>}
       </div>
-      <nav aria-label="principal">{MAIN.map(item)}</nav>
-      <div className="border-t border-line pb-2">
+      <nav aria-label="principal">
+        {!collapsed && <span className="sidebar-section">{t('nav.secao')}</span>}
+        {MAIN.map(item)}
+      </nav>
+      <div className="sidebar-foot">
         {FOOTER.map(item)}
         <button
           className="navitem"
@@ -80,11 +84,11 @@ export function Sidebar({ collapsed, onToggle, stagger }: { collapsed: boolean; 
           title={collapsed ? t('nav.expandir') : t('nav.recolher')}
         >
           <IconChevron style={{ transform: collapsed ? 'none' : 'rotate(180deg)' }} />
-          <span className="type-mono text-[10px] not-italic tracking-[0.1em]">{t('nav.recolher')}</span>
+          <span className="text-[10px] tracking-[0.1em]">{t('nav.recolher')}</span>
         </button>
         {!collapsed && (
-          <div className="flex items-center justify-between px-5 pt-1">
-            <span className="type-mono text-[9px] tracking-wide text-ink-4">{BRAND.versionLine}</span>
+          <div className="sidebar-version">
+            <span>{BRAND.versionLine}</span>
             <span className={`tag ${real ? 'tag--ok' : 'tag--demo'}`}>{real ? tk('real') : tk('demo')}</span>
           </div>
         )}

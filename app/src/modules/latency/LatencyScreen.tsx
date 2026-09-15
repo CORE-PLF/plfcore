@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { ScreenTitle } from '../../components/Kicker'
 import { MetricRow } from '../../components/MetricRow'
 import { ScanLine } from '../../components/ScanLine'
-import { SegmentedProgress } from '../../components/SegmentedProgress'
+import { ProgressBar } from '../../components/ProgressBar'
 import { DemoTag, EstimatedTag, KTag } from '../../components/Tag'
 import { IconCheck } from '../../components/icons'
 import { kitDict } from '../../components/i18n'
@@ -338,7 +338,7 @@ export default function LatencyScreen() {
         >
           <div className="grid grid-cols-12 gap-6">
             {/* elemento dominante: silhueta técnica com callouts */}
-            <ChamferSurface cut={8} className="col-span-7">
+            <Surface cut={8} className="col-span-7">
               <div className="stage-grid relative flex min-h-[340px] items-center p-6">
                 {carregando ? (
                   <Skeleton className="h-56 w-full" />
@@ -389,11 +389,11 @@ export default function LatencyScreen() {
                 )}
                 <ScanLine active={rodando && jobAba === aba} />
               </div>
-            </ChamferSurface>
+            </Surface>
 
             {/* painel denso + zona de ação */}
             <div className="col-span-5 flex flex-col gap-4">
-              <ChamferSurface cut={6} flat>
+              <Surface cut={6} flat>
                 <div className="p-4">
                   <div className="mb-2 flex items-center justify-between">
                     <span className="type-kicker text-ink-2">{t('leituras')}</span>
@@ -460,9 +460,9 @@ export default function LatencyScreen() {
                     </>
                   )}
                 </div>
-              </ChamferSurface>
+              </Surface>
 
-              <ChamferSurface cut={6}>
+              <Surface cut={6}>
                 <div className="p-4">
                   <p className="type-kicker mb-2 text-ink-2">{t('ajustes')}</p>
                   <ul>
@@ -498,17 +498,17 @@ export default function LatencyScreen() {
                           {tk('tempoDecorrido')} {fmtRelogio(decorridoS)}
                         </span>
                       </div>
-                      <SegmentedProgress pct={job.progressoPct} />
+                      <ProgressBar pct={job.progressoPct} />
                     </div>
                   )}
                 </div>
-              </ChamferSurface>
+              </Surface>
             </div>
           </div>
 
           {/* resultado: ANTES/DEPOIS + alterações aplicadas */}
           {run && !(rodando && jobAba === aba) && (
-            <ChamferSurface cut={8} className="mt-6">
+            <Surface cut={8} className="mt-6">
               <div className="p-5">
                 <div className="mb-4 flex items-center gap-3">
                   <svg width="22" height="22" viewBox="0 0 16 16" fill="none" aria-hidden>
@@ -589,7 +589,7 @@ export default function LatencyScreen() {
                   </div>
                 </div>
               </div>
-            </ChamferSurface>
+            </Surface>
           )}
         </div>
       )}

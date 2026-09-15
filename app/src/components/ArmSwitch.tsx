@@ -16,7 +16,7 @@ export function ArmSwitch({ armed, onChange, disabled }: Props) {
       role="switch"
       aria-checked={armed}
       disabled={disabled}
-      className="armswitch chamfer"
+      className="armswitch"
       onClick={() => {
         sfx.click()
         onChange(!armed)

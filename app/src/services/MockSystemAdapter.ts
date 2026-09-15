@@ -197,7 +197,7 @@ export class MockSystemAdapter implements SystemAdapter {
   async getMachineRecord(): Promise<MachineRecord> {
     await sleep(120)
     return {
-      hostname: 'RESYNC-DEMO-RIG',
+      hostname: 'PLF-DEMO-RIG',
       emServicoDesde: '2023-03-12',
       horasOperacao: 9412,
       serialBios: null,
@@ -620,7 +620,7 @@ export class MockSystemAdapter implements SystemAdapter {
       'disco-sem-economia': '6 chaves de driver',
       'disco-sem-idle-storport': '2 de 2 controladoras',
       'rede-tcp-imediato': 'Ethernet',
-      'cpu-idle-off': 'RESYNC - MAX PERFORMANCE',
+      'cpu-idle-off': 'PLF CORE - MAX PERFORMANCE',
     }
     return {
       items: [...FPS_BOOST_CATALOG, FPS_BOOST_RISCO].map((def) => ({
@@ -727,7 +727,7 @@ export class MockSystemAdapter implements SystemAdapter {
     return {
       profileId,
       alteracoesIds,
-      powerPlan: 'RESYNC - MAX PERFORMANCE',
+      powerPlan: 'PLF CORE - MAX PERFORMANCE',
       performanceVerified: true,
       restartRecommended: full,
       origin: 'demo',

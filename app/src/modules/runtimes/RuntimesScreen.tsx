@@ -5,9 +5,9 @@ import { useLogStore } from '../../stores/log'
 import { useToastsStore } from '../../stores/toasts'
 import type { RuntimeState } from '../../types'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { ScreenTitle } from '../../components/Kicker'
-import { SegmentedProgress } from '../../components/SegmentedProgress'
+import { ProgressBar } from '../../components/ProgressBar'
 import { StatusLED } from '../../components/StatusLED'
 import { ErrorState } from '../../components/states'
 import { IconCheck } from '../../components/icons'
@@ -151,7 +151,7 @@ export default function RuntimesScreen() {
 
       {itens !== null && (
         <>
-          <ChamferSurface cut={12} className="rt-hero">
+          <Surface cut={12} className="rt-hero">
             <div className="rt-hero-info">
               <span className="rt-hero-kicker">{t('heroKicker')}</span>
               <strong className="rt-hero-num type-mono">{faltando.length}</strong>
@@ -162,7 +162,7 @@ export default function RuntimesScreen() {
             <div className="rt-hero-acao">
               {lote ? (
                 <div className="rt-hero-progresso">
-                  <SegmentedProgress pct={(lote.feitos / lote.total) * 100} segments={20} hot />
+                  <ProgressBar pct={(lote.feitos / lote.total) * 100} segments={20} hot />
                   <span className="type-mono text-[10px] tracking-[0.12em] text-ink-3">
                     {t('loteAndamento', { feitos: lote.feitos, total: lote.total })}
                   </span>
@@ -184,7 +184,7 @@ export default function RuntimesScreen() {
                 {t('reler')}
               </Button>
             </div>
-          </ChamferSurface>
+          </Surface>
 
           {!winget && <p className="rt-aviso mt-4">{t('semWinget')}</p>}
           {reinicio && <p className="rt-aviso mt-4">{t('pedeReinicio')}</p>}
@@ -197,7 +197,7 @@ export default function RuntimesScreen() {
           </div>
 
           {detalhes && (
-            <ChamferSurface cut={8} className="p-2">
+            <Surface cut={8} className="p-2">
               <div className="rt-list">
                 {itens.map((item) => {
                   const id = item.id as RuntimeId
@@ -233,7 +233,7 @@ export default function RuntimesScreen() {
                   )
                 })}
               </div>
-            </ChamferSurface>
+            </Surface>
           )}
 
           {!detalhes && faltandoOpcional.length > 0 && (

@@ -3,7 +3,6 @@ import { shellDict } from './i18n'
 import { useNav } from '../stores/nav'
 import { isTauriEnv } from '../services/adapter'
 import { LevelBadge } from './LevelBadge'
-import { StatusLED } from '../components/StatusLED'
 import { IconMinus, IconSquare, IconTray, IconX } from '../components/icons'
 import './shell.css'
 
@@ -27,18 +26,22 @@ export function Topbar({ stagger }: { stagger: boolean }) {
 
   return (
     <header className={`topbar ${stagger ? 'hud-in' : ''}`} style={{ animationDelay: '40ms' }} data-tauri-drag-region>
-      <h2 className="type-display pointer-events-none text-lg" aria-live="polite">
+      <h2 className="pointer-events-none" aria-live="polite">
         {t(`nav.${screen}`)}
       </h2>
-      <div className="ml-auto flex items-center gap-4">
+      <div className="ml-auto flex items-center gap-2.5">
         <LevelBadge />
-        <StatusLED state="live" label={t('status.pronto')} className="hidden md:inline-flex" />
+        <span className="pill hidden font-bold tracking-[0.06em] text-ink-2 md:inline-flex" style={{ fontVariantNumeric: 'tabular-nums' }}>
+          <span className="led led--live" aria-hidden />
+          {t('status.pronto')}
+        </span>
+        <span className="topbar-sep" aria-hidden />
         <div className="flex">
           <button className="winbtn" aria-label={t('win.tray')} title={tauri ? t('win.tray') : t('win.soWeb')} disabled={!tauri} onClick={() => void toTray(t('win.trayAbrir'), t('win.traySair'))}>
-            <IconTray width={13} height={13} />
+            <IconTray width={14} height={14} />
           </button>
           <button className="winbtn" aria-label={t('win.min')} title={tauri ? t('win.min') : t('win.soWeb')} disabled={!tauri} onClick={() => void winAction('min')}>
-            <IconMinus width={12} height={12} />
+            <IconMinus width={14} height={14} />
           </button>
           <button className="winbtn" aria-label={t('win.max')} title={tauri ? t('win.max') : t('win.soWeb')} disabled={!tauri} onClick={() => void winAction('max')}>
             <IconSquare width={12} height={12} />

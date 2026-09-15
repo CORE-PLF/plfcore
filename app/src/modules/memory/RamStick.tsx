@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { Button } from '../../components/Button'
-import { SegmentedProgress } from '../../components/SegmentedProgress'
+import { ProgressBar } from '../../components/ProgressBar'
 import { ScanLine } from '../../components/ScanLine'
 import { DemoTag, KTag } from '../../components/Tag'
 import { IconCheck } from '../../components/icons'
@@ -27,7 +27,7 @@ interface Props {
   job: SystemJob | undefined
   demo: boolean
   elapsedS: number
-  /** já otimizado nesta sessão do app — só reabrindo o RESYNC libera de novo */
+  /** já otimizado nesta sessão do app — só reabrindo o PLF CORE libera de novo */
   otimizado: boolean
   onOptimize: () => void
   onCancel: () => void
@@ -50,7 +50,7 @@ export function RamStick({
   const uso = stick.ocupado && usagePct !== null ? usagePct / 100 : 0
 
   return (
-    <ChamferSurface
+    <Surface
       cut={8}
       role="group"
       aria-label={`${t('slot')} ${stick.slot}`}
@@ -99,7 +99,7 @@ export function RamStick({
                 <p className="type-mono text-[11px] font-bold tracking-[0.1em] text-ink-2">
                   {job.etapaKey ? t(job.etapaKey as MemKey) : t('analisando')}
                 </p>
-                <SegmentedProgress pct={job.progressoPct} segments={18} className="mt-1.5" />
+                <ProgressBar pct={job.progressoPct} segments={18} className="mt-1.5" />
                 <div className="mt-1.5 flex items-center justify-between">
                   <span className="type-mono text-[11px] text-ink-3">
                     {tk('tempoDecorrido')} {fmtMmSs(elapsedS)}
@@ -138,6 +138,6 @@ export function RamStick({
       </div>
       <div className="ram-pins" aria-hidden />
       <ScanLine active={running} durationS={1.4} />
-    </ChamferSurface>
+    </Surface>
   )
 }

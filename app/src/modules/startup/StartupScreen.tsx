@@ -6,10 +6,10 @@ import { useToastsStore } from '../../stores/toasts'
 import type { StartupEntry } from '../../types'
 import { ArmSwitch } from '../../components/ArmSwitch'
 import { Button } from '../../components/Button'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { HoldButton } from '../../components/HoldButton'
 import { ScreenTitle } from '../../components/Kicker'
-import { SegmentedProgress } from '../../components/SegmentedProgress'
+import { ProgressBar } from '../../components/ProgressBar'
 import { StatusLED } from '../../components/StatusLED'
 import { ErrorState } from '../../components/states'
 import { dict } from './i18n'
@@ -117,7 +117,7 @@ export default function StartupScreen() {
 
       {entradas !== null && (
         <>
-          <ChamferSurface cut={12} className="st-hero">
+          <Surface cut={12} className="st-hero">
             <div className="st-hero-info">
               <span className="st-hero-kicker">{t('heroKicker')}</span>
               <strong className="st-hero-num type-mono">{ativos}</strong>
@@ -128,7 +128,7 @@ export default function StartupScreen() {
             <div className="st-hero-acao">
               {lote ? (
                 <div className="st-hero-progresso">
-                  <SegmentedProgress pct={(lote.feitos / lote.total) * 100} segments={20} hot />
+                  <ProgressBar pct={(lote.feitos / lote.total) * 100} segments={20} hot />
                   <span className="type-mono text-[10px] tracking-[0.12em] text-ink-3">
                     {t('loteAndamento', { feitos: lote.feitos, total: lote.total })}
                   </span>
@@ -148,7 +148,7 @@ export default function StartupScreen() {
                 {t('reler')}
               </Button>
             </div>
-          </ChamferSurface>
+          </Surface>
 
           <p className="st-nota my-4">{t('heroNota')}</p>
 
@@ -157,7 +157,7 @@ export default function StartupScreen() {
           )}
 
           {entradas.length > 0 && (
-            <ChamferSurface cut={8} className="p-2">
+            <Surface cut={8} className="p-2">
               <div className="st-list">
                 {entradas.map((entrada) => (
                   <div key={entrada.id} className={`st-row ${entrada.ativado ? '' : 'st-row--off'}`}>
@@ -185,7 +185,7 @@ export default function StartupScreen() {
                   </div>
                 ))}
               </div>
-            </ChamferSurface>
+            </Surface>
           )}
 
           <p className="st-nota mt-5">{t('nota')}</p>

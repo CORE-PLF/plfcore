@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
-import { ChamferSurface } from './ChamferSurface'
+import { Surface } from './Surface'
 import { Button } from './Button'
-import { SegmentedProgress } from './SegmentedProgress'
+import { ProgressBar } from './ProgressBar'
 import { IconCheck } from './icons'
 import { useT } from '../i18n'
 import { kitDict } from './i18n'
@@ -32,7 +32,7 @@ export function Modal({ open, title, onClose, children, danger, width = 520 }: M
   if (!open) return null
   return (
     <div className="modal-overlay" onMouseDown={(e) => e.target === e.currentTarget && onClose?.()}>
-      <ChamferSurface
+      <Surface
         cut={12}
         allCorners
         className="modal-panel"
@@ -48,7 +48,7 @@ export function Modal({ open, title, onClose, children, danger, width = 520 }: M
             {children}
           </div>
         </div>
-      </ChamferSurface>
+      </Surface>
     </div>
   )
 }
@@ -69,7 +69,7 @@ export function ProgressModal({ open, title, step, pct, elapsedS, cancellable, o
   return (
     <Modal open={open} title={title}>
       <p className="type-mono mb-3 text-xs text-ink-2">{step}</p>
-      <SegmentedProgress pct={pct} />
+      <ProgressBar pct={pct} />
       <div className="mt-3 flex items-center justify-between">
         <span className="type-mono text-[11px] text-ink-3">
           {t('tempoDecorrido')} {Math.floor(elapsedS / 60).toString().padStart(2, '0')}:{Math.floor(elapsedS % 60).toString().padStart(2, '0')}

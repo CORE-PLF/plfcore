@@ -8,7 +8,7 @@ import { useToastsStore } from '../../stores/toasts'
 import { getAdapter, isTauriEnv } from '../../services/adapter'
 import { sfx } from '../../services/sfx'
 import { BRAND } from '../../brand'
-import { ChamferSurface } from '../../components/ChamferSurface'
+import { Surface } from '../../components/Surface'
 import { ScreenTitle } from '../../components/Kicker'
 import { Button } from '../../components/Button'
 import { HoldButton } from '../../components/HoldButton'
@@ -41,13 +41,13 @@ const MODIFICADORES = ['Control', 'Alt', 'Shift', 'Meta']
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <ChamferSurface cut={8} flat>
+    <Surface cut={8} flat>
       <section className="p-5" aria-label={title}>
         <h2 className="type-display text-xl">{title}</h2>
         <div className="rule-fade mt-2 mb-1 w-40" />
         {children}
       </section>
-    </ChamferSurface>
+    </Surface>
   )
 }
 
@@ -109,7 +109,7 @@ function ShortcutField() {
   }
 
   return (
-    <ChamferSurface cut={4} flat edge={capturing ? 'var(--color-signal)' : undefined} className="inline-block">
+    <Surface cut={4} flat edge={capturing ? 'var(--color-signal)' : undefined} className="inline-block">
       <input
         readOnly
         className={`pfx-shortcut ${capturing ? 'capturing' : ''}`}
@@ -119,7 +119,7 @@ function ShortcutField() {
         onBlur={() => setCapturing(false)}
         onKeyDown={onKeyDown}
       />
-    </ChamferSurface>
+    </Surface>
   )
 }
 
@@ -222,7 +222,7 @@ export default function SettingsScreen() {
           <div className="flex flex-col gap-6">
             <Group title={t('gGeral')}>
               <Row label={t('idioma')}>
-                <ChamferSurface cut={4} flat className="pfx-select-wrap">
+                <Surface cut={4} flat className="pfx-select-wrap">
                   <select
                     className="pfx-select"
                     value={locale}
@@ -239,7 +239,7 @@ export default function SettingsScreen() {
                     ))}
                   </select>
                   <IconChevron className="pfx-select-chev" width={12} height={12} />
-                </ChamferSurface>
+                </Surface>
               </Row>
               <Row label={t('iniciarWindows')}>
                 <Toggle

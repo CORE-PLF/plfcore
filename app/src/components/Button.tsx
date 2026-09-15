@@ -1,17 +1,17 @@
-import type { ButtonHTMLAttributes, CSSProperties } from 'react'
+import type { ButtonHTMLAttributes } from 'react'
 import { sfx } from '../services/sfx'
 import './kit.css'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'ghost' | 'danger'
-  size?: 'md' | 'sm'
+  /** primary = amarelo (uma ação por tela); ghost = contorno; danger = vermelho; secondary = cinza */
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
+  size?: 'lg' | 'md' | 'sm'
 }
 
-export function Button({ variant = 'ghost', size = 'md', className = '', onClick, style, ...rest }: Props) {
+export function Button({ variant = 'secondary', size = 'md', className = '', onClick, ...rest }: Props) {
   return (
     <button
-      className={`btn chamfer btn--${variant} ${size === 'sm' ? 'btn--sm' : ''} ${className}`}
-      style={{ '--cut': size === 'sm' ? '4px' : '6px', ...style } as CSSProperties}
+      className={`btn btn--${variant} ${size !== 'md' ? `btn--${size}` : ''} ${className}`}
       onClick={(e) => {
         sfx.click()
         onClick?.(e)

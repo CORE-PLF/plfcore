@@ -1,4 +1,4 @@
-// Comandos nativos do RESYNC.
+// Comandos nativos do PLF CORE.
 // Regras: PowerShell só com script FIXO (lista branca, sem concatenação de input),
 // timeout em tudo, limpeza restrita a diretórios seguros conhecidos, kill com lista de negação.
 
@@ -245,7 +245,7 @@ const KILL_DENY: &[&str] = &[
     "wudfhost.exe",
     "fontdrvhost.exe",
     "memcompression",
-    "resync.exe",
+    "plfcore.exe",
 ];
 
 /// `refresh_processes` não traz o dono do processo; sem ele o filtro de sessão
