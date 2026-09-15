@@ -1,0 +1,51 @@
+/* linha de categoria: alvo grande, borda inferior, sem cara de lista genérica */
+.clean-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  padding: 6px 8px;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--color-line);
+  background: none;
+  cursor: pointer;
+  transition: background var(--t-fast) var(--expo);
+}
+.clean-row:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.03);
+}
+.clean-row:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.clean-row--solo {
+  border-bottom: 0;
+}
+
+/* checkbox quadrado chanfrado — o fundo é a borda, ::before pinta o miolo */
+.clean-check {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  background: var(--color-edge);
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+.clean-check::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--color-carbon);
+  clip-path: inherit;
+}
+.clean-check > svg {
+  position: relative;
+  z-index: 1;
+}
+.clean-row[aria-checked='true'] .clean-check {
+  background: var(--color-signal);
+}

@@ -1,0 +1,378 @@
+/* ===== layout ===== */
+.appshell {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 52px 1fr 24px;
+  height: 100%;
+}
+.appshell > aside { grid-row: 1 / 4; }
+
+/* ===== sidebar ===== */
+.sidebar {
+  width: 232px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-carbon);
+  border-right: 1px solid var(--color-line);
+  transition: width var(--t-base) var(--expo);
+  overflow: hidden;
+}
+.sidebar.collapsed { width: 64px; }
+.sidebar nav { flex: 1; overflow-y: auto; overflow-x: hidden; }
+.navitem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 20px;
+  border: none;
+  background: transparent;
+  color: var(--color-ink-3);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--t-fast), background var(--t-fast);
+}
+.navitem:hover { color: var(--color-ink-1); }
+.navitem.active {
+  background: rgba(110, 15, 29, 0.25);
+  color: var(--color-ink-1);
+}
+.navitem.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-signal);
+}
+.navitem svg { flex: none; }
+.sidebar.collapsed .navitem { padding: 0 24px; }
+.sidebar.collapsed .navitem span { opacity: 0; }
+
+/* ===== topbar ===== */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 0 0 20px;
+  background: var(--color-carbon);
+  border-bottom: 1px solid var(--color-line);
+}
+.winbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 51px;
+  border: none;
+  background: transparent;
+  color: var(--color-ink-3);
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.winbtn:hover { background: var(--color-steel); color: var(--color-ink-1); }
+.winbtn.close:hover { background: var(--color-blood); color: var(--color-ink-1); }
+.winbtn:disabled { opacity: 0.3; cursor: default; }
+.winbtn:disabled:hover { background: transparent; color: var(--color-ink-3); }
+
+/* ===== item crítico do menu: FPS BOOSTER é a aba principal ===== */
+.navitem--critical { color: var(--color-signal); }
+.navitem--critical:hover { color: var(--color-signal); filter: brightness(1.25); }
+.navitem--critical::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-signal) 0 3px,
+    transparent 3px 6px
+  );
+}
+.navitem--critical.active { background: rgba(196, 18, 48, 0.28); color: var(--color-ink-1); }
+.navitem--critical.active::after { background-image: none; background: var(--color-signal); width: 2px; }
+.sidebar.collapsed .navitem--critical::after { width: 2px; }
+
+/* ===== selo de prontidão no topo: leitura, a operação vive na tela WINDOWS ===== */
+.levelbadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--color-line);
+  background: var(--color-steel);
+  cursor: pointer;
+  transition: filter var(--t-fast) var(--expo), border-color var(--t-fast);
+}
+.levelbadge:hover { filter: brightness(1.2); border-color: var(--color-rust); }
+.levelbadge--hot { border-color: var(--color-rust); }
+.levelbadge-code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-1);
+}
+.levelbadge--hot .levelbadge-code { color: var(--color-signal); }
+.levelbadge-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+}
+
+/* ===== preparação real do L1 ===== */
+.l1-preflight-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+.l1-live-readout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(92px, 1fr));
+  border: 1px solid var(--color-line);
+  background: rgba(255, 255, 255, 0.018);
+}
+.l1-live-readout span {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 12px;
+}
+.l1-live-readout span + span { border-left: 1px solid var(--color-line); }
+.l1-live-readout small {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-ink-4);
+}
+.l1-live-readout strong {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--color-ink-1);
+}
+.l1-change-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--color-line);
+  background: var(--color-line);
+}
+.l1-change-grid span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 31px;
+  padding: 6px 10px;
+  background: var(--color-panel);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-ink-2);
+}
+.l1-change-grid i { color: var(--color-heat); font-style: normal; }
+.l1-process-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 14px;
+  padding: 9px 11px;
+  border: 1px solid var(--color-line);
+  background: rgba(255, 46, 63, 0.045);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-3);
+}
+.l1-process-summary strong { color: var(--color-ink-1); }
+/* sem rolagem própria: a lista cresce e quem rola é o corpo do modal.
+   Rolagem aninhada prendia a roda do mouse e escondia os botões. */
+.l1-process-list {
+  border: 1px solid var(--color-line);
+  border-top: 0;
+}
+.l1-debloat-summary { margin-top: 10px; background: rgba(255, 75, 49, 0.035); }
+.l1-debloat-list .l1-process-ram { font-size: 8px; color: var(--color-ink-3); }
+.l1-actions {
+  position: sticky;
+  bottom: -24px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 20px -24px -24px;
+  padding: 14px 24px 24px;
+  background: var(--color-void);
+  border-top: 1px solid var(--color-line);
+}
+.l1-process-row {
+  display: grid;
+  grid-template-columns: 18px minmax(160px, 1fr) auto 74px;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--color-line);
+  cursor: pointer;
+  transition: background var(--t-fast);
+}
+.l1-process-row:last-child { border-bottom: 0; }
+.l1-process-row:hover { background: rgba(255, 255, 255, 0.025); }
+.l1-process-row.is-selected { background: rgba(255, 46, 63, 0.055); }
+.l1-process-row input { position: absolute; opacity: 0; pointer-events: none; }
+.l1-process-check {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-ink-4);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-ink-1);
+}
+.l1-process-row.is-selected .l1-process-check { border-color: var(--color-signal); background: var(--color-blood); }
+.l1-process-name { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.l1-process-name strong,
+.l1-process-name small,
+.l1-process-ram,
+.l1-process-tag { font-family: var(--font-mono); }
+.l1-process-name strong { overflow: hidden; text-overflow: ellipsis; font-size: 11px; color: var(--color-ink-1); }
+.l1-process-name small { font-size: 9px; color: var(--color-ink-4); }
+.l1-process-tag { padding: 3px 6px; border: 1px solid var(--color-line); font-size: 8px; color: var(--color-ink-3); }
+.l1-process-tag--recommended { border-color: rgba(255, 75, 49, 0.38); color: var(--color-heat); }
+.l1-process-tag--attention { color: var(--color-ink-2); }
+.l1-process-ram { text-align: right; font-size: 11px; color: var(--color-ink-1); }
+.l1-running { padding: 22px 4px 8px; }
+
+@media (max-width: 720px) {
+  .l1-preflight-head { flex-direction: column; }
+  .l1-live-readout { width: 100%; }
+  .l1-change-grid { grid-template-columns: 1fr; }
+  .l1-process-row { grid-template-columns: 18px minmax(110px, 1fr) 65px; }
+  .l1-process-tag { display: none; }
+}
+
+/* ===== barra inferior ===== */
+.bottombar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  background: var(--color-carbon);
+  border-top: 1px solid var(--color-line);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-ink-3);
+}
+
+/* ===== área principal + wipe diagonal ===== */
+.mainarea {
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--color-void);
+}
+.wipe-in {
+  animation: wipe-diag var(--t-page) var(--snap);
+}
+@keyframes wipe-diag {
+  from { clip-path: polygon(0 0, 0% 0, -25% 100%, 0 100%); }
+  to { clip-path: polygon(0 0, 125% 0, 100% 100%, 0 100%); }
+}
+
+/* ===== hosts flutuantes ===== */
+.toasthost {
+  position: fixed;
+  top: 64px;
+  right: 12px;
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.killfeedhost {
+  position: fixed;
+  right: 0;
+  bottom: 40px;
+  z-index: 140;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 300px;
+}
+
+/* ===== ignição ===== */
+.ignition {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--color-void);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.ignition.lifting { animation: fade-out 260ms var(--expo) forwards; }
+.ign-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--color-signal);
+  filter: var(--glow-signal);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: ign-sweep 350ms var(--snap) forwards;
+}
+@keyframes ign-sweep {
+  to { transform: scaleX(1); }
+}
+.ign-logo {
+  clip-path: inset(0 100% 0 0);
+  animation: ign-reveal 400ms var(--snap) 300ms forwards;
+  filter: var(--glow-signal);
+}
+@keyframes ign-reveal {
+  to { clip-path: inset(0 0 0 0); }
+}
+.ign-flicker { animation: ign-flick 60ms steps(2) 750ms 1; }
+@keyframes ign-flick {
+  50% { opacity: 0.2; }
+}
+.ign-skip {
+  position: absolute;
+  bottom: 32px;
+  animation: fade-in 400ms var(--expo) 600ms backwards;
+}
+
+/* HUD monta em stagger de 40ms */
+.hud-in {
+  animation: hud-mount 320ms var(--expo) backwards;
+}
+@keyframes hud-mount {
+  from { opacity: 0; transform: translateY(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ign-line, .ign-logo, .ign-flicker { animation-duration: 1ms !important; animation-delay: 0ms !important; }
+}

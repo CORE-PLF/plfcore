@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Order` ADD COLUMN `licenseIntent` ENUM('EXTEND', 'NEW_INSTALL') NOT NULL DEFAULT 'EXTEND';

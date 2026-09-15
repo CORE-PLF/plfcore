@@ -1,0 +1,178 @@
+@import '@fontsource/saira-condensed/600.css';
+@import '@fontsource/saira-condensed/800.css';
+@import '@fontsource/quantico/400.css';
+@import '@fontsource/quantico/700.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/700.css';
+@import '@fontsource/jetbrains-mono/800.css';
+@import 'tailwindcss';
+
+@theme {
+  /* paleta — vermelho é luz e sinal, nunca tinta de área grande */
+  --color-void: #050506;
+  --color-carbon: #0a0a0d;
+  --color-steel: #101014;
+  --color-signal: #ff2e3f;
+  --color-blood: #c41230;
+  --color-rust: #6e0f1d;
+  --color-heat: #ff4d2e;
+  --color-ink-1: rgba(255, 255, 255, 0.96);
+  --color-ink-2: rgba(255, 255, 255, 0.66);
+  --color-ink-3: rgba(255, 255, 255, 0.42);
+  --color-ink-4: rgba(255, 255, 255, 0.26);
+  --color-line: rgba(255, 255, 255, 0.07);
+  --color-edge: rgba(255, 255, 255, 0.1);
+
+  --font-display: 'Saira Condensed', 'Arial Narrow', sans-serif;
+  --font-ui: 'Quantico', 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+}
+
+:root {
+  --panel: linear-gradient(160deg, rgba(16, 16, 20, 0.97) 42%, rgba(7, 7, 9, 0.72) 100%);
+  --t-fast: 120ms;
+  --t-base: 180ms;
+  --t-page: 260ms;
+  --expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --snap: cubic-bezier(0.7, 0, 0.3, 1);
+  --glow-signal: drop-shadow(0 0 12px rgba(255, 46, 63, 0.35));
+}
+
+/* REGRA ZERO: raio global 0. Círculos literais usam .circle. */
+*,
+*::before,
+*::after {
+  border-radius: 0;
+}
+.circle {
+  border-radius: 50%;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--color-void);
+  color: var(--color-ink-2);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* grain 2–3% sobre o fundo */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='128' height='128' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* tipografia utilitária do sistema */
+.type-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  padding-right: 0.12em; /* sem isso o clip-path come a ponta do itálico */
+  color: var(--color-ink-1);
+}
+.type-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.type-kicker {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-ink-3);
+}
+
+/* hazard stripes 45° — exclusivo de zonas destrutivas */
+.hazard {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 46, 63, 0.18) 0 8px,
+    rgba(0, 0, 0, 0) 8px 16px
+  );
+}
+
+/* scanlines quase invisíveis para painéis de dados */
+.scanlines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.015) 0 1px,
+    transparent 1px 3px
+  );
+}
+
+/* grid técnico de 24px — só em palcos, não na tela inteira */
+.stage-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* régua de 1px que morre em transparente */
+.rule-fade {
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-line), transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid var(--color-void);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 46, 63, 0.4);
+}
+
+/* intensidade de animação: setting do app; 'off' e 'reduzida' espelham reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 150ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+:root[data-anim='off'] *,
+:root[data-anim='off'] *::before,
+:root[data-anim='off'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+:root[data-anim='reduzida'] *,
+:root[data-anim='reduzida'] *::before,
+:root[data-anim='reduzida'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 120ms !important;
+}

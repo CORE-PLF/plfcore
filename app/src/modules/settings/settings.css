@@ -1,0 +1,102 @@
+/* ===== toggle quadrado (mini arm-switch) ===== */
+.pfx-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 4px 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-ink-3);
+  transition: color var(--t-fast) var(--expo);
+}
+.pfx-toggle[aria-checked='true'] {
+  color: var(--color-ink-1);
+}
+.pfx-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+.pfx-toggle .track {
+  position: relative;
+  width: 28px;
+  height: 14px;
+  flex: none;
+  background: rgba(255, 255, 255, 0.08);
+  clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
+}
+.pfx-toggle .track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  background: var(--color-ink-3);
+  transition: transform var(--t-fast) var(--snap), background var(--t-fast);
+}
+.pfx-toggle[aria-checked='true'] .track::after {
+  transform: translateX(14px);
+  background: var(--color-signal);
+}
+.pfx-toggle .state {
+  width: 28px;
+  text-align: left;
+}
+
+/* ===== select de idioma chanfrado ===== */
+.pfx-select-wrap {
+  display: inline-block;
+}
+.pfx-select {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 34px;
+  min-width: 180px;
+  padding: 0 32px 0 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-1);
+}
+.pfx-select option {
+  background: var(--color-carbon);
+  color: var(--color-ink-1);
+}
+.pfx-select-chev {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  pointer-events: none;
+  color: var(--color-ink-3);
+}
+
+/* ===== campo de captura do atalho ===== */
+.pfx-shortcut {
+  width: 220px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-1);
+}
+.pfx-shortcut.capturing {
+  color: var(--color-signal);
+}

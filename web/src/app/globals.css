@@ -1,0 +1,319 @@
+@import 'tailwindcss';
+
+/* ===== RESYNC — identidade portada do aplicativo (REGRA ZERO) =====
+   Preto real + vermelho-sinal, chanfros 45°, zero canto arredondado.
+   Fontes chegam via next/font (variáveis --font-*). */
+
+@theme {
+  --color-void: #050506;
+  --color-carbon: #0a0a0d;
+  --color-steel: #101014;
+  --color-signal: #ff2e3f;
+  --color-blood: #c41230;
+  --color-rust: #6e0f1d;
+  --color-heat: #ff4d2e;
+  --color-ink-1: rgba(255, 255, 255, 0.96);
+  --color-ink-2: rgba(255, 255, 255, 0.66);
+  --color-ink-3: rgba(255, 255, 255, 0.42);
+  --color-ink-4: rgba(255, 255, 255, 0.26);
+  --color-line: rgba(255, 255, 255, 0.07);
+  --color-edge: rgba(255, 255, 255, 0.1);
+
+  --font-display: var(--font-saira), 'Arial Narrow', sans-serif;
+  --font-ui: var(--font-quantico), 'Segoe UI', sans-serif;
+  --font-mono: var(--font-jetbrains), 'Consolas', monospace;
+}
+
+:root {
+  --panel: linear-gradient(160deg, rgba(16, 16, 20, 0.97) 42%, rgba(7, 7, 9, 0.72) 100%);
+  --t-fast: 120ms;
+  --t-base: 180ms;
+  --t-page: 260ms;
+  --expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --snap: cubic-bezier(0.7, 0, 0.3, 1);
+  --glow-signal: drop-shadow(0 0 12px rgba(255, 46, 63, 0.35));
+}
+
+/* REGRA ZERO: raio global 0. Círculo literal usa .circle. */
+*,
+*::before,
+*::after {
+  border-radius: 0;
+}
+.circle {
+  border-radius: 50%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-void);
+  color: var(--color-ink-2);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* grain 2–3% sobre o fundo */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='128' height='128' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* tipografia utilitária */
+.type-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.02;
+  padding-right: 0.12em; /* sem isso o clip-path come a ponta do itálico */
+  color: var(--color-ink-1);
+  text-wrap: balance;
+}
+.type-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.type-kicker {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-ink-3);
+}
+
+/* ===== superfície chanfrada — o fundo do elemento É a borda; ::before pinta o miolo ===== */
+.chamfer {
+  --cut: 8px;
+  position: relative;
+  background: var(--ch-edge, var(--color-edge));
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+}
+.chamfer--all {
+  clip-path: polygon(
+    var(--cut) 0,
+    calc(100% - var(--cut)) 0,
+    100% var(--cut),
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    var(--cut) 100%,
+    0 calc(100% - var(--cut)),
+    0 var(--cut)
+  );
+}
+.chamfer::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  background: var(--ch-fill, var(--panel));
+  clip-path: inherit;
+}
+.chamfer--flat::before {
+  background: var(--ch-fill, var(--color-carbon));
+}
+
+/* colchetes de mira nos 4 cantos */
+.brackets > .bk {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--color-signal);
+  pointer-events: none;
+  z-index: 2;
+}
+.brackets > .bk:nth-of-type(1) { top: 1px; left: 1px; border-width: 1px 0 0 1px; }
+.brackets > .bk:nth-of-type(2) { top: 1px; right: 1px; border-width: 1px 1px 0 0; }
+.brackets > .bk:nth-of-type(3) { bottom: 1px; right: 1px; border-width: 0 1px 1px 0; }
+.brackets > .bk:nth-of-type(4) { bottom: 1px; left: 1px; border-width: 0 0 1px 1px; }
+
+/* ===== botões ===== */
+.btn {
+  --cut: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 22px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 15px;
+  padding-right: calc(22px + 0.12em);
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition:
+    filter var(--t-fast) var(--expo),
+    transform var(--t-fast) var(--expo);
+}
+.btn:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+.btn--primary {
+  --ch-edge: var(--color-signal);
+  --ch-fill: var(--color-signal);
+  color: #0a0508;
+}
+.btn--primary:hover:not(:disabled) {
+  filter: brightness(1.06) var(--glow-signal);
+}
+.btn--ghost {
+  --ch-fill: rgba(16, 16, 20, 0.6);
+  color: var(--color-ink-2);
+}
+.btn--ghost:hover:not(:disabled) {
+  color: var(--color-ink-1);
+}
+.btn--danger {
+  --ch-edge: var(--color-rust);
+  --ch-fill: rgba(110, 15, 29, 0.18);
+  color: var(--color-signal);
+}
+.btn--sm {
+  min-height: 34px;
+  padding: 0 14px;
+  font-size: 13px;
+  --cut: 4px;
+}
+
+/* ===== inputs ===== */
+.field {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  color: var(--color-ink-1);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  border: none;
+  outline: none;
+  background-color: var(--color-steel);
+  box-shadow: inset 0 0 0 1px var(--color-edge);
+}
+.field:focus {
+  box-shadow: inset 0 0 0 1px var(--color-signal);
+}
+.field::placeholder {
+  color: var(--color-ink-4);
+}
+
+/* ===== progresso segmentado — blocos, gap 2px; NUNCA barra lisa ===== */
+.segprog {
+  display: flex;
+  gap: 2px;
+  height: 10px;
+}
+.segprog i {
+  flex: 1;
+  background: var(--color-edge);
+}
+.segprog i.on {
+  background: var(--color-signal);
+}
+
+/* hazard stripes — SÓ zonas destrutivas */
+.hazard {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 46, 63, 0.18) 0 8px,
+    rgba(0, 0, 0, 0) 8px 16px
+  );
+}
+
+.scanlines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.015) 0 1px,
+    transparent 1px 3px
+  );
+}
+
+.stage-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.rule-fade {
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-line), transparent);
+}
+
+/* selo de demonstração — obrigatório em qualquer dado ilustrativo */
+.demo-seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-heat);
+  box-shadow: inset 0 0 0 1px rgba(255, 77, 46, 0.4);
+  text-transform: uppercase;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgba(255, 46, 63, 0.35);
+  color: var(--color-ink-1);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid var(--color-void);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 46, 63, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 150ms !important;
+    scroll-behavior: auto !important;
+  }
+}

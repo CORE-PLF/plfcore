@@ -1,0 +1,22 @@
+# MySQL de DESENVOLVIMENTO — só o banco; o app roda fora (npm run dev).
+#
+# Uso:
+#   docker compose -f docker-compose.dev.yml up -d
+#   No .env: DATABASE_URL=mysql://root:resync_dev@localhost:3307/resync
+#
+# Porta 3307 no host para não brigar com um MySQL local na 3306.
+services:
+  mysql:
+    image: mysql:8
+    # volta sozinho quando o Docker Desktop sobe — sem banco, a home dá 500
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: resync_dev
+      MYSQL_DATABASE: resync
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

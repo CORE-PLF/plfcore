@@ -1,0 +1,523 @@
+openapi: 3.1.0
+info:
+  title: RESYNC — API do aplicativo (v1)
+  version: 1.0.0
+  description: |
+    API consumida pelo aplicativo desktop RESYNC para ativação, validação e
+    atualização de licenças. JSON em todas as respostas. Erros SEMPRE no formato
+    `{ "error": { "code": "ERR_*", "message": "..." } }` com códigos estáveis.
+
+    A licença é individual e vinculada à INSTALAÇÃO do Windows. O campo `hwid`
+    é obrigatoriamente o SHA-256 (64 caracteres hex) calculado NO APLICATIVO
+    sobre um identificador da instalação que muda ao formatar o Windows (ex.:
+    `MachineGuid`). NUNCA envie identificador bruto (serial de placa-mãe, de
+    disco ou GUID em claro) — o servidor rejeita qualquer valor que não seja o
+    hash (`ERR_INVALID_BODY`).
+
+    Rate limit por IP + chave de licença. Ao exceder: HTTP 429 `ERR_RATE_LIMITED`.
+
+    O campo `serverTime` (ISO 8601, UTC) permite ao aplicativo detectar relógio
+    local adulterado.
+servers:
+  - url: /api/v1
+tags:
+  - name: licenses
+    description: Ativação e ciclo de vida da licença no dispositivo
+  - name: app
+    description: Versão e download do instalador
+  - name: status
+    description: Saúde do serviço
+
+paths:
+  /licenses/activate:
+    post:
+      tags: [licenses]
+      operationId: activateLicense
+      summary: Ativa a licença nesta instalação
+      description: |
+        Primeira ativação liga o relógio de expiração da licença e vincula a
+        instalação (`hwid`). Reativação na mesma instalação (mesmo `hwid`) é
+        idempotente e emite um novo `deviceToken`.
+
+        Se a chave já foi consumida por OUTRA instalação (Windows formatado,
+        outro computador), a ativação falha com HTTP 409
+        `ERR_INSTALLATION_ALREADY_CONSUMED` e a tentativa fica registrada no
+        histórico da licença (só com o hwid mascarado). Nesse caso é preciso
+        adquirir uma nova licença no painel.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateRequest'
+            example:
+              key: RESYNC-A2C4-E6G8-J3KL-MN57
+              hwid: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+              deviceName: DESKTOP-GAMER
+              appVersion: 1.2.0
+      responses:
+        '200':
+          description: Licença ativa nesta instalação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivateResponse'
+              example:
+                deviceToken: Xk3P9mQvR7tW2yZ5aB8cD1eF4gH6jL0nS-uV_wA9bC2d
+                status: ACTIVE
+                plan: { slug: anual, name: Plano Anual }
+                expiresAt: '2027-08-03T12:00:00.000Z'
+                deviceLimit: 1
+                devices: 1
+        '400': { $ref: '#/components/responses/InvalidBody' }
+        '403': { $ref: '#/components/responses/LicenseForbidden' }
+        '404': { $ref: '#/components/responses/LicenseNotFound' }
+        '409':
+          description: |
+            `ERR_INSTALLATION_ALREADY_CONSUMED` — a chave já está vinculada a
+            outra instalação do Windows (licença individual, `deviceLimit` 1).
+            Acontece após formatar o Windows ou ao tentar usar a chave em outro
+            computador. Solução: adquirir uma nova licença no painel.
+
+            `ERR_DEVICE_LIMIT` — todas as vagas de uma licença
+            multi-dispositivo (`deviceLimit` > 1) já estão em uso.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example:
+                error:
+                  code: ERR_INSTALLATION_ALREADY_CONSUMED
+                  message: Esta chave já foi consumida por outra instalação do Windows. Após formatar ou trocar de computador é preciso adquirir uma nova licença no painel.
+        '410': { $ref: '#/components/responses/LicenseReplaced' }
+        '426': { $ref: '#/components/responses/AppOutdated' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '503':
+          description: |
+            `ERR_ACTIVATIONS_DISABLED` — novas ativações temporariamente
+            pausadas pela operação. Licenças já ativadas seguem funcionando
+            (validate e heartbeat não são bloqueados). Tente novamente em
+            alguns minutos.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example:
+                error:
+                  code: ERR_ACTIVATIONS_DISABLED
+                  message: Novas ativações estão temporariamente pausadas. Tente novamente em alguns minutos.
+
+  /licenses/validate:
+    post:
+      tags: [licenses]
+      operationId: validateLicense
+      summary: Valida licença e instalação vinculada
+      description: |
+        Confere status da licença e o vínculo da instalação usando o
+        `deviceToken` recebido na ativação. Atualiza `lastValidatedAt` e
+        `lastSeenAt`. Use na abertura do aplicativo.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenHwidRequest'
+            example:
+              token: Xk3P9mQvR7tW2yZ5aB8cD1eF4gH6jL0nS-uV_wA9bC2d
+              hwid: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+      responses:
+        '200':
+          description: Licença válida nesta instalação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResult'
+              example:
+                status: ACTIVE
+                plan: { slug: anual, name: Plano Anual }
+                expiresAt: '2027-08-03T12:00:00.000Z'
+                serverTime: '2026-08-03T15:30:00.000Z'
+        '400': { $ref: '#/components/responses/InvalidBody' }
+        '403': { $ref: '#/components/responses/LicenseOrDeviceForbidden' }
+        '410': { $ref: '#/components/responses/LicenseReplaced' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /licenses/deactivate:
+    post:
+      tags: [licenses]
+      operationId: deactivateDevice
+      deprecated: true
+      summary: DESCONTINUADO — responde sempre 410
+      description: |
+        Descontinuado: a licença é individual e vinculada à instalação do
+        Windows, e a desativação pelo próprio aplicativo permitiria contornar a
+        regra (desativar + ativar em outra instalação). Troca de instalação
+        exige nova licença; exceções somente pelo suporte/admin no painel
+        administrativo.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyHwidRequest'
+            example:
+              key: RESYNC-A2C4-E6G8-J3KL-MN57
+              hwid: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+      responses:
+        '400': { $ref: '#/components/responses/InvalidBody' }
+        '410':
+          description: 'ERR_DEACTIVATE_DISABLED — rota descontinuada'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example:
+                error:
+                  code: ERR_DEACTIVATE_DISABLED
+                  message: A desativação pelo aplicativo foi descontinuada. Para trocar de instalação, adquira uma nova licença no painel.
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '404': { $ref: '#/components/responses/LicenseNotFound' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /licenses/heartbeat:
+    post:
+      tags: [licenses]
+      operationId: heartbeat
+      summary: Batimento periódico (leve)
+      description: |
+        Igual ao validate, porém leve: atualiza só `lastSeenAt` e `appVersion`
+        do dispositivo. Usa o `deviceToken` da ativação. Use em intervalo
+        regular com o aplicativo aberto.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HeartbeatRequest'
+            example:
+              token: Xk3P9mQvR7tW2yZ5aB8cD1eF4gH6jL0nS-uV_wA9bC2d
+              hwid: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+              appVersion: 1.2.0
+      responses:
+        '200':
+          description: Licença segue válida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResult'
+        '400': { $ref: '#/components/responses/InvalidBody' }
+        '403': { $ref: '#/components/responses/LicenseOrDeviceForbidden' }
+        '410': { $ref: '#/components/responses/LicenseReplaced' }
+        '426': { $ref: '#/components/responses/AppOutdated' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /app/version:
+    get:
+      tags: [app]
+      operationId: latestVersion
+      summary: Última versão publicada (canal stable)
+      responses:
+        '200':
+          description: Versão mais recente ativa
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [version, notes, checksum, publishedAt]
+                properties:
+                  version: { type: string }
+                  notes: { type: string, description: Notas da versão }
+                  checksum: { type: string, description: SHA-256 do instalador }
+                  publishedAt: { type: string, format: date-time }
+              example:
+                version: 1.2.0
+                notes: Correções no leitor de sensores e limpeza mais rápida.
+                checksum: 3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+                publishedAt: '2026-07-20T18:00:00.000Z'
+        '404': { $ref: '#/components/responses/NoVersion' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /app/download:
+    get:
+      tags: [app]
+      operationId: downloadUrl
+      summary: URL do instalador (exige licença)
+      description: |
+        Retorna a URL direta do instalador — sem redirect; o aplicativo baixa.
+        Exige licença válida (ou pendente de ativação) no header `X-License-Key`.
+      security:
+        - licenseKey: []
+      parameters:
+        - name: X-License-Key
+          in: header
+          required: true
+          schema: { type: string }
+          example: RESYNC-A2C4-E6G8-J3KL-MN57
+      responses:
+        '200':
+          description: URL e checksum do instalador
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url, checksum, version]
+                properties:
+                  url: { type: string, format: uri }
+                  checksum: { type: string }
+                  version: { type: string }
+              example:
+                url: https://cdn.example.com/resync/resync-setup-1.2.0.exe
+                checksum: 3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+                version: 1.2.0
+        '401':
+          description: 'ERR_LICENSE_KEY_REQUIRED — header ausente'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example:
+                error:
+                  code: ERR_LICENSE_KEY_REQUIRED
+                  message: Envie a chave de licença no header X-License-Key.
+        '403': { $ref: '#/components/responses/LicenseForbidden' }
+        '404': { $ref: '#/components/responses/LicenseNotFound' }
+        '410': { $ref: '#/components/responses/LicenseReplaced' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /status:
+    get:
+      tags: [status]
+      operationId: status
+      summary: Saúde do serviço
+      responses:
+        '200':
+          description: Serviço respondendo (campo database indica o banco)
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, serverTime, database]
+                properties:
+                  ok: { type: boolean, const: true }
+                  serverTime: { type: string, format: date-time }
+                  database: { type: string, enum: [ok, error] }
+              example:
+                ok: true
+                serverTime: '2026-08-03T15:30:00.000Z'
+                database: ok
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+components:
+  securitySchemes:
+    licenseKey:
+      type: apiKey
+      in: header
+      name: X-License-Key
+
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              description: Código estável para tratamento programático
+              enum:
+                - ERR_INVALID_BODY
+                - ERR_RATE_LIMITED
+                - ERR_LICENSE_NOT_FOUND
+                - ERR_LICENSE_EXPIRED
+                - ERR_LICENSE_SUSPENDED
+                - ERR_LICENSE_REVOKED
+                - ERR_LICENSE_BLOCKED
+                - ERR_LICENSE_REPLACED
+                - ERR_DEVICE_LIMIT
+                - ERR_INSTALLATION_ALREADY_CONSUMED
+                - ERR_DEVICE_REVOKED
+                - ERR_DEVICE_NOT_BOUND
+                - ERR_APP_OUTDATED
+                - ERR_ACTIVATIONS_DISABLED
+                - ERR_LICENSE_KEY_REQUIRED
+                - ERR_NO_VERSION
+                - ERR_INTERNAL
+            message:
+              type: string
+              description: Mensagem em pt-BR — diz o que houve e o que fazer
+
+    Hwid:
+      type: string
+      pattern: '^[0-9a-f]{64}$'
+      minLength: 64
+      maxLength: 64
+      description: |
+        SHA-256 em hex minúsculo (64 caracteres), calculado NO APLICATIVO sobre
+        um identificador da instalação do Windows que muda ao formatar (ex.:
+        `MachineGuid`). NUNCA o identificador bruto — serial de placa-mãe, de
+        disco ou GUID em claro são rejeitados com `ERR_INVALID_BODY`.
+
+    ActivateRequest:
+      type: object
+      required: [key, hwid]
+      properties:
+        key: { type: string, maxLength: 64, description: Chave de licença }
+        hwid: { $ref: '#/components/schemas/Hwid' }
+        deviceName: { type: string, maxLength: 100 }
+        appVersion: { type: string, maxLength: 32 }
+
+    KeyHwidRequest:
+      type: object
+      required: [key, hwid]
+      properties:
+        key: { type: string, maxLength: 64 }
+        hwid: { $ref: '#/components/schemas/Hwid' }
+
+    TokenHwidRequest:
+      type: object
+      required: [token, hwid]
+      properties:
+        token:
+          type: string
+          minLength: 32
+          maxLength: 128
+          description: deviceToken recebido na ativação
+        hwid: { $ref: '#/components/schemas/Hwid' }
+
+    HeartbeatRequest:
+      type: object
+      required: [token, hwid]
+      properties:
+        token:
+          type: string
+          minLength: 32
+          maxLength: 128
+          description: deviceToken recebido na ativação
+        hwid: { $ref: '#/components/schemas/Hwid' }
+        appVersion: { type: string, maxLength: 32 }
+
+    ActivateResponse:
+      allOf:
+        - $ref: '#/components/schemas/LicenseInfo'
+        - type: object
+          required: [deviceToken]
+          properties:
+            deviceToken:
+              type: string
+              description: |
+                Token opaco desta instalação — guarde como segredo; validate e
+                heartbeat autenticam por ele. Reativar emite um token novo e
+                invalida o anterior.
+
+    LicenseInfo:
+      type: object
+      required: [status, plan, expiresAt, deviceLimit, devices]
+      properties:
+        status:
+          type: string
+          enum: [PENDING_ACTIVATION, ACTIVE, EXPIRED, SUSPENDED, REVOKED, BLOCKED, REPLACED]
+        plan:
+          type: object
+          required: [slug, name]
+          properties:
+            slug: { type: string }
+            name: { type: string }
+        expiresAt:
+          type: [string, 'null']
+          format: date-time
+          description: null = vitalícia
+        deviceLimit: { type: integer }
+        devices: { type: integer, description: Dispositivos ativos após esta operação }
+
+    ValidationResult:
+      type: object
+      required: [status, plan, expiresAt, serverTime]
+      properties:
+        status:
+          type: string
+          enum: [PENDING_ACTIVATION, ACTIVE, EXPIRED, SUSPENDED, REVOKED, BLOCKED, REPLACED]
+        plan:
+          type: object
+          required: [slug, name]
+          properties:
+            slug: { type: string }
+            name: { type: string }
+        expiresAt:
+          type: [string, 'null']
+          format: date-time
+        serverTime:
+          type: string
+          format: date-time
+          description: Hora do servidor (UTC) — compare com o relógio local
+
+  responses:
+    InvalidBody:
+      description: 'ERR_INVALID_BODY — corpo ausente, malformado ou campo inválido (ex.: hwid que não é SHA-256 de 64 hex)'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example:
+            error:
+              code: ERR_INVALID_BODY
+              message: 'Campo inválido: hwid — envie o SHA-256 do identificador da instalação (64 caracteres hex), nunca o identificador bruto'
+    RateLimited:
+      description: 'ERR_RATE_LIMITED — excedeu o limite por IP + chave'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example:
+            error:
+              code: ERR_RATE_LIMITED
+              message: Muitas requisições. Aguarde um minuto e tente de novo.
+    LicenseNotFound:
+      description: 'ERR_LICENSE_NOT_FOUND — chave não encontrada'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example:
+            error:
+              code: ERR_LICENSE_NOT_FOUND
+              message: Chave de licença não encontrada. Confira a chave no seu painel em /painel/licencas.
+    LicenseReplaced:
+      description: 'ERR_LICENSE_REPLACED — chave substituída por outra'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example:
+            error:
+              code: ERR_LICENSE_REPLACED
+              message: Esta chave foi substituída. Use a chave nova, disponível no seu painel.
+    LicenseForbidden:
+      description: 'ERR_LICENSE_EXPIRED | ERR_LICENSE_SUSPENDED | ERR_LICENSE_REVOKED | ERR_LICENSE_BLOCKED | ERR_DEVICE_REVOKED'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example:
+            error:
+              code: ERR_LICENSE_EXPIRED
+              message: Licença expirada. Renove no painel para voltar a usar o aplicativo.
+    LicenseOrDeviceForbidden:
+      description: 'ERR_LICENSE_EXPIRED | ERR_LICENSE_SUSPENDED | ERR_LICENSE_REVOKED | ERR_LICENSE_BLOCKED | ERR_DEVICE_REVOKED | ERR_DEVICE_NOT_BOUND'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example:
+            error:
+              code: ERR_DEVICE_NOT_BOUND
+              message: Dispositivo não vinculado a esta licença. Execute a ativação neste computador.
+    AppOutdated:
+      description: 'ERR_APP_OUTDATED — versão do app abaixo da mínima exigida (a maior entre a da licença e a mínima global do serviço)'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example:
+            error:
+              code: ERR_APP_OUTDATED
+              message: Versão do aplicativo abaixo da mínima exigida (1.2.0). Baixe a atualização em /download.
+    NoVersion:
+      description: 'ERR_NO_VERSION — nenhuma versão publicada'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example:
+            error:
+              code: ERR_NO_VERSION
+              message: Nenhuma versão publicada no momento. Tente mais tarde.

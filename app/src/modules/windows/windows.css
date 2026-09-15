@@ -1,0 +1,204 @@
+/* ===== hero: nível atual dominante ===== */
+.win-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 26px;
+  background: linear-gradient(180deg, rgba(255, 46, 63, 0.05), transparent 70%), var(--color-carbon);
+}
+.win-hero-info {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.win-hero-code {
+  font-size: clamp(56px, 7vw, 88px);
+  font-weight: 700;
+  line-height: 0.9;
+  color: var(--color-ink-1);
+}
+.win-hero-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.win-hero-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.win-hero-nome {
+  font-size: 30px;
+}
+.win-hero-agora {
+  max-width: 60ch;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--color-ink-3);
+}
+
+/* ===== régua vertical: L5 no topo, L1 embaixo ===== */
+.win-regua {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+.win-card {
+  --ch-fill: var(--color-carbon);
+}
+.win-card-faixa {
+  height: 6px;
+  width: 100%;
+}
+.win-card-corpo {
+  display: grid;
+  grid-template-columns: minmax(190px, 230px) 1fr minmax(168px, 200px);
+  align-items: start;
+  gap: 22px;
+  padding: 18px 22px;
+  border-left: 2px solid transparent;
+}
+.win-card--l2 .win-card-corpo {
+  border-left-color: rgba(255, 77, 46, 0.45);
+}
+.win-card--l1 .win-card-corpo {
+  border-left-color: rgba(255, 46, 63, 0.45);
+}
+.win-card.is-current .win-card-corpo {
+  border-left-color: var(--color-signal);
+  background: rgba(255, 46, 63, 0.035);
+}
+.win-card-id {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.win-card-code {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-ink-1);
+}
+.win-card-nome {
+  font-size: 19px;
+}
+.win-card-alvo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 16px;
+  color: var(--color-ink-3);
+}
+.win-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+.win-tag {
+  padding: 1px 5px;
+  border: 1px solid var(--color-edge);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  color: var(--color-ink-4);
+}
+.win-tag--atencao {
+  border-color: rgba(255, 77, 46, 0.4);
+  color: var(--color-heat);
+}
+
+/* ===== lista "o que muda" — ▸ vermelho ===== */
+.win-mud-lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 20px;
+  margin-top: 8px;
+}
+.win-mud {
+  padding: 4px 0;
+  border-bottom: 1px solid var(--color-line);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 16px;
+  color: var(--color-ink-2);
+}
+.win-mud::before {
+  content: '▸';
+  color: var(--color-signal);
+  margin-right: 8px;
+}
+
+/* ===== ação por cartão ===== */
+.win-card-acao {
+  display: flex;
+  justify-content: flex-end;
+}
+.win-armar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+.win-aplicado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  text-align: right;
+}
+.win-aplicado-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-ink-1);
+}
+.win-aplicado small {
+  max-width: 24ch;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 14px;
+  color: var(--color-ink-4);
+}
+
+/* ===== rodapé: limites e reversão ===== */
+.win-rodape {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-line);
+}
+.win-nota {
+  max-width: 104ch;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 17px;
+  color: var(--color-ink-4);
+}
+
+@media (max-width: 1180px) {
+  .win-card-corpo {
+    grid-template-columns: 1fr;
+  }
+  .win-card-acao {
+    justify-content: flex-start;
+  }
+  .win-aplicado {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+@media (max-width: 760px) {
+  .win-mud-lista {
+    grid-template-columns: 1fr;
+  }
+}

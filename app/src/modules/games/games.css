@@ -1,0 +1,189 @@
+.game-name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  color: var(--color-ink-1);
+}
+.game-nota {
+  max-width: 92ch;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 17px;
+  color: var(--color-ink-4);
+}
+
+/* ===== hero: o número medido é o elemento dominante da tela ===== */
+.fm-hero {
+  padding: 24px 26px;
+  background: linear-gradient(180deg, rgba(255, 46, 63, 0.05), transparent 70%), var(--color-carbon);
+}
+.fm-hero-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+.fm-hero-num {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.fm-hero-num strong {
+  font-size: 52px;
+  line-height: 1;
+  color: var(--color-ink-1);
+}
+.fm-hero-kicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--color-ink-3);
+}
+.fm-hero-pastas {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--color-ink-4);
+}
+.fm-hero-desc {
+  flex: 1 1 320px;
+  max-width: 48ch;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 17px;
+  color: var(--color-ink-3);
+}
+
+/* distribuição do cache por pasta — blocos 8px, gap 2px (nunca lisa) */
+.fm-distrib {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-line);
+}
+.fm-distrib-rot {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--color-ink-3);
+}
+.fm-barra {
+  display: flex;
+  gap: 2px;
+  height: 10px;
+}
+.fm-bloco {
+  flex: 1 1 8px;
+  min-width: 4px;
+  background: rgba(255, 255, 255, 0.07);
+}
+.fm-bloco--0 { background: var(--color-signal); }
+.fm-bloco--1 { background: var(--color-heat); }
+.fm-bloco--2 { background: var(--color-rust); }
+.fm-legenda {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 6px 20px;
+  margin-top: 14px;
+}
+.fm-legenda li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 11px;
+}
+.fm-legenda li .fm-bloco {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  min-width: 0;
+}
+.fm-legenda-nome {
+  flex: 1;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-3);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fm-legenda li span:last-child {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ===== colunas de diagnóstico ===== */
+.fm-colunas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+.fm-mods {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+}
+.fm-mod-linha {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--color-line);
+}
+.cfg-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cfg-explica {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--color-ink-3);
+}
+.cfg-chave {
+  overflow: hidden;
+  color: var(--color-ink-3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cfg-backup {
+  margin-top: auto;
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--color-ink-4);
+}
+
+/* ===== zona destrutiva: único caminho pra limpar ===== */
+.game-zona-limpeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 32px;
+  padding: 18px 22px;
+}
+.game-zona-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 62ch;
+}
+.game-zona-acao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}

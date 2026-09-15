@@ -1,0 +1,146 @@
+/* ===== blueprint — traço técnico 1px sobre carbon ===== */
+.bp {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--font-mono);
+}
+
+.bp-part {
+  cursor: pointer;
+  outline: none;
+}
+.bp-hit {
+  fill: transparent;
+  stroke: none;
+}
+
+.bp-line {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 1;
+  transition: stroke var(--t-fast) var(--expo);
+}
+.bp-faint {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 1;
+}
+.bp-deco {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 1;
+}
+.bp-board {
+  fill: rgba(255, 255, 255, 0.012);
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 1;
+}
+.bp-fill {
+  fill: rgba(255, 255, 255, 0.03);
+}
+.bp-heat {
+  fill: rgba(255, 77, 46, 0.14);
+  stroke: var(--color-heat);
+  stroke-width: 1;
+  transition: stroke var(--t-fast) var(--expo);
+}
+.bp-dash {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.26);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+.bp-text {
+  fill: var(--color-ink-3);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  transition: fill var(--t-fast) var(--expo);
+}
+.bp-text--dim {
+  fill: var(--color-ink-4);
+}
+
+/* componente ativo (hover/foco/seleção): traço vira signal — nunca só cor: linha de
+   chamada + colchetes + badge acompanham */
+.bp-part[data-active='true'] .bp-line,
+.bp-part[data-active='true'] .bp-heat,
+.bp-part[data-active='true'] .bp-dash {
+  stroke: var(--color-signal);
+}
+.bp-part[data-active='true'] .bp-hit {
+  fill: rgba(255, 46, 63, 0.06);
+}
+.bp-part[data-active='true'] .bp-text {
+  fill: var(--color-ink-1);
+}
+
+/* callout numerado */
+.bp-badge line {
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 1;
+}
+.bp-badge rect {
+  fill: var(--color-carbon);
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 1;
+  transition: stroke var(--t-fast) var(--expo);
+}
+.bp-badge text {
+  fill: var(--color-ink-3);
+  font-size: 9px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+.bp-part[data-active='true'] .bp-badge rect {
+  stroke: var(--color-signal);
+}
+.bp-part[data-active='true'] .bp-badge text {
+  fill: var(--color-signal);
+}
+
+/* colchetes de seleção fixa */
+.bp-brackets path {
+  fill: none;
+  stroke: var(--color-signal);
+  stroke-width: 1.5;
+}
+
+/* NÃO DETECTADO: traço a 26% */
+.bp-ghost {
+  opacity: 0.26;
+}
+.bp-ghost .bp-line {
+  stroke-dasharray: 4 3;
+}
+
+/* cotas */
+.bp-cota line {
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 1;
+}
+.bp-cota text {
+  fill: var(--color-ink-4);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-anchor: middle;
+}
+
+/* linha de chamada blueprint → ficha */
+.xr-callout {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  pointer-events: none;
+  overflow: visible;
+}
+.xr-callout path {
+  fill: none;
+  stroke: var(--color-signal);
+  stroke-width: 1;
+}
+.xr-callout rect {
+  fill: var(--color-signal);
+}

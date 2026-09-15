@@ -1,0 +1,784 @@
+// RESYNC — plataforma de venda e licenciamento
+// Dinheiro SEMPRE em centavos (Int). Datas SEMPRE em UTC (Prisma default).
+// Simplificações declaradas (v1): order_items (pedido tem 1 item), activations
+// (coberto por LicenseDevice + LicenseEvent), payouts (PayoutRequest com status
+// PAID), reseller_licenses (License.resellerId), permissions granulares
+// (staffRole + entidades Affiliate/Reseller fazem o RBAC).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ===== identidade =====
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum StaffRole {
+  NONE
+  SUPPORT
+  ADMIN
+  SUPERADMIN
+}
+
+model User {
+  id              String     @id @default(cuid())
+  email           String     @unique
+  emailVerifiedAt DateTime?
+  passwordHash    String?
+  name            String
+  avatarUrl       String?
+  discordId       String?    @unique
+  discordUsername String?
+  country         String?
+  locale          String     @default("pt-BR")
+  status          UserStatus @default(ACTIVE)
+  staffRole       StaffRole  @default(NONE)
+  totpSecret      String?
+  notifyOptIn     Boolean    @default(true)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  oauthAccounts     OauthAccount[]
+  sessions          Session[]
+  emailTokens       EmailToken[]
+  securityQuestions SecurityQuestion[]
+  recoveryCodes     RecoveryCode[]
+  orders           Order[]
+  licenses         License[]
+  affiliate        Affiliate?
+  reseller         Reseller?
+  notifications    Notification[]
+  tickets          SupportTicket[]
+  legalAcceptances LegalAcceptance[]
+  downloads        Download[]
+}
+
+model OauthAccount {
+  id                String   @id @default(cuid())
+  provider          String
+  providerAccountId String
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+
+  @@unique([provider, providerAccountId])
+}
+
+// sessão = também histórico de acesso (ip + userAgent + datas)
+model Session {
+  id        String    @id
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ip        String?
+  userAgent String?
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+enum EmailTokenPurpose {
+  VERIFY_EMAIL
+  RESET_PASSWORD
+}
+
+// ===== recuperação de conta SEM e-mail =====
+
+// Resposta NUNCA em texto puro: scrypt com salt próprio por resposta (mesmo
+// formato de senha). slot 1 e 2 — duas perguntas diferentes obrigatórias.
+model SecurityQuestion {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  slot       Int
+  question   String
+  answerHash String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, slot])
+}
+
+enum RecoveryCodeKind {
+  ACCOUNT
+  TOTP
+}
+
+// Código de uso único, mostrado UMA vez — banco guarda só o SHA-256.
+model RecoveryCode {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      RecoveryCodeKind @default(ACCOUNT)
+  codeHash  String           @unique
+  usedAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, kind])
+}
+
+model EmailToken {
+  id        String            @id @default(cuid())
+  tokenHash String            @unique
+  purpose   EmailTokenPurpose
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime          @default(now())
+}
+
+// ===== catálogo =====
+
+model Product {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  plans     Plan[]
+}
+
+model Plan {
+  id           String   @id @default(cuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
+  slug         String   @unique
+  name         String
+  // null = vitalício
+  durationDays Int?
+  deviceLimit  Int      @default(1)
+  featured     Boolean  @default(false)
+  sortOrder    Int      @default(0)
+  active       Boolean  @default(true)
+  // lista de benefícios exibida no site (JSON string[])
+  features     Json
+  createdAt    DateTime @default(now())
+
+  prices   Price[]
+  orders   Order[]
+  licenses License[]
+}
+
+model Price {
+  id             String  @id @default(cuid())
+  planId         String
+  plan           Plan    @relation(fields: [planId], references: [id])
+  currency       String  @default("BRL")
+  amountCents    Int
+  compareAtCents Int?
+  active         Boolean @default(true)
+
+  @@unique([planId, currency])
+}
+
+// ===== cupons =====
+
+enum CouponType {
+  PERCENT
+  FIXED
+}
+
+model Coupon {
+  id             String     @id @default(cuid())
+  code           String     @unique
+  type           CouponType
+  // PERCENT: basis points (1000 = 10%). FIXED: centavos.
+  value          Int
+  maxRedemptions Int?
+  perUserLimit   Int        @default(1)
+  startsAt       DateTime?
+  endsAt         DateTime?
+  minAmountCents Int?
+  // null = todos os planos (JSON string[] de planIds)
+  planIds        Json?
+  affiliateId    String?
+  affiliate      Affiliate? @relation(fields: [affiliateId], references: [id])
+  active         Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+
+  redemptions CouponRedemption[]
+  orders      Order[]
+}
+
+model CouponRedemption {
+  id        String   @id @default(cuid())
+  couponId  String
+  coupon    Coupon   @relation(fields: [couponId], references: [id])
+  userId    String
+  orderId   String   @unique
+  order     Order    @relation(fields: [orderId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([couponId, userId])
+}
+
+// ===== pedidos e pagamentos =====
+
+enum OrderStatus {
+  PENDING
+  AWAITING_PAYMENT
+  PAID
+  CANCELLED
+  EXPIRED
+  IN_REVIEW
+  // reembolso: REFUNDED só depois do provedor confirmar (nunca antes)
+  REFUND_PENDING
+  REFUND_FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+  CHARGEBACK
+}
+
+enum RefundStatus {
+  PENDING
+  APPROVED
+  FAILED
+}
+
+// Reembolso REAL no provedor — registro de cada solicitação, com chave de
+// idempotência e resposta sanitizada (nunca dados de cartão/segredos).
+model Refund {
+  id                String       @id @default(cuid())
+  orderId           String
+  order             Order        @relation(fields: [orderId], references: [id])
+  paymentId         String
+  provider          String
+  providerRefundId  String?
+  idempotencyKey    String       @unique
+  amountCents       Int
+  status            RefundStatus @default(PENDING)
+  reason            String
+  requestedByUserId String
+  // resposta do provedor já sanitizada (status, id, datas — nada sensível)
+  response          Json?
+  error             String?      @db.Text
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  @@index([orderId])
+}
+
+// EXTEND = renovação da instalação atual (estende a licença viva).
+// NEW_INSTALL = instalação nova (ex.: Windows formatado) — emite chave nova, nunca estende.
+enum LicenseIntent {
+  EXTEND
+  NEW_INSTALL
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  userId         String
+  user           User        @relation(fields: [userId], references: [id])
+  planId         String
+  plan           Plan        @relation(fields: [planId], references: [id])
+  currency       String      @default("BRL")
+  subtotalCents  Int
+  discountCents  Int         @default(0)
+  totalCents     Int
+  status         OrderStatus @default(PENDING)
+  couponId       String?
+  coupon         Coupon?     @relation(fields: [couponId], references: [id])
+  affiliateId    String?
+  affiliate      Affiliate?    @relation(fields: [affiliateId], references: [id])
+  licenseIntent  LicenseIntent @default(EXTEND)
+  provider       String?
+  providerRef    String?
+  paidAt         DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  payments   Payment[]
+  license    License?
+  commission Commission?
+  redemption CouponRedemption?
+  refunds    Refund[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+enum PaymentMethod {
+  PIX
+  CARD
+  BOLETO
+  SANDBOX
+  RESELLER_CREDIT
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  DECLINED
+  REFUNDED
+  CHARGEBACK
+  CANCELLED
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  orderId           String
+  order             Order         @relation(fields: [orderId], references: [id])
+  provider          String
+  providerPaymentId String?
+  method            PaymentMethod
+  status            PaymentStatus @default(PENDING)
+  amountCents       Int
+  // dados públicos do provedor (qr code PIX, url do boleto...) — nunca cartão completo
+  meta              Json?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  events PaymentEvent[]
+
+  @@unique([provider, providerPaymentId])
+  @@index([orderId])
+}
+
+// idempotência de webhook: eventId único por provedor
+model PaymentEvent {
+  id             String    @id @default(cuid())
+  provider       String
+  eventId        String
+  type           String
+  paymentId      String?
+  payment        Payment?  @relation(fields: [paymentId], references: [id])
+  payload        Json
+  signatureValid Boolean
+  processedAt    DateTime?
+  error          String?   @db.Text
+  createdAt      DateTime  @default(now())
+
+  @@unique([provider, eventId])
+}
+
+// ===== licenças =====
+
+enum LicenseStatus {
+  PENDING_ACTIVATION
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  REVOKED
+  BLOCKED
+  REPLACED
+}
+
+model License {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  orderId         String?       @unique
+  order           Order?        @relation(fields: [orderId], references: [id])
+  planId          String
+  plan            Plan          @relation(fields: [planId], references: [id])
+  // chave nunca em claro no banco: hash p/ lookup + ciphertext p/ exibir no painel
+  keyHash         String        @unique
+  keyCiphertext   String        @db.Text
+  keyMasked       String
+  status          LicenseStatus @default(PENDING_ACTIVATION)
+  activatedAt     DateTime?
+  // null = vitalícia
+  expiresAt       DateTime?
+  deviceLimit     Int           @default(1)
+  resellerId      String?
+  reseller        Reseller?     @relation(fields: [resellerId], references: [id])
+  replacedById    String?
+  minAppVersion   String?
+  adminNotes      String?       @db.Text
+  lastValidatedAt DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  devices LicenseDevice[]
+  events  LicenseEvent[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([resellerId])
+}
+
+model LicenseDevice {
+  id          String    @id @default(cuid())
+  licenseId   String
+  license     License   @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+  hwid        String
+  name        String?
+  appVersion  String?
+  // Token opaco entregue somente ao app. Banco guarda apenas SHA-256.
+  tokenHash   String?   @unique
+  tokenIssuedAt DateTime?
+  tokenLastUsedAt DateTime?
+  firstSeenAt DateTime  @default(now())
+  lastSeenAt  DateTime  @default(now())
+  revokedAt   DateTime?
+
+  @@unique([licenseId, hwid])
+}
+
+model LicenseEvent {
+  id          String   @id @default(cuid())
+  licenseId   String
+  license     License  @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+  type        String
+  actorUserId String?
+  meta        Json?
+  createdAt   DateTime @default(now())
+
+  @@index([licenseId])
+}
+
+// ===== app: versões e downloads =====
+
+model AppVersion {
+  id      String @id @default(cuid())
+  version String @unique
+  channel String @default("stable")
+  notes   String @db.Text
+  // nome do arquivo no volume persistente (INSTALLERS_DIR) — a coluna continua
+  // downloadUrl por compatibilidade; o instalador não tem mais URL pública
+  fileName    String    @map("downloadUrl")
+  checksum    String
+  sizeBytes   BigInt?
+  publishedAt DateTime?
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  downloads Download[]
+}
+
+model Download {
+  id           String     @id @default(cuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  appVersionId String
+  appVersion   AppVersion @relation(fields: [appVersionId], references: [id])
+  ip           String?
+  createdAt    DateTime   @default(now())
+}
+
+// ===== afiliados =====
+
+enum AffiliateStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+}
+
+model Affiliate {
+  id            String          @id @default(cuid())
+  userId        String          @unique
+  user          User            @relation(fields: [userId], references: [id])
+  code          String          @unique
+  status        AffiliateStatus @default(PENDING)
+  // comissão em basis points (1500 = 15%)
+  commissionBps Int             @default(1500)
+  // janela de atribuição em dias
+  windowDays    Int             @default(30)
+  // dados de recebimento (chave PIX etc.) — JSON
+  payoutInfo    Json?
+  createdAt     DateTime        @default(now())
+
+  clicks       AffiliateClick[]
+  attributions AffiliateAttribution[]
+  commissions  Commission[]
+  payouts      PayoutRequest[]
+  coupons      Coupon[]
+  orders       Order[]
+}
+
+model AffiliateClick {
+  id          String    @id @default(cuid())
+  affiliateId String
+  affiliate   Affiliate @relation(fields: [affiliateId], references: [id])
+  ipHash      String?
+  userAgent   String?
+  landingPage String?
+  createdAt   DateTime  @default(now())
+
+  @@index([affiliateId, createdAt])
+}
+
+// last-click: uma atribuição viva por usuário
+model AffiliateAttribution {
+  id          String    @id @default(cuid())
+  affiliateId String
+  affiliate   Affiliate @relation(fields: [affiliateId], references: [id])
+  userId      String    @unique
+  clickId     String?
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+}
+
+enum CommissionStatus {
+  PENDING
+  APPROVED
+  CANCELLED
+  PAID
+}
+
+model Commission {
+  id          String           @id @default(cuid())
+  affiliateId String
+  affiliate   Affiliate        @relation(fields: [affiliateId], references: [id])
+  orderId     String           @unique
+  order       Order            @relation(fields: [orderId], references: [id])
+  amountCents Int
+  status      CommissionStatus @default(PENDING)
+  // aprova automaticamente após o prazo de reembolso
+  approvesAt  DateTime
+  paidAt      DateTime?
+  createdAt   DateTime         @default(now())
+
+  @@index([affiliateId, status])
+}
+
+enum PayoutStatus {
+  REQUESTED
+  APPROVED
+  PAID
+  REJECTED
+}
+
+model PayoutRequest {
+  id          String       @id @default(cuid())
+  affiliateId String
+  affiliate   Affiliate    @relation(fields: [affiliateId], references: [id])
+  amountCents Int
+  status      PayoutStatus @default(REQUESTED)
+  pixKey      String
+  adminNote   String?
+  processedAt DateTime?
+  createdAt   DateTime     @default(now())
+}
+
+// ===== revendedores =====
+
+enum ResellerStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+}
+
+model Reseller {
+  id                 String         @id @default(cuid())
+  userId             String         @unique
+  user               User           @relation(fields: [userId], references: [id])
+  status             ResellerStatus @default(PENDING)
+  tier               Int            @default(1)
+  // desconto sobre o preço de tabela, em basis points
+  discountBps        Int            @default(2000)
+  // cache do saldo — fonte da verdade é o ledger; atualizado na MESMA transação
+  creditBalanceCents Int            @default(0)
+  dailyIssueLimit    Int            @default(50)
+  monthlyIssueLimit  Int            @default(1000)
+  apiKeyHash         String?        @unique
+  webhookUrl         String?
+  webhookSecret      String?
+  createdAt          DateTime       @default(now())
+
+  ledger   ResellerLedger[]
+  licenses License[]
+}
+
+enum LedgerType {
+  CREDIT_PURCHASE
+  LICENSE_ISSUE
+  REFUND
+  ADMIN_ADJUST
+}
+
+model ResellerLedger {
+  id           String     @id @default(cuid())
+  resellerId   String
+  reseller     Reseller   @relation(fields: [resellerId], references: [id])
+  type         LedgerType
+  // positivo = entrada, negativo = saída
+  deltaCents   Int
+  balanceAfter Int
+  refOrderId   String?
+  refLicenseId String?
+  note         String?
+  createdAt    DateTime   @default(now())
+
+  @@index([resellerId, createdAt])
+}
+
+// ===== suporte =====
+
+enum TicketStatus {
+  OPEN
+  AWAITING_SUPPORT
+  AWAITING_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+model SupportTicket {
+  id               String         @id @default(cuid())
+  userId           String
+  user             User           @relation(fields: [userId], references: [id])
+  subject          String
+  category         String
+  priority         TicketPriority @default(NORMAL)
+  status           TicketStatus   @default(OPEN)
+  assignedToUserId String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  messages SupportMessage[]
+}
+
+model SupportMessage {
+  id           String        @id @default(cuid())
+  ticketId     String
+  ticket       SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorUserId String
+  isStaff      Boolean       @default(false)
+  body         String        @db.Text
+  createdAt    DateTime      @default(now())
+}
+
+// ===== notificações, fila e entregas =====
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  title     String
+  body      String    @db.Text
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  DONE
+  FAILED
+  DEAD
+}
+
+// fila em banco — worker processa com retry + backoff. Redis fica opcional.
+// Lease: claim grava lockedAt/lockedBy/leaseUntil; RUNNING com lease vencida
+// é retomado por outro worker (processo que morreu não prende o job).
+model Job {
+  id          String    @id @default(cuid())
+  type        String
+  payload     Json
+  status      JobStatus @default(PENDING)
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(5)
+  runAt       DateTime  @default(now())
+  lockedAt    DateTime?
+  lockedBy    String?
+  leaseUntil  DateTime?
+  lastError   String?   @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status, runAt])
+  @@index([status, leaseUntil])
+}
+
+enum DeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+model DiscordDelivery {
+  id        String         @id @default(cuid())
+  userId    String
+  kind      String
+  orderId   String?
+  licenseId String?
+  status    DeliveryStatus @default(PENDING)
+  error     String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([userId])
+}
+
+model WebhookDelivery {
+  id            String         @id @default(cuid())
+  resellerId    String
+  event         String
+  payload       Json
+  status        DeliveryStatus @default(PENDING)
+  attempts      Int            @default(0)
+  lastAttemptAt DateTime?
+  createdAt     DateTime       @default(now())
+}
+
+// ===== operação =====
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  action      String
+  entity      String
+  entityId    String?
+  before      Json?
+  after       Json?
+  reason      String?
+  ip          String?
+  createdAt   DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([actorUserId])
+}
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+// Rate limit persistente (janela fixa) — vale para N réplicas, sem Redis.
+// Linha por chave+janela; incremento atômico via SQL; sweep do worker limpa.
+model RateLimitBucket {
+  key     String   @id
+  count   Int      @default(0)
+  resetAt DateTime
+}
+
+model FeatureFlag {
+  key         String  @id
+  enabled     Boolean @default(false)
+  description String?
+}
+
+model LegalAcceptance {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  docType   String
+  version   String
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, docType, version])
+}
