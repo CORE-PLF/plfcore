@@ -94,7 +94,7 @@ export const useLogStore = create<LogState>()(
           .join('\n'),
     }),
     {
-      name: 'resync-operations',
+      name: 'plfcore-operations',
       partialize: (s) => ({ logs: s.logs }),
     },
   ),

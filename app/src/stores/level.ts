@@ -117,6 +117,6 @@ export const useLevelStore = create<LevelState>()(persist((set, get) => ({
     }
   },
 }), {
-  name: 'resync-level',
+  name: 'plfcore-level',
   partialize: (state) => ({ atual: state.atual, mudancas: state.mudancas }),
 }))

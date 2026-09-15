@@ -11,7 +11,7 @@ export default async function NovaSenhaPage({ params }: { params: Promise<{ toke
   return (
     <>
       <Kicker>ACESSO</Kicker>
-      <h1 className="type-display mt-1 text-2xl">NOVA SENHA</h1>
+      <h1 className="type-display mt-1 text-2xl">Nova senha</h1>
       <p className="mt-3 text-sm text-ink-3">
         Defina a nova senha da conta. As sessões antigas serão encerradas.
       </p>

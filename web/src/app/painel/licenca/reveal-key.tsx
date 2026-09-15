@@ -16,7 +16,7 @@ export function RevealKey({ licenseId, masked }: { licenseId: string; masked: st
     <div>
       <p
         className="type-mono break-all px-4 py-3 text-base text-ink-1"
-        style={{ background: 'var(--color-void)', boxShadow: 'inset 0 0 0 1px var(--color-edge)' }}
+        style={{ background: 'var(--color-void)', border: '1px solid var(--color-edge)', borderRadius: 6 }}
         aria-live="polite"
       >
         {visivel ? state.key : masked}
@@ -27,14 +27,14 @@ export function RevealKey({ licenseId, masked }: { licenseId: string; masked: st
           <>
             <button
               type="button"
-              className="btn btn--ghost btn--sm chamfer"
+              className="btn btn--ghost btn--sm"
               onClick={() => setOculta(true)}
             >
               OCULTAR
             </button>
             <button
               type="button"
-              className="btn btn--ghost btn--sm chamfer"
+              className="btn btn--ghost btn--sm"
               onClick={async () => {
                 await navigator.clipboard.writeText(state.key ?? '')
                 setCopiada(true)
@@ -49,7 +49,7 @@ export function RevealKey({ licenseId, masked }: { licenseId: string; masked: st
             <input type="hidden" name="licenseId" value={licenseId} />
             <button
               type="submit"
-              className="btn btn--ghost btn--sm chamfer"
+              className="btn btn--ghost btn--sm"
               disabled={pending}
               onClick={() => setOculta(false)}
             >
@@ -60,7 +60,7 @@ export function RevealKey({ licenseId, masked }: { licenseId: string; masked: st
       </div>
 
       {state.error && (
-        <p className="mt-2 text-sm" style={{ color: 'var(--color-signal)' }} role="alert">
+        <p className="mt-2 text-sm" style={{ color: 'var(--color-blood)' }} role="alert">
           {state.error}
         </p>
       )}

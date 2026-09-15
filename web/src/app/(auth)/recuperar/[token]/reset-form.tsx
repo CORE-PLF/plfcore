@@ -20,7 +20,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
         placeholder="Mínimo de 8 caracteres"
       />
       {state.error && (
-        <p role="alert" className="text-sm text-signal">
+        <p role="alert" className="text-sm text-blood">
           ERRO — {state.error}
         </p>
       )}
@@ -28,7 +28,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
         type="submit"
         disabled={pending}
         aria-busy={pending}
-        className="btn btn--primary chamfer w-full focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ink-1"
+        className="btn btn--primary w-full focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ink-1"
       >
         REDEFINIR SENHA
       </button>

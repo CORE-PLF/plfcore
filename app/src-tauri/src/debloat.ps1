@@ -131,7 +131,7 @@ function Remove-CatalogItem([string]$Id) {
   }
 }
 
-$action = $env:RESYNC_DEBLOAT_ACTION
+$action = $env:PLFCORE_DEBLOAT_ACTION
 if ($action -eq 'scan') {
   $names = Get-InstalledNames
   $items = foreach ($id in $Catalog.Keys) {
@@ -143,7 +143,7 @@ if ($action -eq 'scan') {
 
 if ($action -eq 'restore') {
   try {
-    Checkpoint-Computer -Description 'RESYNC - ANTES DO DEBLOAT' -RestorePointType 'APPLICATION_UNINSTALL' -ErrorAction Stop
+    Checkpoint-Computer -Description 'PLF CORE - ANTES DO DEBLOAT' -RestorePointType 'APPLICATION_UNINSTALL' -ErrorAction Stop
     [pscustomobject]@{ created = $true; message = $null; origin = 'measured' } | ConvertTo-Json -Compress
   } catch {
     [pscustomobject]@{ created = $false; message = 'RESTORE_POINT_UNAVAILABLE'; origin = 'measured' } | ConvertTo-Json -Compress
@@ -152,7 +152,7 @@ if ($action -eq 'restore') {
 }
 
 if ($action -eq 'remove') {
-  $id = $env:RESYNC_DEBLOAT_ID
+  $id = $env:PLFCORE_DEBLOAT_ID
   if (-not $Catalog.Contains($id)) { throw 'ERR_DEBLOAT_NOT_ALLOWED' }
   Remove-CatalogItem $id | ConvertTo-Json -Depth 4 -Compress
   exit 0

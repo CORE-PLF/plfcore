@@ -12,8 +12,8 @@ import { sfx } from './services/sfx'
 import { startGameSense } from './services/gamesense'
 import { LicenseGate, type LicenseState } from './modules/license/LicenseGate'
 
-const IGNITED = 'resync-ignited'
-const ELEV_AVISADO = 'resync-elev-avisado'
+const IGNITED = 'plfcore-ignited'
+const ELEV_AVISADO = 'plfcore-elev-avisado'
 
 export default function App() {
   const [licenseGranted, setLicenseGranted] = useState(false)

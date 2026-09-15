@@ -3,8 +3,8 @@ import { Button } from '../../components/Button'
 import { Surface } from '../../components/Surface'
 import { ScreenTitle } from '../../components/Kicker'
 import { MetricRow } from '../../components/MetricRow'
-import { ScanLine } from '../../components/ScanLine'
 import { ProgressBar } from '../../components/ProgressBar'
+import { StatusLED } from '../../components/StatusLED'
 import { DemoTag, EstimatedTag, KTag } from '../../components/Tag'
 import { IconCheck } from '../../components/icons'
 import { kitDict } from '../../components/i18n'
@@ -98,21 +98,21 @@ const AJUSTES: Record<Aba, LatKey[]> = {
 
 function Valor({ valor, origin }: { valor: string | null; origin?: DataOrigin }) {
   const tk = useT(kitDict)
-  if (valor === null) return <span className="type-mono text-xs font-bold text-ink-4">{tk('naoDisponivel')}</span>
+  if (valor === null) return <span className="type-num text-xs font-bold text-ink-4">{tk('naoDisponivel')}</span>
   return (
     <span className="inline-flex items-baseline gap-2">
       {origin === 'demo' && <DemoTag />}
       {origin === 'estimated' && <EstimatedTag />}
-      <span className="type-mono text-xs font-bold text-ink-1">{valor}</span>
+      <span className="type-num text-xs font-bold text-ink-1">{valor}</span>
     </span>
   )
 }
 
-function RowValor({ label, valor, origin }: { label: string; valor: string | null; origin?: DataOrigin }) {
+function Tile({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-line py-[5px]">
-      <span className="type-kicker shrink-0">{label}</span>
-      <Valor valor={valor} {...(origin ? { origin } : null)} />
+    <div className="rounded-[6px] bg-surface-2 px-4 py-3">
+      <p className="type-kicker">{label}</p>
+      <p className="type-num mt-2 text-sm font-bold text-ink-1">{children}</p>
     </div>
   )
 }
@@ -256,6 +256,7 @@ export default function LatencyScreen() {
 
   const etapa = job?.etapaKey ? t(job.etapaKey as EtapaKey) : t('jobAnalisando')
   const decorridoS = job ? Math.max(0, (nowMs - job.inicioMs) / 1000) : 0
+  const emExecucao = rodando && jobAba === aba
 
   const linhasCmp: Array<{ rotulo: string; a: string | null; aO?: DataOrigin; d: string | null; dO?: DataOrigin }> =
     run
@@ -302,105 +303,139 @@ export default function LatencyScreen() {
         ]
       : []
 
-  return (
-    <div className="mx-auto max-w-5xl p-8">
-      <ScreenTitle kicker={t('kicker')} title={t('titulo')} />
+  const heroLatencia = fmtMs(dev?.latenciaMs)
 
-      <div className="lat-tabs" role="tablist" aria-label={t('titulo')} onKeyDown={onTabsKeyDown}>
-        {(['mouse', 'teclado'] as const).map((id) => (
-          <button
-            key={id}
-            ref={id === 'mouse' ? tabMouseRef : tabTecladoRef}
-            role="tab"
-            id={`lat-tab-${id}`}
-            aria-selected={aba === id}
-            aria-controls={`lat-panel-${id}`}
-            tabIndex={aba === id ? 0 : -1}
-            className="lat-tab"
-            onClick={() => setAba(id)}
-          >
-            {id === 'mouse' ? t('tabMouse') : t('tabTeclado')}
-          </button>
-        ))}
-      </div>
+  return (
+    <div className="mx-auto max-w-[1180px] p-8">
+      <ScreenTitle
+        kicker={t('kicker')}
+        title={t('titulo')}
+        actions={
+          <div className="lat-tabs" role="tablist" aria-label={t('titulo')} onKeyDown={onTabsKeyDown}>
+            {(['mouse', 'teclado'] as const).map((id) => (
+              <button
+                key={id}
+                ref={id === 'mouse' ? tabMouseRef : tabTecladoRef}
+                role="tab"
+                id={`lat-tab-${id}`}
+                aria-selected={aba === id}
+                aria-controls={`lat-panel-${id}`}
+                tabIndex={aba === id ? 0 : -1}
+                className="lat-tab"
+                onClick={() => setAba(id)}
+              >
+                {id === 'mouse' ? t('tabMouse') : t('tabTeclado')}
+              </button>
+            ))}
+          </div>
+        }
+      />
 
       {loadErr ? (
-        <div className="mt-6">
-          <ErrorState what={t('erroLeitura')} todo={t('erroLeituraAcao')} onRetry={load} />
-        </div>
+        <ErrorState what={t('erroLeitura')} todo={t('erroLeituraAcao')} onRetry={load} />
       ) : (
-        <div
-          key={aba}
-          id={`lat-panel-${aba}`}
-          role="tabpanel"
-          aria-labelledby={`lat-tab-${aba}`}
-          className="lat-wipe mt-6"
-        >
-          <div className="grid grid-cols-12 gap-6">
-            {/* elemento dominante: silhueta técnica com callouts */}
-            <Surface cut={8} className="col-span-7">
-              <div className="stage-grid relative flex min-h-[340px] items-center p-6">
-                {carregando ? (
-                  <Skeleton className="h-56 w-full" />
-                ) : dev ? (
-                  aba === 'mouse' ? (
-                    <MouseArt
-                      latencia={{
-                        label: t('latencia'),
-                        value: fmtMs(dev.latenciaMs),
-                        tag: tagDe(dev.latenciaMs?.origin),
-                      }}
-                      polling={{
-                        label: t('polling'),
-                        value: fmtHz(dev.taxaHz),
-                        tag: tagDe(dev.taxaHzOrigin ?? undefined),
-                      }}
-                      dpi={{
-                        label: dev.dpi == null && dev.dpiMax ? t('dpiMax') : t('dpi'),
-                        value: fmtDpiDisponivel(dev),
-                        tag: tagDe(dev.dpi == null ? dev.dpiMax?.origin : undefined),
-                      }}
-                      na={tk('naoDisponivel')}
-                    />
-                  ) : (
-                    <KeyboardArt
-                      polling={{
-                        label: t('polling'),
-                        value: fmtHz(dev.taxaHz),
-                        tag: tagDe(dev.taxaHzOrigin ?? undefined),
-                      }}
-                      latencia={{
-                        label: t('latencia'),
-                        value: fmtMs(dev.latenciaMs),
-                        tag: tagDe(dev.latenciaMs?.origin),
-                      }}
-                      atraso={{ label: t('atrasoRepeticao'), value: fmtScale(dev.keyboardRepeatDelay, 3) }}
-                      na={tk('naoDisponivel')}
-                    />
-                  )
-                ) : (
-                  <div className="w-full">
-                    <EmptyState
-                      code={t('vazioCodigo')}
-                      message={aba === 'mouse' ? t('vazioMouse') : t('vazioTeclado')}
-                      action={<Button onClick={load}>{t('atualizar')}</Button>}
-                    />
-                  </div>
+        <div key={aba} id={`lat-panel-${aba}`} role="tabpanel" aria-labelledby={`lat-tab-${aba}`} className="lat-wipe">
+          <div className="grid grid-cols-12 gap-5">
+            {/* elemento dominante: leitura principal + desenho técnico */}
+            <Surface className="col-span-7 flex flex-col overflow-hidden">
+              <div className="surface-head">
+                <span>{aba === 'mouse' ? t('tabMouse') : t('tabTeclado')}</span>
+                {dev?.nome && (
+                  <span className="min-w-0 truncate text-[11px] font-normal tracking-normal text-ink-3">{dev.nome}</span>
                 )}
-                <ScanLine active={rodando && jobAba === aba} />
+                <span className="ml-auto flex items-center gap-3">
+                  {demoDados && <DemoTag />}
+                  {emExecucao && <StatusLED state="live" label={etapa} />}
+                </span>
+              </div>
+              <div className="flex flex-1 flex-col p-5">
+                {carregando ? (
+                  <Skeleton className="h-64 w-full" />
+                ) : dev ? (
+                  <>
+                    <div className="flex items-end gap-6">
+                      <div>
+                        <p className="type-kicker">{t('latencia')}</p>
+                        <p className={`type-display type-num mt-1 text-[44px] ${heroLatencia === null ? 'text-ink-4' : ''}`}>
+                          {heroLatencia ?? tk('naoDisponivel')}
+                        </p>
+                      </div>
+                      <div className="mb-2 flex items-center gap-2">
+                        <span className="pill">
+                          {t('polling')}
+                          <span className="pill--value">{fmtHz(dev.taxaHz) ?? tk('naoDisponivel')}</span>
+                        </span>
+                        {aba === 'mouse' ? (
+                          <span className="pill">
+                            {dev.dpi == null && dev.dpiMax ? t('dpiMax') : t('dpi')}
+                            <span className="pill--value">{fmtDpiDisponivel(dev) ?? tk('naoDisponivel')}</span>
+                          </span>
+                        ) : (
+                          <span className="pill">
+                            {t('atrasoRepeticao')}
+                            <span className="pill--value">{fmtScale(dev.keyboardRepeatDelay, 3) ?? tk('naoDisponivel')}</span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="mt-3 flex flex-1 items-center">
+                      {aba === 'mouse' ? (
+                        <MouseArt
+                          latencia={{
+                            label: t('latencia'),
+                            value: fmtMs(dev.latenciaMs),
+                            tag: tagDe(dev.latenciaMs?.origin),
+                          }}
+                          polling={{
+                            label: t('polling'),
+                            value: fmtHz(dev.taxaHz),
+                            tag: tagDe(dev.taxaHzOrigin ?? undefined),
+                          }}
+                          dpi={{
+                            label: dev.dpi == null && dev.dpiMax ? t('dpiMax') : t('dpi'),
+                            value: fmtDpiDisponivel(dev),
+                            tag: tagDe(dev.dpi == null ? dev.dpiMax?.origin : undefined),
+                          }}
+                          na={tk('naoDisponivel')}
+                        />
+                      ) : (
+                        <KeyboardArt
+                          polling={{
+                            label: t('polling'),
+                            value: fmtHz(dev.taxaHz),
+                            tag: tagDe(dev.taxaHzOrigin ?? undefined),
+                          }}
+                          latencia={{
+                            label: t('latencia'),
+                            value: fmtMs(dev.latenciaMs),
+                            tag: tagDe(dev.latenciaMs?.origin),
+                          }}
+                          atraso={{ label: t('atrasoRepeticao'), value: fmtScale(dev.keyboardRepeatDelay, 3) }}
+                          na={tk('naoDisponivel')}
+                        />
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <EmptyState
+                    code={t('vazioCodigo')}
+                    message={aba === 'mouse' ? t('vazioMouse') : t('vazioTeclado')}
+                    action={<Button onClick={load}>{t('atualizar')}</Button>}
+                  />
+                )}
               </div>
             </Surface>
 
             {/* painel denso + zona de ação */}
-            <div className="col-span-5 flex flex-col gap-4">
-              <Surface cut={6} flat>
-                <div className="p-4">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="type-kicker text-ink-2">{t('leituras')}</span>
-                    {demoDados && <DemoTag />}
-                  </div>
+            <div className="col-span-5 flex flex-col gap-5">
+              <Surface className="overflow-hidden">
+                <div className="surface-head">
+                  <span>{t('leituras')}</span>
+                  {demoDados && <span className="ml-auto"><DemoTag /></span>}
+                </div>
+                <div className="px-4 pb-2">
                   {carregando ? (
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 py-3">
                       {Array.from({ length: 6 }, (_, i) => (
                         <Skeleton key={i} className="h-5 w-full" />
                       ))}
@@ -408,52 +443,40 @@ export default function LatencyScreen() {
                   ) : (
                     <>
                       <MetricRow label={t('dispositivo')} value={dev?.nome ?? null} />
-                      <RowValor
-                        label={t('conexao')}
-                        valor={dev?.conexao?.value ?? null}
-                        {...(dev?.conexao ? { origin: dev.conexao.origin } : null)}
-                      />
-                      <RowValor
-                        label={t('polling')}
-                        valor={fmtHz(dev?.taxaHz)}
-                        {...(dev?.taxaHzOrigin ? { origin: dev.taxaHzOrigin } : null)}
-                      />
+                      <MetricRow label={t('conexao')} value={dev?.conexao?.value ?? null} origin={dev?.conexao?.origin ?? null} />
+                      <MetricRow label={t('polling')} value={fmtHz(dev?.taxaHz)} origin={dev?.taxaHzOrigin ?? null} />
                       {aba === 'mouse' && (
-                        <RowValor
+                        <MetricRow
                           label={dev?.dpi == null && dev?.dpiMax ? t('dpiMax') : t('dpi')}
-                          valor={fmtDpiDisponivel(dev)}
-                          {...(dev?.dpi == null && dev?.dpiMax ? { origin: dev.dpiMax.origin } : null)}
+                          value={fmtDpiDisponivel(dev)}
+                          origin={dev?.dpi == null ? (dev?.dpiMax?.origin ?? null) : null}
                         />
                       )}
-                      <RowValor
-                        label={t('latencia')}
-                        valor={fmtMs(dev?.latenciaMs)}
-                        {...(dev?.latenciaMs ? { origin: dev.latenciaMs.origin } : null)}
-                      />
+                      <MetricRow label={t('latencia')} value={fmtMs(dev?.latenciaMs)} origin={dev?.latenciaMs?.origin ?? null} accent />
                       {aba === 'mouse' ? (
                         <>
-                          <RowValor
+                          <MetricRow
                             label={t('sensibilidade')}
-                            valor={dev?.pointerSpeed ? `${dev.pointerSpeed.value} / 20` : null}
-                            {...(dev?.pointerSpeed ? { origin: dev.pointerSpeed.origin } : null)}
+                            value={dev?.pointerSpeed ? `${dev.pointerSpeed.value} / 20` : null}
+                            origin={dev?.pointerSpeed?.origin ?? null}
                           />
-                          <RowValor
+                          <MetricRow
                             label={t('aceleracao')}
-                            valor={dev?.mouseAcceleration ? t(dev.mouseAcceleration.value ? 'ativo' : 'desativado') : null}
-                            {...(dev?.mouseAcceleration ? { origin: dev.mouseAcceleration.origin } : null)}
+                            value={dev?.mouseAcceleration ? t(dev.mouseAcceleration.value ? 'ativo' : 'desativado') : null}
+                            origin={dev?.mouseAcceleration?.origin ?? null}
                           />
                         </>
                       ) : (
                         <>
-                          <RowValor
+                          <MetricRow
                             label={t('taxaRepeticao')}
-                            valor={fmtScale(dev?.keyboardRepeatRate, 31)}
-                            {...(dev?.keyboardRepeatRate ? { origin: dev.keyboardRepeatRate.origin } : null)}
+                            value={fmtScale(dev?.keyboardRepeatRate, 31)}
+                            origin={dev?.keyboardRepeatRate?.origin ?? null}
                           />
-                          <RowValor
+                          <MetricRow
                             label={t('atrasoRepeticao')}
-                            valor={fmtScale(dev?.keyboardRepeatDelay, 3)}
-                            {...(dev?.keyboardRepeatDelay ? { origin: dev.keyboardRepeatDelay.origin } : null)}
+                            value={fmtScale(dev?.keyboardRepeatDelay, 3)}
+                            origin={dev?.keyboardRepeatDelay?.origin ?? null}
                           />
                         </>
                       )}
@@ -462,18 +485,22 @@ export default function LatencyScreen() {
                 </div>
               </Surface>
 
-              <Surface cut={6}>
+              <Surface className="overflow-hidden">
+                <div className="surface-head">
+                  <span>{t('ajustes')}</span>
+                </div>
                 <div className="p-4">
-                  <p className="type-kicker mb-2 text-ink-2">{t('ajustes')}</p>
-                  <ul>
+                  <ul className="flex flex-col gap-px">
                     {AJUSTES[aba].map((k) => (
-                      <li key={k} className="flex items-center gap-2.5 border-b border-line py-1.5 text-xs text-ink-2">
-                        <span className="lat-mark" aria-hidden />
-                        {t(k)}
+                      <li key={k} className="datarow rounded-[6px] text-xs text-ink-1">
+                        <span className="flex items-center gap-2.5">
+                          <StatusLED state="heat" />
+                          {t(k)}
+                        </span>
                       </li>
                     ))}
                   </ul>
-                  <p className="type-mono mt-2 text-[10px] leading-relaxed text-ink-3">{t('ajustesAviso')}</p>
+                  <p className="mt-3 text-[11px] leading-relaxed text-ink-3">{t('ajustesAviso')}</p>
 
                   {applyErr === aba && !rodando && (
                     <div className="mt-3">
@@ -483,6 +510,7 @@ export default function LatencyScreen() {
 
                   <Button
                     variant="primary"
+                    size="lg"
                     className="mt-4 w-full"
                     disabled={carregando || !dev || rodando}
                     onClick={() => runReduct(aba)}
@@ -490,11 +518,11 @@ export default function LatencyScreen() {
                     {t('cta')}
                   </Button>
 
-                  {rodando && jobAba === aba && job && (
+                  {emExecucao && job && (
                     <div className="mt-4" aria-live="polite">
                       <div className="mb-2 flex items-baseline justify-between">
-                        <span className="type-mono text-xs font-bold text-ink-1">{etapa}</span>
-                        <span className="type-mono text-[11px] text-ink-3">
+                        <span className="text-xs font-bold text-ink-1">{etapa}</span>
+                        <span className="type-num text-[11px] text-ink-3">
                           {tk('tempoDecorrido')} {fmtRelogio(decorridoS)}
                         </span>
                       </div>
@@ -507,45 +535,34 @@ export default function LatencyScreen() {
           </div>
 
           {/* resultado: ANTES/DEPOIS + alterações aplicadas */}
-          {run && !(rodando && jobAba === aba) && (
-            <Surface cut={8} className="mt-6">
+          {run && !emExecucao && (
+            <Surface className="mt-5 overflow-hidden">
+              <div className="surface-head">
+                <IconCheck width={14} height={14} className="text-ink-1" />
+                <span className="stamp">{t('headline')}</span>
+                <KTag variant="ok">{t('jobConcluido')}</KTag>
+                {run.res.origin === 'demo' && <DemoTag />}
+              </div>
               <div className="p-5">
-                <div className="mb-4 flex items-center gap-3">
-                  <svg width="22" height="22" viewBox="0 0 16 16" fill="none" aria-hidden>
-                    <path d="M2.5 8.5 6 12 13.5 4" stroke="var(--color-ink-1)" strokeWidth="1.5" className="check-draw" />
-                  </svg>
-                  <span className="type-display stamp text-2xl">{t('headline')}</span>
-                  <KTag variant="ok">{t('jobConcluido')}</KTag>
-                  {run.res.origin === 'demo' && <DemoTag />}
+                <div className="grid grid-cols-4 gap-3">
+                  <div className="rounded-[6px] bg-surface-2 px-4 py-3">
+                    <p className="type-kicker">{t('reducaoInput')}</p>
+                    <p className="type-display type-num mt-1 text-3xl text-signal">-{run.impacto.reducaoPct}%</p>
+                  </div>
+                  <Tile label={t('tempoResposta')}>
+                    {run.impacto.respostaAntesMs.toFixed(1)} ms <span className="text-ink-3">→</span>{' '}
+                    {run.impacto.respostaDepoisMs.toFixed(1)} ms
+                  </Tile>
+                  <Tile label={t('jitterInput')}>
+                    {run.impacto.jitterAntesMs.toFixed(1)} ms <span className="text-ink-3">→</span>{' '}
+                    {run.impacto.jitterDepoisMs.toFixed(1)} ms
+                  </Tile>
+                  <Tile label={t('consistenciaInput')}>
+                    {run.impacto.consistenciaAntesPct}% <span className="text-ink-3">→</span>{' '}
+                    {run.impacto.consistenciaDepoisPct}%
+                  </Tile>
                 </div>
-                <div className="mb-5 grid grid-cols-4 gap-3">
-                  <div className="border border-line bg-panel-2 px-4 py-3">
-                    <p className="type-kicker text-ink-3">{t('reducaoInput')}</p>
-                    <p className="type-display mt-1 text-3xl text-accent">-{run.impacto.reducaoPct}%</p>
-                  </div>
-                  <div className="border border-line bg-panel-2 px-4 py-3">
-                    <p className="type-kicker text-ink-3">{t('tempoResposta')}</p>
-                    <p className="type-mono mt-2 text-sm font-bold text-ink-1">
-                      {run.impacto.respostaAntesMs.toFixed(1)} ms <span className="text-accent">→</span>{' '}
-                      {run.impacto.respostaDepoisMs.toFixed(1)} ms
-                    </p>
-                  </div>
-                  <div className="border border-line bg-panel-2 px-4 py-3">
-                    <p className="type-kicker text-ink-3">{t('jitterInput')}</p>
-                    <p className="type-mono mt-2 text-sm font-bold text-ink-1">
-                      {run.impacto.jitterAntesMs.toFixed(1)} ms <span className="text-accent">→</span>{' '}
-                      {run.impacto.jitterDepoisMs.toFixed(1)} ms
-                    </p>
-                  </div>
-                  <div className="border border-line bg-panel-2 px-4 py-3">
-                    <p className="type-kicker text-ink-3">{t('consistenciaInput')}</p>
-                    <p className="type-mono mt-2 text-sm font-bold text-ink-1">
-                      {run.impacto.consistenciaAntesPct}% <span className="text-accent">→</span>{' '}
-                      {run.impacto.consistenciaDepoisPct}%
-                    </p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-8">
+                <div className="mt-5 grid grid-cols-2 gap-8">
                   <div>
                     <div className="grid grid-cols-[1fr_auto_auto] items-baseline gap-x-6 border-b border-line pb-1.5">
                       <span />
@@ -585,7 +602,7 @@ export default function LatencyScreen() {
                         </li>
                       ))}
                     </ul>
-                    <p className="type-mono mt-3 text-[10px] text-ink-3">{t('registrado')}</p>
+                    <p className="mt-3 text-[11px] text-ink-3">{t('registrado')}</p>
                   </div>
                 </div>
               </div>

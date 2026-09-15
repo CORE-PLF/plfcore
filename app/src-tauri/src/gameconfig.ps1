@@ -11,7 +11,7 @@ $ErrorActionPreference = 'Stop'
 $CfgAlvos = @('gta5', 'cs2', 'lol')
 $CfgPresets = @('desempenho', 'equilibrado', 'visual')
 
-$CfgDir = Join-Path $env:LOCALAPPDATA 'Resync\gameconfig'
+$CfgDir = Join-Path $env:LOCALAPPDATA 'PLFCore\gameconfig'
 $CfgIndice = Join-Path $CfgDir 'gameconfig.json'
 
 function Get-CfgEstado {
@@ -117,8 +117,8 @@ function Write-Gta5Settings([string]$arquivo, [hashtable]$valores) {
 
 # ===== CS2: autoexec.cfg =====
 
-$Cs2Marca = '// >>> RESYNC'
-$Cs2Fim = '// <<< RESYNC'
+$Cs2Marca = '// >>> PLF CORE'
+$Cs2Fim = '// <<< PLF CORE'
 
 <# Só cvar cuja string existe nos binários do CS2 de hoje. Metade do que circula
    em "autoexec otimizado" é herança morta do CS:GO e não existe mais. #>
@@ -230,7 +230,7 @@ function Read-CfgValores([string]$id, [string]$arquivo) {
   return @{}
 }
 
-$acao = $env:RESYNC_GAMECFG_ACTION
+$acao = $env:PLFCORE_GAMECFG_ACTION
 
 if ($acao -eq 'scan') {
   $estado = Get-CfgEstado
@@ -261,8 +261,8 @@ if ($acao -eq 'scan') {
 }
 
 if ($acao -eq 'apply') {
-  $id = $env:RESYNC_GAMECFG_ID
-  $preset = $env:RESYNC_GAMECFG_PRESET
+  $id = $env:PLFCORE_GAMECFG_ID
+  $preset = $env:PLFCORE_GAMECFG_PRESET
   if ($CfgAlvos -notcontains $id) { throw 'ERR_CFG_NOT_ALLOWED' }
   if ($id -ne 'lol' -and $CfgPresets -notcontains $preset) { throw 'ERR_CFG_PRESET' }
   Test-JogoFechado $id
@@ -299,7 +299,7 @@ if ($acao -eq 'apply') {
 }
 
 if ($acao -eq 'restore') {
-  $id = $env:RESYNC_GAMECFG_ID
+  $id = $env:PLFCORE_GAMECFG_ID
   if ($CfgAlvos -notcontains $id) { throw 'ERR_CFG_NOT_ALLOWED' }
   Test-JogoFechado $id
 

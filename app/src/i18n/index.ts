@@ -30,7 +30,7 @@ export const useLocaleStore = create<LocaleState>()(
       locale: 'pt',
       setLocale: (locale) => set({ locale }),
     }),
-    { name: 'resync-locale' },
+    { name: 'plfcore-locale' },
   ),
 )
 

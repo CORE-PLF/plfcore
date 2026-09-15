@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
 import { requireUser } from '@/lib/auth'
 import { fecharTicketAction, responderTicketAction } from '@/lib/actions/painel'
-import { Chamfer, Kicker, RuleFade, StatusTag } from '@/components/ui'
+import { Surface, Kicker, RuleFade, StatusTag } from '@/components/ui'
 import {
   TICKET_PRIORITY_LABEL,
   TICKET_TAG,
@@ -41,7 +41,7 @@ export default async function TicketPage({
           </Link>{' '}
           / TICKET
         </Kicker>
-        <h1 className="type-display text-3xl">{ticket.subject}</h1>
+        <h1 className="type-display text-2xl">{ticket.subject}</h1>
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <StatusTag tone={TICKET_TAG[ticket.status].tone}>{TICKET_TAG[ticket.status].label}</StatusTag>
           <span className="type-mono text-xs text-ink-3">
@@ -54,8 +54,8 @@ export default async function TicketPage({
       <ol className="space-y-3">
         {ticket.messages.map((m) => (
           <li key={m.id}>
-            <Chamfer
-              cut={6}
+            <Surface
+             
               flat
               className="px-4 py-3"
               style={m.isStaff ? { boxShadow: 'inset 2px 0 0 var(--color-signal)' } : undefined}
@@ -67,7 +67,7 @@ export default async function TicketPage({
                 </span>
               </p>
               <p className="whitespace-pre-line text-sm text-ink-2">{m.body}</p>
-            </Chamfer>
+            </Surface>
           </li>
         ))}
       </ol>
@@ -75,7 +75,7 @@ export default async function TicketPage({
       <RuleFade className="my-6" />
 
       {fechado ? (
-        <Chamfer cut={6} flat className="px-4 py-3">
+        <Surface flat className="px-4 py-3">
           <p className="text-sm text-ink-2">
             Ticket fechado. Precisa de mais ajuda?{' '}
             <Link href="/painel/suporte/novo" className="text-ink-1 underline">
@@ -83,11 +83,11 @@ export default async function TicketPage({
             </Link>
             .
           </p>
-        </Chamfer>
+        </Surface>
       ) : (
         <div className="space-y-4">
           {erro && (
-            <p className="text-sm" style={{ color: 'var(--color-signal)' }} role="alert">
+            <p className="text-sm" style={{ color: 'var(--color-blood)' }} role="alert">
               {erro}
             </p>
           )}
@@ -106,7 +106,7 @@ export default async function TicketPage({
               className="field"
               placeholder="Sua resposta. Chaves de licença são mascaradas automaticamente."
             />
-            <button type="submit" className="btn btn--primary chamfer">
+            <button type="submit" className="btn btn--primary">
               ENVIAR
             </button>
           </form>
@@ -115,7 +115,7 @@ export default async function TicketPage({
             <input type="hidden" name="ticketId" value={ticket.id} />
             <ConfirmSubmit
               message="Fechar este ticket? Você poderá abrir outro depois, mas este não aceitará novas respostas."
-              className="btn btn--ghost btn--sm chamfer"
+              className="btn btn--ghost btn--sm"
             >
               FECHAR TICKET
             </ConfirmSubmit>

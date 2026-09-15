@@ -481,7 +481,7 @@ export class MockSystemAdapter implements SystemAdapter {
       { id: 'plugins', caminho: '…\\FiveM.app\\plugins', arquivos: 1, bytes: 2_097_152 },
       { id: 'addons', caminho: '…\\FiveM.app\\addons', arquivos: 0, bytes: 0 },
     ],
-    backup: 'C:\\Users\\demo\\AppData\\Local\\Resync\\fivem-backup',
+    backup: 'C:\\Users\\demo\\AppData\\Local\\PLFCore\\fivem-backup',
     origin: 'demo',
   }
 

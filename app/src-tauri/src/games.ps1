@@ -34,7 +34,7 @@ function Test-CpuPriority([string]$exe) {
   } catch { return $false }
 }
 
-$acao = $env:RESYNC_GAMES_ACTION
+$acao = $env:PLFCORE_GAMES_ACTION
 
 if ($acao -eq 'scan') {
   $itens = foreach ($id in $Catalogo) {
@@ -59,7 +59,7 @@ if ($acao -eq 'scan') {
 }
 
 if ($acao -eq 'clean') {
-  $id = $env:RESYNC_GAMES_ID
+  $id = $env:PLFCORE_GAMES_ID
   if ($Catalogo -notcontains $id) { throw 'ERR_GAME_NOT_ALLOWED' }
   foreach ($processo in (Get-GameProcessNames $id)) {
     if (Get-Process -Name $processo -ErrorAction SilentlyContinue) { throw 'ERR_GAME_RUNNING' }

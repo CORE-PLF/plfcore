@@ -1,15 +1,26 @@
-/* Feixe de energia CPU↔GPU — linhas em --heat com dashoffset animado. */
+/* Feixe CPU↔GPU — cinza em repouso; amarelo quando há gargalo medido. */
 .bn-flow {
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
+  --bn-stroke: #4a4a4a;
+  --bn-fill: rgba(255, 255, 255, 0.03);
+}
+.bn-flow--hot {
+  --bn-stroke: var(--color-signal);
+  --bn-fill: rgba(248, 232, 0, 0.06);
+}
+.bn-flowfill {
+  fill: var(--bn-fill);
+  transition: fill var(--t-base) var(--expo);
 }
 .bn-flowline {
-  stroke: var(--color-heat);
+  stroke: var(--bn-stroke);
   stroke-width: 1.5;
   stroke-dasharray: 12 16;
   animation: bn-dash 1.2s linear infinite;
   transition:
+    stroke var(--t-base) var(--expo),
     y1 700ms var(--expo),
     y2 700ms var(--expo);
 }

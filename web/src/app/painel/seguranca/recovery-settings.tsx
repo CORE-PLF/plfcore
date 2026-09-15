@@ -73,11 +73,11 @@ export function QuestionsForm({
         suporte consegue lê-las.
       </p>
       {state.error && (
-        <p role="alert" className="text-sm text-signal">
+        <p role="alert" className="text-sm text-blood">
           ERRO — {state.error}
         </p>
       )}
-      <button type="submit" disabled={pending} aria-busy={pending} className="btn btn--primary chamfer">
+      <button type="submit" disabled={pending} aria-busy={pending} className="btn btn--primary">
         {hasQuestions ? 'TROCAR PERGUNTAS' : 'SALVAR PERGUNTAS'}
       </button>
     </form>
@@ -110,7 +110,7 @@ export function RecoveryCodeBlock({
         <p className="type-kicker">GUARDE SEU NOVO CÓDIGO</p>
         <p
           className="type-mono break-all px-3 py-2 text-sm text-ink-1"
-          style={{ background: 'var(--color-void)', boxShadow: 'inset 0 0 0 1px var(--color-edge)' }}
+          style={{ background: 'var(--color-void)', border: '1px solid var(--color-edge)', borderRadius: 6 }}
         >
           {state.code}
         </p>
@@ -119,8 +119,8 @@ export function RecoveryCodeBlock({
         </p>
         <a
           href={`data:text/plain;charset=utf-8,${encodeURIComponent(txt)}`}
-          download="resync-codigo-recuperacao.txt"
-          className="btn btn--ghost chamfer inline-block"
+          download={`${BRAND.domainHint}-codigo-recuperacao.txt`}
+          className="btn btn--ghost inline-block"
         >
           BAIXAR .TXT
         </a>
@@ -145,11 +145,11 @@ export function RecoveryCodeBlock({
       </p>
       <Field label="SENHA ATUAL" name="senha" type="password" required autoComplete="current-password" />
       {state.error && (
-        <p role="alert" className="text-sm text-signal">
+        <p role="alert" className="text-sm text-blood">
           ERRO — {state.error}
         </p>
       )}
-      <button type="submit" disabled={pending} aria-busy={pending} className="btn btn--primary chamfer">
+      <button type="submit" disabled={pending} aria-busy={pending} className="btn btn--primary">
         {hasActiveCode ? 'REGENERAR CÓDIGO' : 'GERAR CÓDIGO'}
       </button>
     </form>

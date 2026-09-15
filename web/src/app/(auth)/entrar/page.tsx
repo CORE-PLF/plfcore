@@ -29,7 +29,7 @@ export default async function EntrarPage({
   return (
     <>
       <Kicker>ACESSO</Kicker>
-      <h1 className="type-display mt-1 text-2xl">ENTRAR</h1>
+      <h1 className="type-display mt-1 text-2xl">Entrar</h1>
 
       <div className="mt-5 space-y-3" role="status">
         {q.reset === 'ok' && (
@@ -37,7 +37,7 @@ export default async function EntrarPage({
         )}
       </div>
       {erro && (
-        <p role="alert" className="mt-3 text-sm text-signal">
+        <p role="alert" className="mt-3 text-sm text-blood">
           ERRO — {erro}
         </p>
       )}
@@ -45,7 +45,7 @@ export default async function EntrarPage({
       {/* Login por Discord desativado por enquanto — religar quando decidirmos.
       <a
         href="/api/auth/discord"
-        className="btn btn--primary chamfer mt-5 w-full focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ink-1"
+        className="btn btn--primary mt-5 w-full focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ink-1"
       >
         ENTRAR COM DISCORD
       </a>

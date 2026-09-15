@@ -4,12 +4,12 @@ import { LegalDoc, LegalSection } from '../../_shared'
 
 export const metadata: Metadata = {
   title: 'REEMBOLSO',
-  description: 'Política de reembolso da Resync: 7 dias de arrependimento, como pedir e prazos.',
+  description: 'Política de reembolso do PLF CORE: 7 dias de arrependimento, como pedir e prazos.',
 }
 
 export default function ReembolsoPage() {
   return (
-    <LegalDoc kicker="LEGAL" title="POLÍTICA DE REEMBOLSO" updated="3 de agosto de 2026">
+    <LegalDoc kicker="LEGAL" title="Política de reembolso" updated="3 de agosto de 2026">
       <LegalSection title="1. DIREITO DE ARREPENDIMENTO — 7 DIAS">
         <p>
           Por se tratar de compra fora de estabelecimento comercial, você pode desistir em até 7

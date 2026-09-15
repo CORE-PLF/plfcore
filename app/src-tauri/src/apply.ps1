@@ -1,11 +1,11 @@
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-$action = [string]$env:RESYNC_OPT_ACTION
-$profile = [string]$env:RESYNC_OPT_PROFILE
-$stateDir = Join-Path $env:LOCALAPPDATA 'Resync'
+$action = [string]$env:PLFCORE_OPT_ACTION
+$profile = [string]$env:PLFCORE_OPT_PROFILE
+$stateDir = Join-Path $env:LOCALAPPDATA 'PLFCore'
 $restoreFile = Join-Path $stateDir 'restore.json'
-$mutex = New-Object System.Threading.Mutex($false, 'Local\ResyncOptimization')
+$mutex = New-Object System.Threading.Mutex($false, 'Local\PLFCoreOptimization')
 $locked = $false
 $stateLoaded = $false
 
@@ -163,9 +163,9 @@ function Restore-All {
   }
 }
 
-$PlanoNome = 'RESYNC - MAX PERFORMANCE'
+$PlanoNome = 'PLF CORE - MAX PERFORMANCE'
 
-function Get-PlanoResync {
+function Get-PlanoPLF {
   $linhas = powercfg /list 2>$null | Out-String
   foreach ($linha in ($linhas -split "`r?`n")) {
     if ($linha -like "*$PlanoNome*") {
@@ -176,7 +176,7 @@ function Get-PlanoResync {
   return $null
 }
 
-function New-PlanoResync {
+function New-PlanoPLF {
   # Ultimate Performance é oculto e não existe em todo SKU; alto desempenho é o piso.
   foreach ($base in @('e9a42b02-d5df-448d-aa00-03f14749eb61', '8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c')) {
     $criado = powercfg /duplicatescheme $base 2>$null | Out-String
@@ -194,12 +194,12 @@ function Apply-PowerPlan([System.Collections.ArrayList]$applied, [bool]$aggressi
   $target = [string]$script:restore.createdPowerPlan
   if (-not ($target -match '^[0-9a-fA-F-]{36}$')) {
     # Reaproveita o plano de uma execução anterior: sem isso cada rodada empilha um plano novo.
-    $target = Get-PlanoResync
+    $target = Get-PlanoPLF
   }
   if (-not ($target -match '^[0-9a-fA-F-]{36}$')) {
-    $target = New-PlanoResync
+    $target = New-PlanoPLF
     if (-not $target) { throw 'ERR_POWER_HIGH_UNAVAILABLE' }
-    powercfg /changename $target $PlanoNome 'Plano reversível gerenciado pelo RESYNC' 2>$null | Out-Null
+    powercfg /changename $target $PlanoNome 'Plano reversível gerenciado pelo PLF CORE' 2>$null | Out-Null
   }
   if ([string]$script:restore.createdPowerPlan -ne $target) {
     $script:restore.createdPowerPlan = $target
@@ -212,7 +212,7 @@ function Apply-PowerPlan([System.Collections.ArrayList]$applied, [bool]$aggressi
     powercfg /setacvalueindex $target '501a4d13-42af-4429-9fd1-a8218c268e20' 'ee12f906-d277-404b-b6da-e5fa1a576df5' 0 2>$null | Out-Null
     powercfg /setacvalueindex $target SUB_PROCESSOR CPMINCORES 100 2>$null | Out-Null
     powercfg /setacvalueindex $target SUB_PROCESSOR PERFBOOSTMODE 2 2>$null | Out-Null
-    # Só no plano do RESYNC e só na tomada: reverter apaga o plano e leva junto.
+    # Só no plano do PLF CORE e só na tomada: reverter apaga o plano e leva junto.
     powercfg /setacvalueindex $target SUB_SLEEP STANDBYIDLE 0 2>$null | Out-Null
     powercfg /setacvalueindex $target SUB_SLEEP HIBERNATEIDLE 0 2>$null | Out-Null
     [void]$applied.Add('cpu-resposta-max')
@@ -492,7 +492,7 @@ try {
   $powerName = $null
   if ($applied -contains 'plano-energia-alto') {
     $powerVerified = ([string]$script:restore.createdPowerPlan -eq [string]$activePower)
-    if ($powerVerified) { $powerName = 'RESYNC - MAX PERFORMANCE' }
+    if ($powerVerified) { $powerName = 'PLF CORE - MAX PERFORMANCE' }
   }
   $restartRecommended = (($applied -contains 'servicos-lite') -or ($applied -contains 'tarefas-lite') -or ($applied -contains 'interface-responsiva'))
   @{

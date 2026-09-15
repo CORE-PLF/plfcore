@@ -2,10 +2,10 @@
 .appshell {
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-template-rows: 56px 1fr 28px;
+  grid-template-rows: 56px auto 1fr 28px;
   height: 100%;
 }
-.appshell > aside { grid-row: 1 / 4; }
+.appshell > aside { grid-row: 1 / 5; }
 
 /* ===== sidebar ===== */
 .sidebar {
@@ -155,7 +155,7 @@
   cursor: pointer;
   transition: border-color var(--t-fast), background var(--t-fast);
 }
-.levelbadge:hover { border-color: var(--color-edge-2); background: var(--color-surface-2); }
+.levelbadge:hover { border-color: var(--signal-edge); background: var(--color-surface-2); }
 .levelbadge-value {
   display: inline-flex;
   align-items: center;
@@ -169,7 +169,16 @@
   color: var(--color-ink-1);
   font-variant-numeric: tabular-nums;
 }
-.levelbadge--hot .levelbadge-value { color: var(--color-signal); }
+/* o nivel e a leitura de destaque do topo: valor sempre amarelo, e sólido quando o nivel esta alterado */
+.levelbadge-value { color: var(--color-signal); }
+.levelbadge--hot {
+  border-color: var(--signal-edge);
+  background: rgba(248, 232, 0, 0.07);
+}
+.levelbadge--hot .levelbadge-value {
+  background: var(--color-signal);
+  color: var(--color-void);
+}
 
 /* ===== preparação real do L1 ===== */
 .l1-preflight-head {
@@ -410,4 +419,26 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ign-logo, .ign-bar > i { animation-duration: 1ms !important; animation-delay: 0ms !important; }
+}
+
+/* ===== barra de reinício pendente: ajuste aplicado que só vale depois de reiniciar ===== */
+.restartbar {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px 0 20px;
+  height: 44px;
+  background: rgba(248, 232, 0, 0.07);
+  border-bottom: 1px solid var(--signal-edge);
+  color: var(--color-signal);
+}
+.restartbar-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.restartbar-detail {
+  font-size: 12px;
+  color: var(--color-ink-2);
 }

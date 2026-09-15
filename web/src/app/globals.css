@@ -1,45 +1,41 @@
 @import 'tailwindcss';
 
-/* ===== RESYNC — identidade portada do aplicativo (REGRA ZERO) =====
-   Preto real + vermelho-sinal, chanfros 45°, zero canto arredondado.
-   Fontes chegam via next/font (variáveis --font-*). */
+/* ===== PLF CORE — mesmos tokens do app (painel escuro + amarelo de ação) =====
+   Inter em tudo. Amarelo = ação. Vermelho = marca/erro. Sem gradiente, sem chanfro. */
 
 @theme {
-  --color-void: #050506;
-  --color-carbon: #0a0a0d;
-  --color-steel: #101014;
-  --color-signal: #ff2e3f;
-  --color-blood: #c41230;
-  --color-rust: #6e0f1d;
-  --color-heat: #ff4d2e;
-  --color-ink-1: rgba(255, 255, 255, 0.96);
-  --color-ink-2: rgba(255, 255, 255, 0.66);
-  --color-ink-3: rgba(255, 255, 255, 0.42);
-  --color-ink-4: rgba(255, 255, 255, 0.26);
-  --color-line: rgba(255, 255, 255, 0.07);
-  --color-edge: rgba(255, 255, 255, 0.1);
+  --color-void: #101010;
+  --color-carbon: #141414;
+  --color-steel: #181818;
+  --color-surface-2: #202020;
+  --color-surface-3: #282828;
+  --color-line: #222222;
+  --color-edge: #2b2b2b;
+  --color-edge-2: #3a3a3a;
+  --color-signal: #f8e800;
+  --color-blood: #e5262b;
+  --color-ink-1: #ffffff;
+  --color-ink-2: #c9c9c9;
+  --color-ink-3: #8a8a8a;
+  --color-ink-4: #5a5a5a;
+  /* aliases das telas fora do redesign (admin/afiliado/revenda) */
+  --color-heat: #f8e800;
+  --color-rust: #3a3a3a;
 
-  --font-display: var(--font-saira), 'Arial Narrow', sans-serif;
-  --font-ui: var(--font-quantico), 'Segoe UI', sans-serif;
-  --font-mono: var(--font-jetbrains), 'Consolas', monospace;
+  --font-ui: var(--font-inter), 'Segoe UI', sans-serif;
+  --font-mono: var(--font-inter), 'Segoe UI', sans-serif;
+
+  --radius-card: 10px;
+  --radius-ctl: 6px;
 }
 
 :root {
-  --panel: linear-gradient(160deg, rgba(16, 16, 20, 0.97) 42%, rgba(7, 7, 9, 0.72) 100%);
   --t-fast: 120ms;
   --t-base: 180ms;
   --t-page: 260ms;
   --expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --snap: cubic-bezier(0.7, 0, 0.3, 1);
-  --glow-signal: drop-shadow(0 0 12px rgba(255, 46, 63, 0.35));
 }
 
-/* REGRA ZERO: raio global 0. Círculo literal usa .circle. */
-*,
-*::before,
-*::after {
-  border-radius: 0;
-}
 .circle {
   border-radius: 50%;
 }
@@ -56,119 +52,116 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* grain 2–3% sobre o fundo */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='128' height='128' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* tipografia utilitária */
+/* ===== tipografia ===== */
 .type-display {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-style: italic;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  line-height: 1.02;
-  padding-right: 0.12em; /* sem isso o clip-path come a ponta do itálico */
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
   color: var(--color-ink-1);
   text-wrap: balance;
 }
-.type-mono {
-  font-family: var(--font-mono);
+.type-mono,
+.type-num {
   font-variant-numeric: tabular-nums;
 }
 .type-kicker {
-  font-family: var(--font-ui);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--color-ink-3);
 }
 
-/* ===== superfície chanfrada — o fundo do elemento É a borda; ::before pinta o miolo ===== */
+/* ===== superfícies ===== */
+.surface,
 .chamfer {
-  --cut: 8px;
   position: relative;
-  background: var(--ch-edge, var(--color-edge));
-  clip-path: polygon(
-    var(--cut) 0,
-    100% 0,
-    100% calc(100% - var(--cut)),
-    calc(100% - var(--cut)) 100%,
-    0 100%,
-    0 var(--cut)
-  );
+  background: var(--color-steel);
+  border: 1px solid var(--color-edge);
+  border-radius: var(--radius-card);
 }
-.chamfer--all {
-  clip-path: polygon(
-    var(--cut) 0,
-    calc(100% - var(--cut)) 0,
-    100% var(--cut),
-    100% calc(100% - var(--cut)),
-    calc(100% - var(--cut)) 100%,
-    var(--cut) 100%,
-    0 calc(100% - var(--cut)),
-    0 var(--cut)
-  );
+.surface--flat,
+.chamfer--flat {
+  background: var(--color-carbon);
+  border-color: var(--color-line);
 }
-.chamfer::before {
-  content: '';
-  position: absolute;
-  inset: 1px;
-  z-index: -1;
-  background: var(--ch-fill, var(--panel));
-  clip-path: inherit;
+.surface-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 14px;
+  background: var(--color-surface-2);
+  border-bottom: 1px solid var(--color-edge);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-ink-1);
 }
-.chamfer--flat::before {
-  background: var(--ch-fill, var(--color-carbon));
+.surface > .surface-head {
+  margin: -1px -1px 0;
+}
+.brackets > .bk {
+  display: none;
 }
 
-/* colchetes de mira nos 4 cantos */
-.brackets > .bk {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border: 1px solid var(--color-signal);
-  pointer-events: none;
-  z-index: 2;
+/* linha de dado: label cinza à esquerda, valor branco à direita */
+.datarow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 32px;
+  padding: 0 10px;
+  background: var(--color-surface-2);
+  border-radius: var(--radius-ctl);
+  font-size: 12px;
 }
-.brackets > .bk:nth-of-type(1) { top: 1px; left: 1px; border-width: 1px 0 0 1px; }
-.brackets > .bk:nth-of-type(2) { top: 1px; right: 1px; border-width: 1px 1px 0 0; }
-.brackets > .bk:nth-of-type(3) { bottom: 1px; right: 1px; border-width: 0 1px 1px 0; }
-.brackets > .bk:nth-of-type(4) { bottom: 1px; left: 1px; border-width: 0 0 1px 1px; }
+.datarow + .datarow {
+  margin-top: 1px;
+}
+.datarow > dt,
+.datarow > .k {
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--color-ink-3);
+}
+.datarow > dd,
+.datarow > .v {
+  font-weight: 700;
+  color: var(--color-ink-1);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
 
 /* ===== botões ===== */
 .btn {
-  --cut: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 44px;
-  padding: 0 22px;
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-style: italic;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: var(--radius-ctl);
+  border: 1px solid transparent;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: 15px;
-  padding-right: calc(22px + 0.12em);
-  cursor: pointer;
-  border: none;
   text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
   transition:
     filter var(--t-fast) var(--expo),
     transform var(--t-fast) var(--expo);
 }
 .btn:hover:not(:disabled) {
-  filter: brightness(1.06);
+  filter: brightness(1.08);
   transform: translateY(-1px);
 }
 .btn:active:not(:disabled) {
@@ -179,107 +172,157 @@ body::after {
   opacity: 0.4;
 }
 .btn--primary {
-  --ch-edge: var(--color-signal);
-  --ch-fill: var(--color-signal);
-  color: #0a0508;
-}
-.btn--primary:hover:not(:disabled) {
-  filter: brightness(1.06) var(--glow-signal);
+  background: var(--color-signal);
+  border-color: var(--color-signal);
+  color: var(--color-void);
 }
 .btn--ghost {
-  --ch-fill: rgba(16, 16, 20, 0.6);
-  color: var(--color-ink-2);
-}
-.btn--ghost:hover:not(:disabled) {
+  background: var(--color-surface-2);
+  border-color: var(--color-edge-2);
   color: var(--color-ink-1);
 }
 .btn--danger {
-  --ch-edge: var(--color-rust);
-  --ch-fill: rgba(110, 15, 29, 0.18);
-  color: var(--color-signal);
+  background: rgba(229, 38, 43, 0.1);
+  border-color: var(--color-blood);
+  color: var(--color-blood);
 }
 .btn--sm {
-  min-height: 34px;
-  padding: 0 14px;
-  font-size: 13px;
-  --cut: 4px;
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 11px;
+}
+.btn--lg {
+  min-height: 46px;
+  padding: 0 24px;
+  font-size: 14px;
 }
 
 /* ===== inputs ===== */
 .field {
   width: 100%;
-  min-height: 44px;
-  padding: 10px 14px;
+  min-height: 42px;
+  padding: 10px 12px;
   color: var(--color-ink-1);
   font-family: var(--font-ui);
-  font-size: 15px;
-  border: none;
+  font-size: 14px;
+  background: var(--color-void);
+  border: 1px solid var(--color-edge-2);
+  border-radius: var(--radius-ctl);
   outline: none;
-  background-color: var(--color-steel);
-  box-shadow: inset 0 0 0 1px var(--color-edge);
+  transition: border-color var(--t-fast) var(--expo);
 }
 .field:focus {
-  box-shadow: inset 0 0 0 1px var(--color-signal);
+  border-color: var(--color-signal);
 }
 .field::placeholder {
   color: var(--color-ink-4);
 }
+select.field {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16' fill='none' stroke='%238a8a8a' stroke-width='1.5'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+input[type='checkbox'],
+input[type='radio'] {
+  accent-color: var(--color-signal);
+}
 
-/* ===== progresso segmentado — blocos, gap 2px; NUNCA barra lisa ===== */
-.segprog {
-  display: flex;
-  gap: 2px;
-  height: 10px;
+/* ===== pílulas ===== */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: var(--color-surface-3);
+  border: 1px solid var(--color-edge);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
-.segprog i {
-  flex: 1;
-  background: var(--color-edge);
+.pill--ok {
+  color: var(--color-ink-1);
 }
-.segprog i.on {
+.pill--warn {
+  color: var(--color-signal);
+  border-color: rgba(248, 232, 0, 0.4);
+  background: rgba(248, 232, 0, 0.07);
+}
+.pill--danger {
+  color: var(--color-blood);
+  border-color: rgba(229, 38, 43, 0.5);
+  background: rgba(229, 38, 43, 0.08);
+}
+.pill--signal {
+  background: var(--color-signal);
+  border-color: var(--color-signal);
+  color: var(--color-void);
+}
+
+/* LED vivo — único ponto com glow além do CTA */
+.led {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-signal);
+  box-shadow: 0 0 7px rgba(248, 232, 0, 0.8);
+}
+
+/* ===== progresso — barra lisa amarela ===== */
+.progress {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--color-surface-3);
+  overflow: hidden;
+}
+.progress > i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
   background: var(--color-signal);
 }
+.progress--hot > i {
+  background: var(--color-blood);
+}
 
-/* hazard stripes — SÓ zonas destrutivas */
+/* faixa de zona destrutiva: 6px amarelo/preto no topo do card */
+.hazard-bar {
+  height: 6px;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  background: repeating-linear-gradient(-45deg, var(--color-signal) 0 8px, var(--color-void) 8px 16px);
+}
 .hazard {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    rgba(255, 46, 63, 0.18) 0 8px,
-    rgba(0, 0, 0, 0) 8px 16px
-  );
-}
-
-.scanlines {
-  background-image: repeating-linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.015) 0 1px,
-    transparent 1px 3px
-  );
-}
-
-.stage-grid {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: repeating-linear-gradient(-45deg, rgba(248, 232, 0, 0.14) 0 8px, transparent 8px 16px);
 }
 
 .rule-fade {
   height: 1px;
-  background: linear-gradient(90deg, var(--color-line), transparent);
+  background: var(--color-line);
 }
 
-/* selo de demonstração — obrigatório em qualquer dado ilustrativo */
+/* selo obrigatório em qualquer dado ilustrativo */
 .demo-seal {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 2px 8px;
-  font-family: var(--font-mono);
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: rgba(248, 232, 0, 0.07);
+  border: 1px solid rgba(248, 232, 0, 0.4);
   font-size: 10px;
-  letter-spacing: 0.12em;
-  color: var(--color-heat);
-  box-shadow: inset 0 0 0 1px rgba(255, 77, 46, 0.4);
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  color: var(--color-signal);
 }
 
 :focus-visible {
@@ -288,7 +331,7 @@ body::after {
 }
 
 ::selection {
-  background: rgba(255, 46, 63, 0.35);
+  background: rgba(248, 232, 0, 0.3);
   color: var(--color-ink-1);
 }
 
@@ -300,11 +343,9 @@ body::after {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--color-edge-2);
   border: 2px solid var(--color-void);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 46, 63, 0.4);
+  border-radius: 999px;
 }
 
 @media (prefers-reduced-motion: reduce) {

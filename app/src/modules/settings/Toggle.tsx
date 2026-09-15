@@ -11,7 +11,7 @@ interface Props {
   disabled?: boolean
 }
 
-/** Switch quadrado mini: knob desliza + texto ON/OFF — estado nunca só por cor. */
+/** Interruptor de linha: trilho desliza + texto ON/OFF — estado nunca só por cor. */
 export function Toggle({ checked, onChange, label, disabled }: Props) {
   const t = useT(dict)
   return (
@@ -21,13 +21,13 @@ export function Toggle({ checked, onChange, label, disabled }: Props) {
       aria-checked={checked}
       aria-label={label}
       disabled={disabled}
-      className="pfx-toggle"
+      className={`st-switch pfx-toggle ${checked ? 'st-switch--on' : ''}`}
       onClick={() => {
         sfx.click()
         onChange(!checked)
       }}
     >
-      <span className="track" aria-hidden />
+      <span className="rail" aria-hidden />
       <span className="state">{checked ? t('ligado') : t('desligado')}</span>
     </button>
   )

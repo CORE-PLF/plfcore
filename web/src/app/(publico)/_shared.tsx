@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Kicker, RuleFade } from '@/components/ui'
+import { Kicker } from '@/components/ui'
 import { db } from '@/lib/db'
 
 // Peças compartilhadas entre a landing e as páginas públicas restantes.
@@ -25,12 +25,11 @@ export function PageHeader({
   lead?: ReactNode
 }) {
   return (
-    <header className="border-b border-line">
-      <div className="mx-auto w-full max-w-6xl px-4 py-14 md:py-20">
+    <header className="border-b border-edge bg-carbon">
+      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:py-16">
         <Kicker>{kicker}</Kicker>
-        <h1 className="type-display mt-3 max-w-4xl text-4xl md:text-6xl">{title}</h1>
-        {lead && <p className="mt-5 max-w-2xl text-base text-ink-2">{lead}</p>}
-        <RuleFade className="mt-10" />
+        <h1 className="type-display mt-2 max-w-4xl text-3xl md:text-[2.6rem]">{title}</h1>
+        {lead && <p className="mt-4 max-w-2xl text-base text-ink-2">{lead}</p>}
       </div>
     </header>
   )
@@ -49,11 +48,11 @@ export function LegalDoc({
   children: ReactNode
 }) {
   return (
-    <article className="py-14 md:py-20">
+    <article className="py-12 md:py-16">
       <Kicker>{kicker}</Kicker>
-      <h1 className="type-display mt-3 text-3xl md:text-5xl">{title}</h1>
-      <p className="type-mono mt-3 text-xs text-ink-3">Última atualização: {updated}</p>
-      <RuleFade className="mt-8" />
+      <h1 className="type-display mt-2 text-3xl md:text-[2.6rem]">{title}</h1>
+      <p className="type-num mt-3 text-xs text-ink-3">Última atualização: {updated}</p>
+      <div className="rule-fade mt-8" />
       <div className="mt-8">{children}</div>
     </article>
   )
@@ -62,7 +61,7 @@ export function LegalDoc({
 export function LegalSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="mt-10 first:mt-0">
-      <h2 className="type-display text-xl md:text-2xl">{title}</h2>
+      <h2 className="text-[13px] font-bold uppercase tracking-[0.1em] text-ink-1">{title}</h2>
       <div className="mt-3 space-y-3 text-sm leading-relaxed text-ink-2 [&_li]:ml-5 [&_li]:list-disc [&_ul]:space-y-1.5">
         {children}
       </div>

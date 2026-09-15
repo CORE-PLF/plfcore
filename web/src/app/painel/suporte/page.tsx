@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { db } from '@/lib/db'
 import { requireUser } from '@/lib/auth'
-import { Chamfer, Kicker, StatusTag } from '@/components/ui'
+import { Surface, Kicker, StatusTag } from '@/components/ui'
 import { TICKET_TAG, categoryLabel, fmtDateTime } from '../helpers'
 
 export default async function SuportePage() {
@@ -16,24 +16,24 @@ export default async function SuportePage() {
       <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <Kicker>PAINEL</Kicker>
-          <h1 className="type-display text-3xl">SUPORTE</h1>
+          <h1 className="type-display text-3xl">Suporte</h1>
         </div>
-        <Link href="/painel/suporte/novo" className="btn btn--primary btn--sm chamfer">
+        <Link href="/painel/suporte/novo" className="btn btn--primary btn--sm">
           ABRIR TICKET
         </Link>
       </header>
 
       {tickets.length === 0 ? (
-        <Chamfer cut={8} flat className="p-6">
+        <Surface flat className="p-6">
           <p className="text-ink-2">Nenhum ticket aberto. Precisa de ajuda? Abra um ticket.</p>
-        </Chamfer>
+        </Surface>
       ) : (
         <ul className="space-y-2">
           {tickets.map((t) => (
             <li key={t.id}>
               <Link href={`/painel/suporte/${t.id}`} className="block">
-                <Chamfer
-                  cut={6}
+                <Surface
+                 
                   flat
                   className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 transition-[filter] hover:brightness-110"
                 >
@@ -44,7 +44,7 @@ export default async function SuportePage() {
                     </p>
                   </div>
                   <StatusTag tone={TICKET_TAG[t.status].tone}>{TICKET_TAG[t.status].label}</StatusTag>
-                </Chamfer>
+                </Surface>
               </Link>
             </li>
           ))}

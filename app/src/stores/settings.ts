@@ -35,6 +35,6 @@ export const useSettingsStore = create<SettingsState>()(
         }
       },
     }),
-    { name: 'resync-settings' },
+    { name: 'plfcore-settings' },
   ),
 )

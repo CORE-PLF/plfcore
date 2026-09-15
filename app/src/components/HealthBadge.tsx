@@ -14,7 +14,7 @@ export function HealthBadge({ status }: { status: 'saudavel' | 'atencao' | 'crit
     )
   if (status === 'atencao')
     return (
-      <span className="tag" style={{ color: 'var(--color-heat)' }}>
+      <span className="tag tag--atencao">
         <IconWarn width={10} height={10} /> {t('atencao')}
       </span>
     )

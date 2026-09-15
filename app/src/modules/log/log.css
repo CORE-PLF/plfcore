@@ -1,59 +1,65 @@
-/* trilho vertical da timeline: 1px rust à esquerda, nós LED sobre o trilho */
-.log-timeline {
-  position: relative;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.log-timeline::before {
-  content: '';
-  position: absolute;
-  left: 8px;
-  top: 8px;
-  bottom: 8px;
-  width: 1px;
-  background: var(--color-rust);
-}
+/* linha densa do registro: hora · módulo · ação · resultado · detalhe · ação de reverter */
 .log-entry {
-  position: relative;
-  padding: 10px 12px 12px 30px;
+  display: grid;
+  grid-template-columns: 136px auto minmax(160px, 1fr) auto minmax(0, 1.4fr) 96px;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--color-line);
+  border-left: 3px solid transparent;
 }
-.log-entry + .log-entry {
-  border-top: 1px solid var(--color-line);
+.log-entry:last-child {
+  border-bottom: 0;
 }
-.log-node {
-  position: absolute;
-  left: 4.5px;
-  top: 16px;
+/* registro vindo do kill feed: marcado com a barra amarela de destaque */
+.log-anchored {
+  border-left-color: var(--color-signal);
+  background: var(--signal-soft);
 }
 .log-reverted .log-strike {
   text-decoration: line-through;
   color: var(--color-ink-4);
 }
 
-/* chip de filtro por módulo (usar junto com .chamfer) */
+/* filtro por módulo: pílula; ativa = amarelo */
 .log-chip {
-  --cut: 4px;
-  min-height: 34px;
-  padding: 0 12px;
-  border: none;
   cursor: pointer;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-ink-3);
+  letter-spacing: 0.06em;
   transition:
     color var(--t-fast) var(--expo),
-    filter var(--t-fast) var(--expo);
+    border-color var(--t-fast) var(--expo),
+    background var(--t-fast) var(--expo);
 }
 .log-chip:hover {
-  filter: brightness(1.06);
-  color: var(--color-ink-2);
+  color: var(--color-ink-1);
 }
 .log-chip[aria-pressed='true'] {
-  --ch-edge: var(--color-rust);
-  --ch-fill: rgba(110, 15, 29, 0.22);
+  color: var(--color-signal);
+  border-color: var(--signal-edge);
+  background: var(--signal-soft);
+}
+
+/* busca no cabeçalho do card */
+.log-busca {
+  width: 240px;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-edge-2);
+  background: var(--color-steel);
   color: var(--color-ink-1);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.log-busca::placeholder {
+  color: var(--color-ink-4);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }

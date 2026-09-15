@@ -5,7 +5,7 @@ import { requireUser } from '@/lib/auth'
 import { sha256 } from '@/lib/crypto'
 import { QUESTIONS, questionLabel } from '@/lib/recovery'
 import { encerrarOutrasSessoesAction, trocarSenhaAction } from '@/lib/actions/painel'
-import { Chamfer, Field, Kicker, StatusTag } from '@/components/ui'
+import { Surface, Field, Kicker, StatusTag } from '@/components/ui'
 import { firstParam, fmtDateTime, type SearchParams } from '../helpers'
 import { ConfirmSubmit } from '../confirm-submit'
 import { QuestionsForm, RecoveryCodeBlock } from './recovery-settings'
@@ -42,52 +42,52 @@ export default async function SegurancaPage({ searchParams }: { searchParams: Se
     <div>
       <header className="mb-6">
         <Kicker>PAINEL</Kicker>
-        <h1 className="type-display text-3xl">SEGURANÇA</h1>
+        <h1 className="type-display text-3xl">Segurança</h1>
       </header>
 
       {inicial && (
-        <Chamfer cut={8} className="mb-6 p-6">
+        <Surface className="mb-6 p-6">
           <Kicker className="mb-2">CONFIGURE A RECUPERAÇÃO AGORA</Kicker>
           <p className="text-sm text-ink-2">
             Sua conta não depende de e-mail. Sem perguntas de segurança ou código de recuperação,
             perder a senha significa perder o acesso — se as respostas E o código se perderem, nem
             o suporte consegue restaurar a conta. Configure abaixo — leva menos de um minuto.
           </p>
-          <Link href="/painel" className="btn btn--ghost btn--sm chamfer mt-4 inline-block">
+          <Link href="/painel" className="btn btn--ghost btn--sm mt-4 inline-block">
             DEIXAR PARA DEPOIS
           </Link>
-        </Chamfer>
+        </Surface>
       )}
 
       {firstParam(sp.ok) === 'perguntas' && (
-        <Chamfer cut={6} flat className="mb-4 px-4 py-3">
+        <Surface flat className="mb-4 px-4 py-3">
           <p className="text-sm text-ink-1">
             ✓ Perguntas de segurança salvas. Elas já valem para recuperar a conta.
           </p>
-        </Chamfer>
+        </Surface>
       )}
 
       {ok === 'sessoes' && (
-        <Chamfer cut={6} flat className="mb-4 px-4 py-3">
+        <Surface flat className="mb-4 px-4 py-3">
           <p className="text-sm text-ink-1">
             ✓ {firstParam(sp.n) ?? '0'} sessão(ões) encerrada(s). Esta sessão continua ativa.
           </p>
-        </Chamfer>
+        </Surface>
       )}
       {ok === 'senha' && (
-        <Chamfer cut={6} flat className="mb-4 px-4 py-3">
+        <Surface flat className="mb-4 px-4 py-3">
           <p className="text-sm text-ink-1">✓ Senha alterada. As outras sessões foram encerradas.</p>
-        </Chamfer>
+        </Surface>
       )}
       {erro && (
-        <Chamfer cut={6} flat className="mb-4 px-4 py-3" role="alert">
-          <p className="text-sm" style={{ color: 'var(--color-signal)' }}>
+        <Surface flat className="mb-4 px-4 py-3" role="alert">
+          <p className="text-sm" style={{ color: 'var(--color-blood)' }}>
             {erro}
           </p>
-        </Chamfer>
+        </Surface>
       )}
 
-      <Chamfer cut={8} className="p-6">
+      <Surface className="p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Kicker>SESSÕES ATIVAS</Kicker>
           {outras > 0 && (
@@ -106,7 +106,7 @@ export default async function SegurancaPage({ searchParams }: { searchParams: Se
               <li
                 key={s.id}
                 className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
-                style={{ background: 'var(--color-void)', boxShadow: 'inset 0 0 0 1px var(--color-edge)' }}
+                style={{ background: 'var(--color-void)', border: '1px solid var(--color-edge)', borderRadius: 6 }}
               >
                 <div className="min-w-0">
                   <p className="type-mono text-sm text-ink-1">
@@ -124,9 +124,9 @@ export default async function SegurancaPage({ searchParams }: { searchParams: Se
             )
           })}
         </ul>
-      </Chamfer>
+      </Surface>
 
-      <Chamfer cut={8} className="mt-6 p-6">
+      <Surface className="mt-6 p-6">
         <Kicker className="mb-4">TROCAR SENHA</Kicker>
         {user.passwordHash ? (
           <form action={trocarSenhaAction} className="max-w-sm space-y-4">
@@ -148,7 +148,7 @@ export default async function SegurancaPage({ searchParams }: { searchParams: Se
             <p className="text-xs text-ink-3">
               Ao trocar a senha, todas as outras sessões são encerradas.
             </p>
-            <button type="submit" className="btn btn--primary chamfer">
+            <button type="submit" className="btn btn--primary">
               TROCAR SENHA
             </button>
           </form>
@@ -158,9 +158,9 @@ export default async function SegurancaPage({ searchParams }: { searchParams: Se
             &quot;Recuperar acesso&quot; na tela de login com o seu e-mail.
           </p>
         )}
-      </Chamfer>
+      </Surface>
 
-      <Chamfer cut={8} className="mt-6 p-6">
+      <Surface className="mt-6 p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Kicker>RECUPERAÇÃO DE ACESSO — PERGUNTAS</Kicker>
           {perguntas.length === 2 ? (
@@ -176,7 +176,7 @@ export default async function SegurancaPage({ searchParams }: { searchParams: Se
               <li
                 key={q.slot}
                 className="px-4 py-3 text-sm text-ink-2"
-                style={{ background: 'var(--color-void)', boxShadow: 'inset 0 0 0 1px var(--color-edge)' }}
+                style={{ background: 'var(--color-void)', border: '1px solid var(--color-edge)', borderRadius: 6 }}
               >
                 <span className="type-mono text-xs text-ink-4">{q.slot}. </span>
                 {questionLabel(q.question)}
@@ -193,9 +193,9 @@ export default async function SegurancaPage({ searchParams }: { searchParams: Se
           hasQuestions={perguntas.length === 2}
           options={QUESTIONS.map((q) => ({ code: q.code, label: q.label }))}
         />
-      </Chamfer>
+      </Surface>
 
-      <Chamfer cut={8} className="mt-6 p-6">
+      <Surface className="mt-6 p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Kicker>RECUPERAÇÃO DE ACESSO — CÓDIGO</Kicker>
           {codigoAtivo > 0 ? (
@@ -207,7 +207,7 @@ export default async function SegurancaPage({ searchParams }: { searchParams: Se
         <div className="mt-4">
           <RecoveryCodeBlock hasActiveCode={codigoAtivo > 0} hasPassword={!!user.passwordHash} />
         </div>
-      </Chamfer>
+      </Surface>
     </div>
   )
 }

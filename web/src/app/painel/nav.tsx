@@ -17,11 +17,7 @@ const ITEMS = [
 function Badge({ n }: { n: number }) {
   if (n <= 0) return null
   return (
-    <span
-      className="type-mono px-1.5 text-[10px] leading-4"
-      style={{ background: 'var(--color-signal)', color: '#0a0508' }}
-      aria-label={`${n} não lidas`}
-    >
+    <span className="pill pill--signal h-5 px-2 text-[10px]" aria-label={`${n} não lidas`}>
       {n > 99 ? '99+' : n}
     </span>
   )
@@ -34,14 +30,11 @@ export function PainelNav({ unread }: { unread: number }) {
 
   return (
     <>
-      {/* desktop: sidebar chanfrada */}
-      <aside className="hidden w-52 shrink-0 md:block">
-        <nav
-          className="chamfer chamfer--flat sticky top-24"
-          style={{ '--cut': '8px' } as React.CSSProperties}
-          aria-label="Navegação do painel"
-        >
-          <ul className="py-2">
+      {/* desktop: sidebar igual à do app — item ativo com barra amarela de 3px */}
+      <aside className="hidden w-56 shrink-0 md:block">
+        <nav className="surface sticky top-24 overflow-hidden" aria-label="Navegação do painel">
+          <p className="px-5 pb-1 pt-4 text-[10px] font-bold tracking-[0.18em] text-ink-3">PAINEL</p>
+          <ul className="pb-2">
             {ITEMS.map((item) => {
               const active = isActive(item.href)
               return (
@@ -49,17 +42,11 @@ export function PainelNav({ unread }: { unread: number }) {
                   <Link
                     href={item.href}
                     aria-current={active ? 'page' : undefined}
-                    className="type-kicker flex items-center justify-between gap-2 px-4 py-2.5 transition-colors hover:text-ink-1"
-                    style={
-                      active
-                        ? {
-                            color: 'var(--color-ink-1)',
-                            background: 'rgba(255, 46, 63, 0.08)',
-                            boxShadow: 'inset 2px 0 0 var(--color-signal)',
-                          }
-                        : undefined
-                    }
+                    className={`relative flex h-11 items-center justify-between gap-2 px-5 text-[13px] font-semibold tracking-[0.04em] transition-colors ${
+                      active ? 'bg-surface-2 text-ink-1' : 'text-ink-3 hover:text-ink-1'
+                    }`}
                   >
+                    {active && <span aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-signal" />}
                     <span>{item.label}</span>
                     {item.href === '/painel/notificacoes' && <Badge n={unread} />}
                   </Link>
@@ -72,8 +59,7 @@ export function PainelNav({ unread }: { unread: number }) {
 
       {/* mobile: nav horizontal scrollável */}
       <nav
-        className="-mx-4 flex gap-1 overflow-x-auto border-b px-4 pb-2 md:hidden"
-        style={{ borderColor: 'var(--color-line)' }}
+        className="-mx-4 flex gap-1 overflow-x-auto border-b border-edge px-4 pb-2 md:hidden"
         aria-label="Navegação do painel"
       >
         {ITEMS.map((item) => {
@@ -83,12 +69,9 @@ export function PainelNav({ unread }: { unread: number }) {
               key={item.href}
               href={item.href}
               aria-current={active ? 'page' : undefined}
-              className="type-kicker flex shrink-0 items-center gap-1.5 whitespace-nowrap px-3 py-2"
-              style={
-                active
-                  ? { color: 'var(--color-ink-1)', boxShadow: 'inset 0 -2px 0 var(--color-signal)' }
-                  : undefined
-              }
+              className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-ctl px-3 py-2 text-[12px] font-semibold tracking-[0.04em] ${
+                active ? 'bg-surface-2 text-ink-1' : 'text-ink-3'
+              }`}
             >
               <span>{item.label}</span>
               {item.href === '/painel/notificacoes' && <Badge n={unread} />}

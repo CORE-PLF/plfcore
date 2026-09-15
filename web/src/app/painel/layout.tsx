@@ -2,11 +2,11 @@ import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { db } from '@/lib/db'
-import { BRAND } from '@/lib/brand'
 import { hasStaffRole, requireUser } from '@/lib/auth'
 import { logoutAction } from '@/lib/actions/auth'
 import { getGates } from '@/lib/gates'
 import { Maintenance } from '@/components/maintenance'
+import { Logo } from '@/components/site-header'
 import { PainelNav } from './nav'
 
 export const metadata: Metadata = {
@@ -35,31 +35,22 @@ export default async function PainelLayout({ children }: { children: ReactNode }
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header
-        className="sticky top-0 z-50 border-b"
-        style={{ background: 'rgba(5,5,6,0.92)', borderColor: 'var(--color-line)' }}
-      >
+      <header className="sticky top-0 z-50 border-b border-edge bg-carbon">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4">
           <div className="flex min-w-0 items-center gap-3">
-            <Link href="/" className="flex items-center gap-2.5" aria-label={`${BRAND.name} — início`}>
-              <span
-                aria-hidden
-                className="block h-4 w-4 shrink-0"
-                style={{
-                  background: 'var(--color-signal)',
-                  clipPath: 'polygon(25% 0, 100% 0, 100% 75%, 75% 100%, 0 100%, 0 25%)',
-                }}
-              />
-              <span className="type-display text-xl leading-none">{BRAND.name}</span>
-            </Link>
+            <Logo />
             <span className="type-kicker hidden sm:block">/ PAINEL</span>
           </div>
 
           <div className="flex min-w-0 items-center gap-4">
             {areaLinks.length > 0 && (
-              <nav className="hidden items-center gap-3 sm:flex" aria-label="Outras áreas">
+              <nav className="hidden items-center gap-1 sm:flex" aria-label="Outras áreas">
                 {areaLinks.map((l) => (
-                  <Link key={l.href} href={l.href} className="type-kicker transition-colors hover:text-ink-1">
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    className="px-3 py-2 text-[12px] font-semibold tracking-[0.04em] text-ink-3 transition-colors hover:text-ink-1"
+                  >
                     {l.label}
                   </Link>
                 ))}
@@ -73,8 +64,7 @@ export default async function PainelLayout({ children }: { children: ReactNode }
               ) : (
                 <span
                   aria-hidden
-                  className="type-mono flex h-8 w-8 shrink-0 items-center justify-center text-sm text-ink-1"
-                  style={{ background: 'var(--color-steel)', boxShadow: 'inset 0 0 0 1px var(--color-edge)' }}
+                  className="circle flex h-8 w-8 shrink-0 items-center justify-center border border-edge-2 bg-surface-2 text-sm font-bold text-ink-1"
                 >
                   {user.name.charAt(0).toUpperCase()}
                 </span>
@@ -83,7 +73,7 @@ export default async function PainelLayout({ children }: { children: ReactNode }
             </div>
 
             <form action={logoutAction}>
-              <button type="submit" className="btn btn--ghost btn--sm chamfer">
+              <button type="submit" className="btn btn--ghost btn--sm">
                 SAIR
               </button>
             </form>
@@ -91,11 +81,7 @@ export default async function PainelLayout({ children }: { children: ReactNode }
         </div>
 
         {areaLinks.length > 0 && (
-          <nav
-            className="flex items-center gap-4 border-t px-4 py-2 sm:hidden"
-            style={{ borderColor: 'var(--color-line)' }}
-            aria-label="Outras áreas"
-          >
+          <nav className="flex items-center gap-4 border-t border-line px-4 py-2 sm:hidden" aria-label="Outras áreas">
             {areaLinks.map((l) => (
               <Link key={l.href} href={l.href} className="type-kicker whitespace-nowrap">
                 {l.label}

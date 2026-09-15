@@ -1,9 +1,9 @@
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-$stateDir = Join-Path $env:LOCALAPPDATA 'Resync'
+$stateDir = Join-Path $env:LOCALAPPDATA 'PLFCore'
 $stateFile = Join-Path $stateDir 'tweaks.json'
-$mutex = New-Object System.Threading.Mutex($false, 'Local\ResyncTweaks')
+$mutex = New-Object System.Threading.Mutex($false, 'Local\PLFCoreTweaks')
 $locked = $false
 
 function Reg([string]$path, [string]$name, $on, $off, [string]$kind = 'DWord', [string]$merge = '') {
@@ -698,7 +698,7 @@ try {
   if (-not $locked) { throw 'ERR_TWEAKS_BUSY' }
   Load-State
 
-  $acao = [string]$env:RESYNC_TWEAKS_ACTION
+  $acao = [string]$env:PLFCORE_TWEAKS_ACTION
 
   if ($acao -eq 'scan') {
     $itens = foreach ($ajuste in $Ajustes) {
@@ -709,7 +709,7 @@ try {
   }
 
   if ($acao -eq 'on' -or $acao -eq 'off') {
-    $id = [string]$env:RESYNC_TWEAKS_ID
+    $id = [string]$env:PLFCORE_TWEAKS_ID
     $ajuste = $Ajustes | Where-Object { $_.id -eq $id } | Select-Object -First 1
     if ($null -eq $ajuste) { throw 'ERR_TWEAK_NOT_FOUND' }
     if ($ajuste.admin -and -not (Test-IsAdmin)) { throw 'ERR_TWEAK_ADMIN' }

@@ -1,7 +1,7 @@
 import { db } from '@/lib/db'
 import { requireUser } from '@/lib/auth'
 import { marcarLidaAction, marcarTodasLidasAction } from '@/lib/actions/painel'
-import { Chamfer, Kicker } from '@/components/ui'
+import { Surface, Kicker } from '@/components/ui'
 import { fmtDateTime } from '../helpers'
 
 export default async function NotificacoesPage() {
@@ -18,11 +18,11 @@ export default async function NotificacoesPage() {
       <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <Kicker>PAINEL</Kicker>
-          <h1 className="type-display text-3xl">NOTIFICAÇÕES</h1>
+          <h1 className="type-display text-3xl">Notificações</h1>
         </div>
         {naoLidas > 0 && (
           <form action={marcarTodasLidasAction}>
-            <button type="submit" className="btn btn--ghost btn--sm chamfer">
+            <button type="submit" className="btn btn--ghost btn--sm">
               MARCAR TODAS COMO LIDAS
             </button>
           </form>
@@ -30,15 +30,15 @@ export default async function NotificacoesPage() {
       </header>
 
       {notifications.length === 0 ? (
-        <Chamfer cut={8} flat className="p-6">
+        <Surface flat className="p-6">
           <p className="text-ink-2">Nenhuma notificação até agora.</p>
-        </Chamfer>
+        </Surface>
       ) : (
         <ul className="space-y-2">
           {notifications.map((n) => (
             <li key={n.id}>
-              <Chamfer
-                cut={6}
+              <Surface
+               
                 flat
                 className="px-4 py-3"
                 style={n.readAt ? undefined : { boxShadow: 'inset 2px 0 0 var(--color-signal)' }}
@@ -59,13 +59,13 @@ export default async function NotificacoesPage() {
                   {!n.readAt && (
                     <form action={marcarLidaAction}>
                       <input type="hidden" name="id" value={n.id} />
-                      <button type="submit" className="btn btn--ghost btn--sm chamfer">
+                      <button type="submit" className="btn btn--ghost btn--sm">
                         MARCAR COMO LIDA
                       </button>
                     </form>
                   )}
                 </div>
-              </Chamfer>
+              </Surface>
             </li>
           ))}
         </ul>

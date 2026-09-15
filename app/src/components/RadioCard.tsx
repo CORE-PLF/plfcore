@@ -1,4 +1,3 @@
-import { Surface } from './Surface'
 import { sfx } from '../services/sfx'
 import './kit.css'
 
@@ -12,27 +11,27 @@ interface Props {
 
 export function RadioCard({ checked, onSelect, title, description, badge }: Props) {
   return (
-    <Surface cut={6} brackets={checked} edge={checked ? 'var(--color-rust)' : undefined} className="w-full">
-      <button
-        role="radio"
-        aria-checked={checked}
-        className="radiocard w-full bg-transparent"
-        onClick={() => {
-          sfx.click()
-          onSelect()
-        }}
-      >
-        <span className="flex items-center gap-2">
-          <span
-            className={`inline-block h-2.5 w-2.5 border ${checked ? 'border-signal bg-signal' : 'border-ink-4'}`}
-            style={{ clipPath: 'polygon(2px 0, 100% 0, 100% calc(100% - 2px), calc(100% - 2px) 100%, 0 100%, 0 2px)' }}
-            aria-hidden
-          />
-          <span className="type-display text-base">{title}</span>
-          {badge && <span className="tag tag--estimated ml-auto">{badge}</span>}
+    <button
+      type="button"
+      role="radio"
+      aria-checked={checked}
+      className="radiocard"
+      onClick={() => {
+        sfx.click()
+        onSelect()
+      }}
+    >
+      <span className="flex items-center gap-2.5">
+        <span
+          className={`circle inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center border ${checked ? 'border-signal bg-signal' : 'border-edge-2 bg-surface-2'}`}
+          aria-hidden
+        >
+          {checked && <span className="circle block h-1.5 w-1.5 bg-void" />}
         </span>
-        <span className="mt-1.5 block text-xs leading-relaxed text-ink-3">{description}</span>
-      </button>
-    </Surface>
+        <span className="text-[13px] font-bold tracking-[0.02em] text-ink-1">{title}</span>
+        {badge && <span className="tag ml-auto">{badge}</span>}
+      </span>
+      <span className="mt-1.5 block text-[11px] leading-relaxed text-ink-3">{description}</span>
+    </button>
   )
 }

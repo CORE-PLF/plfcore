@@ -12,7 +12,7 @@ $ErrorActionPreference = 'Stop'
 $FmApp = Join-Path $env:LOCALAPPDATA 'FiveM\FiveM.app'
 $FmData = Join-Path $FmApp 'data'
 $FmPerfil = Join-Path $env:APPDATA 'CitizenFX'
-$FmBackup = Join-Path $env:LOCALAPPDATA 'Resync\fivem-backup'
+$FmBackup = Join-Path $env:LOCALAPPDATA 'PLFCore\fivem-backup'
 
 # Caches recriados pelo cliente. O custo pra pessoa é um loading mais lento no
 # próximo join, nada além disso.
@@ -60,7 +60,7 @@ function Get-FmIni {
   return $lidos
 }
 
-$acao = $env:RESYNC_FIVEM_ACTION
+$acao = $env:PLFCORE_FIVEM_ACTION
 
 if ($acao -eq 'scan') {
   $instalado = Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'FiveM\FiveM.exe')
@@ -143,7 +143,7 @@ if ($acao -eq 'isolar') {
   # Move mods/plugins/addons pra um backup datado. Move, nunca apaga: é conteúdo
   # que a pessoa escolheu instalar e pode querer de volta em servidor pure 0.
   Test-FmFechado
-  $alvo = $env:RESYNC_FIVEM_PASTA
+  $alvo = $env:PLFCORE_FIVEM_PASTA
   $escolhidos = @($FmMods | Where-Object { [string]$_.id -eq $alvo })
   if ($escolhidos.Count -eq 0) { throw 'ERR_FIVEM_FOLDER' }
 

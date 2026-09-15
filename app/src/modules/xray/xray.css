@@ -1,9 +1,9 @@
-/* ===== blueprint — traço técnico 1px sobre carbon ===== */
+/* ===== blueprint — traço fino cinza sobre steel; ativo = amarelo ===== */
 .bp {
   display: block;
   width: 100%;
   height: auto;
-  font-family: var(--font-mono);
+  font-family: var(--font-ui);
 }
 
 .bp-part {
@@ -13,47 +13,45 @@
 .bp-hit {
   fill: transparent;
   stroke: none;
+  rx: 4;
+  transition: fill var(--t-fast) var(--expo);
 }
 
 .bp-line {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.5);
+  stroke: #5a5a5a;
   stroke-width: 1;
   transition: stroke var(--t-fast) var(--expo);
 }
 .bp-faint {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.28);
-  stroke-width: 1;
-}
-.bp-deco {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.22);
+  stroke: #3a3a3a;
   stroke-width: 1;
 }
 .bp-board {
-  fill: rgba(255, 255, 255, 0.012);
-  stroke: rgba(255, 255, 255, 0.45);
+  fill: var(--color-carbon);
+  stroke: var(--color-edge-2);
   stroke-width: 1;
 }
 .bp-fill {
-  fill: rgba(255, 255, 255, 0.03);
+  fill: var(--color-surface-2);
 }
 .bp-heat {
-  fill: rgba(255, 77, 46, 0.14);
-  stroke: var(--color-heat);
+  fill: rgba(248, 232, 0, 0.1);
+  stroke: #8a8a8a;
   stroke-width: 1;
   transition: stroke var(--t-fast) var(--expo);
 }
 .bp-dash {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.26);
+  stroke: #3a3a3a;
   stroke-width: 1;
   stroke-dasharray: 4 3;
 }
 .bp-text {
   fill: var(--color-ink-3);
   font-size: 9px;
+  font-weight: 600;
   letter-spacing: 0.08em;
   transition: fill var(--t-fast) var(--expo);
 }
@@ -62,14 +60,14 @@
 }
 
 /* componente ativo (hover/foco/seleção): traço vira signal — nunca só cor: linha de
-   chamada + colchetes + badge acompanham */
+   chamada + contorno + badge acompanham */
 .bp-part[data-active='true'] .bp-line,
 .bp-part[data-active='true'] .bp-heat,
 .bp-part[data-active='true'] .bp-dash {
   stroke: var(--color-signal);
 }
 .bp-part[data-active='true'] .bp-hit {
-  fill: rgba(255, 46, 63, 0.06);
+  fill: rgba(248, 232, 0, 0.05);
 }
 .bp-part[data-active='true'] .bp-text {
   fill: var(--color-ink-1);
@@ -77,53 +75,46 @@
 
 /* callout numerado */
 .bp-badge line {
-  stroke: rgba(255, 255, 255, 0.3);
+  stroke: #4a4a4a;
   stroke-width: 1;
 }
 .bp-badge rect {
-  fill: var(--color-carbon);
-  stroke: rgba(255, 255, 255, 0.3);
+  fill: var(--color-surface-2);
+  stroke: var(--color-edge-2);
   stroke-width: 1;
+  rx: 3;
   transition: stroke var(--t-fast) var(--expo);
 }
 .bp-badge text {
-  fill: var(--color-ink-3);
+  fill: var(--color-ink-2);
   font-size: 9px;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
   text-anchor: middle;
 }
 .bp-part[data-active='true'] .bp-badge rect {
+  fill: var(--color-signal);
   stroke: var(--color-signal);
 }
 .bp-part[data-active='true'] .bp-badge text {
-  fill: var(--color-signal);
+  fill: var(--color-void);
 }
 
-/* colchetes de seleção fixa */
-.bp-brackets path {
+/* contorno de seleção fixa */
+.bp-sel {
   fill: none;
   stroke: var(--color-signal);
-  stroke-width: 1.5;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  rx: 5;
 }
 
-/* NÃO DETECTADO: traço a 26% */
+/* NÃO DETECTADO: traço a 30% */
 .bp-ghost {
-  opacity: 0.26;
+  opacity: 0.3;
 }
 .bp-ghost .bp-line {
   stroke-dasharray: 4 3;
-}
-
-/* cotas */
-.bp-cota line {
-  stroke: rgba(255, 255, 255, 0.18);
-  stroke-width: 1;
-}
-.bp-cota text {
-  fill: var(--color-ink-4);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-anchor: middle;
 }
 
 /* linha de chamada blueprint → ficha */
@@ -141,6 +132,6 @@
   stroke: var(--color-signal);
   stroke-width: 1;
 }
-.xr-callout rect {
+.xr-callout circle {
   fill: var(--color-signal);
 }

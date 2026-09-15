@@ -9,6 +9,7 @@ import {
   type FpsBoostDef,
 } from '../../services/fpsBoostCatalog'
 import { registerRevert, useLogStore } from '../../stores/log'
+import { useRestartStore } from '../../stores/restart'
 import { useKillfeedStore } from '../../stores/killfeed'
 import { useSettingsStore } from '../../stores/settings'
 import { useToastsStore } from '../../stores/toasts'
@@ -26,6 +27,12 @@ import { dict } from './i18n'
 import './fpsboost.css'
 
 type DictKey = keyof (typeof dict)['pt']
+
+const TurboIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
+    <path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z" />
+  </svg>
+)
 
 export default function FpsBoostScreen() {
   const t = useT(dict)
@@ -101,6 +108,7 @@ export default function FpsBoostScreen() {
         })
         pushFeed({ alvo: nome, acao: 'ajustado', quantidade: null, logId })
       }
+      if (def.reinicio) useRestartStore.getState().marcar(def.id)
       const chave = def.reinicio ? (ligado ? 'okReinicio' : 'okOffReinicio') : ligado ? 'okOn' : 'okOff'
       const extra = ligado !== ligar ? ` ${t('estadoDivergente')}` : ''
       pushToast({ tipo: 'sucesso', mensagem: `${t(chave, { nome })}${extra}` })
@@ -128,7 +136,10 @@ export default function FpsBoostScreen() {
         const ligado = await getAdapter().setFpsBoost(def.id, true)
         if (ligado) {
           ligados += 1
-          if (def.reinicio) reinicio = true
+          if (def.reinicio) {
+            reinicio = true
+            useRestartStore.getState().marcar(def.id)
+          }
           setEstados((old) => (old ? { ...old, [def.id]: { ...old[def.id], ligado: true } } : old))
           pushFeed({ alvo: nomeDe(def.id), acao: 'ajustado', quantidade: null, logId: null })
         }
@@ -176,88 +187,94 @@ export default function FpsBoostScreen() {
   const pendentesTurbo = pendentesDe(recomendados).length
   const ativosTurbo = recomendados.filter((d) => estados?.[d.id]?.ligado).length
   const ocupadoGeral = ocupado !== null || lote !== null
+  const gruposAbertos = FPS_BOOST_GRUPOS.filter((g) => abertos.has(g))
 
   return (
-    <div className="p-8">
-      <div className="flex items-start justify-between">
-        <ScreenTitle kicker={t('kicker')} title={t('titulo')} />
-        {emDemo && <DemoTag full />}
-      </div>
+    <div className="fb-screen">
+      <ScreenTitle
+        kicker={t('kicker')}
+        title={t('titulo')}
+        meta={t('meta', { n: FPS_BOOST_CATALOG.length, grupos: FPS_BOOST_GRUPOS.length })}
+        actions={
+          <>
+            {emDemo && <DemoTag full />}
+            <Button disabled={ocupadoGeral} onClick={() => void ler()}>
+              {t('reler')}
+            </Button>
+          </>
+        }
+      />
 
       {erro && <ErrorState what={t('erroLer')} todo={t('erroLerAcao')} onRetry={() => void ler()} />}
 
-      {!erro && estados === null && (
-        <p className="type-mono p-6 text-center text-xs text-ink-3">{t('lendo')}</p>
-      )}
+      {!erro && estados === null && <p className="p-6 text-center text-[13px] text-ink-3">{t('lendo')}</p>}
 
       {estados !== null && scan !== null && (
         <>
           {/* ===== elemento dominante: o turbo ===== */}
-          <Surface cut={12} className="fb-hero stage-grid">
-            <div className="fb-hero-info">
-              <span className="fb-hero-kicker">{t('heroKicker')}</span>
-              <strong className={`fb-hero-num type-mono ${pendentesTurbo > 0 ? 'fb-hero-num--hot' : ''}`}>
-                {pendentesTurbo}
-              </strong>
-              <span className="fb-hero-desc">
+          <Surface className="fb-hero">
+            <div className="fb-hero-top">
+              <div className="fb-hero-info">
+                <span className="type-kicker">{t('heroKicker')}</span>
+                <strong className={`fb-hero-num type-num ${pendentesTurbo > 0 ? 'fb-hero-num--hot' : ''}`}>
+                  {pendentesTurbo}
+                </strong>
+              </div>
+              <p className="fb-hero-desc">
                 {pendentesTurbo > 0
                   ? t('heroPendentes', { n: pendentesTurbo, ativos: ativosTurbo })
                   : t('heroTudoFeito', { ativos: ativosTurbo })}
-              </span>
+              </p>
+              <div className="fb-hero-acao">
+                {lote ? (
+                  <div className="fb-hero-progresso">
+                    <ProgressBar pct={(lote.feitos / lote.total) * 100} showPct={false} />
+                    <span className="type-kicker type-num">{t('aplicandoLote', { feitos: lote.feitos, total: lote.total })}</span>
+                  </div>
+                ) : (
+                  <Button
+                    size="lg"
+                    variant={pendentesTurbo > 0 ? 'primary' : 'secondary'}
+                    disabled={ocupadoGeral || pendentesTurbo === 0}
+                    onClick={() => void ligarLote(recomendados, 'turbo')}
+                  >
+                    <TurboIcon />
+                    {pendentesTurbo > 0 ? t('turbo') : t('turboFeito')}
+                  </Button>
+                )}
+                <span className="text-[11px] text-ink-3">{t('heroReversivel')}</span>
+              </div>
             </div>
-            <div className="fb-hero-acao">
-              {lote ? (
-                <div className="fb-hero-progresso">
-                  <ProgressBar pct={(lote.feitos / lote.total) * 100} segments={20} hot />
-                  <span className="type-mono text-[10px] tracking-[0.12em] text-ink-3">
-                    {t('aplicandoLote', { feitos: lote.feitos, total: lote.total })}
-                  </span>
-                </div>
-              ) : (
-                <Button
-                  variant="primary"
-                  className="fb-turbo"
-                  disabled={ocupadoGeral || pendentesTurbo === 0}
-                  onClick={() => void ligarLote(recomendados, 'turbo')}
-                >
-                  {t('turbo')}
-                </Button>
-              )}
-              <Button size="sm" disabled={ocupadoGeral} onClick={() => void ler()}>
-                {t('reler')}
-              </Button>
-            </div>
-            <div className="fb-hero-ctx type-mono">
-              <span className="text-ink-4">{t('ctx')}</span>
-              <span>{t('ctxRam', { gb: scan.ramGb })}</span>
-              <span>{scan.discoSolido ? t('ctxDiscoSsd') : t('ctxDiscoHdd')}</span>
+            <div className="fb-hero-ctx">
+              <span>{t('ctx')}</span>
+              <span className="type-num text-ink-2">{t('ctxRam', { gb: scan.ramGb })}</span>
+              <span className="text-ink-2">{scan.discoSolido ? t('ctxDiscoSsd') : t('ctxDiscoHdd')}</span>
+              {!admin && <span className="tag tag--atencao">{t('semAdmin')}</span>}
+              <span className="ml-auto">{t('heroOpcionalFora')}</span>
             </div>
           </Surface>
 
-          {!admin && <p className="fb-aviso-admin mt-4">{t('semAdmin')}</p>}
-          <p className="fb-nota mt-4">{t('heroNota')}</p>
-
-          <div className="fb-grupos mt-6">
+          <div className="fb-grupos">
             {FPS_BOOST_GRUPOS.map((grupo) => {
               const defs = FPS_BOOST_CATALOG.filter((d) => d.categoria === grupo)
               const ativos = defs.filter((d) => estados[d.id]?.ligado).length
               const pendentes = pendentesDe(defs).length
               const aberto = abertos.has(grupo)
               return (
-                <section key={grupo} className="fb-grupo">
-                  <div className="fb-grupo-head">
-                    <div className="fb-grupo-nome">
-                      <StatusLED state={pendentes === 0 ? 'live' : 'off'} label="" />
-                      <span>{t(`grupo.${grupo}`)}</span>
-                    </div>
-                    <span className="fb-grupo-contagem type-mono">
-                      {pendentes > 0
-                        ? t('contagem', { ativos, total: defs.length })
-                        : t('contagemFeito', { ativos, total: defs.length })}
-                    </span>
+                <Surface key={grupo} className="fb-grupo">
+                  <div className="fb-grupo-nome">
+                    <StatusLED state={pendentes === 0 ? 'live' : 'off'} />
+                    <span>{t(`grupo.${grupo}`)}</span>
+                  </div>
+                  <span className="fb-grupo-contagem type-num">
+                    {pendentes > 0
+                      ? t('contagem', { ativos, total: defs.length })
+                      : t('contagemFeito', { ativos, total: defs.length })}
+                  </span>
+                  <div className="fb-grupo-acoes">
                     <Button
                       size="sm"
-                      variant="primary"
+                      variant={pendentes === 0 ? 'secondary' : 'primary'}
                       disabled={ocupadoGeral || pendentes === 0}
                       onClick={() => void ligarLote(defs, grupo)}
                     >
@@ -267,30 +284,43 @@ export default function FpsBoostScreen() {
                       {aberto ? t('esconderDetalhes') : t('verDetalhes')}
                     </button>
                   </div>
+                </Surface>
+              )
+            })}
+          </div>
 
-                  {aberto && (
+          <div className="fb-bottom">
+            <div className="fb-detalhes">
+              {gruposAbertos.map((grupo) => {
+                const defs = FPS_BOOST_CATALOG.filter((d) => d.categoria === grupo)
+                return (
+                  <Surface key={grupo} className="fb-detalhe-card">
+                    <div className="surface-head">
+                      <span>{t(`grupo.${grupo}`)}</span>
+                      <button className="fb-detalhe-btn ml-auto" aria-expanded onClick={() => alternarDetalhe(grupo)}>
+                        {t('esconderDetalhes')}
+                      </button>
+                    </div>
                     <div className="fb-lista">
                       {defs.map((def) => {
                         const estado = estados[def.id]
                         if (!estado) return null
                         const travado = !estado.disponivel || (estado.precisaAdmin && !admin)
+                        const tags = [
+                          def.opcional && t('tagOpcional'),
+                          def.reinicio && t('tagReinicio'),
+                          estado.precisaAdmin && !admin && t('tagAdmin'),
+                          !estado.disponivel && t('tagIndisponivel'),
+                        ].filter(Boolean)
                         return (
-                          <div
-                            key={def.id}
-                            className={`fb-row ${estado.ligado ? 'fb-row--on' : ''} ${!estado.disponivel ? 'fb-row--off' : ''}`}
-                          >
-                            <span className="fb-nome">
-                              {nomeDe(def.id)}
-                              <span className="fb-tags">
-                                {def.opcional && <span className="fb-tag">{t('tagOpcional')}</span>}
-                                {def.reinicio && <span className="fb-tag">{t('tagReinicio')}</span>}
-                                {estado.precisaAdmin && !admin && <span className="fb-tag">{t('tagAdmin')}</span>}
-                                {!estado.disponivel && <span className="fb-tag fb-tag--off">{t('tagIndisponivel')}</span>}
-                              </span>
-                            </span>
+                          <div key={def.id} className={`fb-row ${!estado.disponivel ? 'fb-row--off' : ''}`}>
+                            <div className="fb-row-nome">
+                              <span>{nomeDe(def.id)}</span>
+                              {tags.length > 0 && <span className={`tag ${!estado.disponivel ? 'tag--critical' : ''}`}>{tags.join(' · ')}</span>}
+                            </div>
                             <span className="fb-desc">
                               {t(`fps.${def.id}.desc` as DictKey)}
-                              {estado.detalhe && <span className="fb-detalhe">{estado.detalhe}</span>}
+                              {estado.detalhe && <span className="fb-medido">{estado.detalhe}</span>}
                             </span>
                             <button
                               role="switch"
@@ -299,32 +329,58 @@ export default function FpsBoostScreen() {
                               disabled={ocupadoGeral || travado}
                               onClick={() => void alternar(def)}
                             >
-                              <StatusLED state={estado.ligado ? 'live' : 'off'} label="" />
+                              <StatusLED state={estado.ligado ? 'live' : 'off'} />
                               {ocupado === def.id ? t('aplicando') : estado.ligado ? t('ligado') : t('desligado')}
                             </button>
                           </div>
                         )
                       })}
                     </div>
-                  )}
-                </section>
-              )
-            })}
+                  </Surface>
+                )
+              })}
+
+              {/* ===== honestidade: o que ficou fora do acervo, e por quê ===== */}
+              {gruposAbertos.length === 0 && (
+                <Surface className="fb-detalhe-card">
+                  <div className="surface-head">
+                    <span>{t('foraTitulo')}</span>
+                    <span className="ml-auto text-[11px] font-normal normal-case tracking-normal text-ink-3">{t('foraNota')}</span>
+                  </div>
+                  <div className="fb-fora-grid">
+                    {FPS_BOOST_FORA.map((id) => (
+                      <div key={id} className="fb-fora-item">
+                        <span className="fb-fora-nome">{t(`fora.${id}`)}</span>
+                        <span className="fb-desc">{t(`fora.${id}.desc`)}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="fb-nota">{t('nota')}</p>
+                </Surface>
+              )}
+            </div>
 
             {risco && (
-              <section className="fb-grupo fb-grupo--risco">
-                <h2 className="fb-grupo-titulo">{t('grupo.risco')}</h2>
-                <Surface cut={8} className="fb-hazard">
-                  <div className="hazard h-1.5 w-full" aria-hidden />
-                  <div className="mt-3 flex items-center justify-between gap-4">
-                    <span className="fb-nome">{nomeDe(FPS_BOOST_RISCO.id)}</span>
-                    <StatusLED state={risco.ligado ? 'live' : 'off'} label={risco.ligado ? t('ligado') : t('desligado')} />
+              <Surface className="fb-hazard">
+                <div className="hazard-bar" aria-hidden />
+                <div className="fb-hazard-body">
+                  <div className="flex items-center gap-3">
+                    <span className="fb-hazard-titulo">{t('grupo.risco')}</span>
+                    <span className="ml-auto flex items-center gap-2 text-[11px] font-bold tracking-[0.06em] text-ink-3">
+                      <span className={`led circle ${risco.ligado ? 'led--danger' : 'led--off'}`} aria-hidden />
+                      {risco.ligado ? t('riscoLigado') : t('desligado')}
+                    </span>
                   </div>
-                  <p className="fb-desc mt-2">{t(`fps.${FPS_BOOST_RISCO.id}.desc` as DictKey)}</p>
-                  <p className="fb-hazard-aviso">{t('riscoAviso')}</p>
+                  <span className="fb-hazard-nome">{nomeDe(FPS_BOOST_RISCO.id)}</span>
+                  <span className="fb-desc">{t(`fps.${FPS_BOOST_RISCO.id}.desc` as DictKey)}</span>
+                  <span className="fb-hazard-aviso">{t('riscoAviso')}</span>
                   <div className="fb-hazard-acoes">
                     <ArmSwitch armed={armado} onChange={setArmado} disabled={!admin} />
-                    <HoldButton armed={armado && !ocupadoGeral && admin} onConfirm={() => void alternar(FPS_BOOST_RISCO)}>
+                    <HoldButton
+                      className="flex-1"
+                      armed={armado && !ocupadoGeral && admin}
+                      onConfirm={() => void alternar(FPS_BOOST_RISCO)}
+                    >
                       {ocupado === FPS_BOOST_RISCO.id
                         ? t('aplicando')
                         : risco.ligado
@@ -332,26 +388,11 @@ export default function FpsBoostScreen() {
                           : t('desligarProtecao')}
                     </HoldButton>
                   </div>
-                </Surface>
-              </section>
+                  <span className="fb-hazard-hint">{t('armeSegure')}</span>
+                </div>
+              </Surface>
             )}
           </div>
-
-          {/* ===== honestidade: o que ficou fora do acervo, e por quê ===== */}
-          <section className="fb-fora mt-8">
-            <h2 className="fb-grupo-titulo">{t('foraTitulo')}</h2>
-            <p className="fb-nota">{t('foraNota')}</p>
-            <div className="fb-fora-grid mt-3">
-              {FPS_BOOST_FORA.map((id) => (
-                <div key={id} className="fb-fora-item">
-                  <span className="fb-fora-nome">{t(`fora.${id}`)}</span>
-                  <span className="fb-fora-desc">{t(`fora.${id}.desc`)}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <p className="fb-nota fb-rodape">{t('nota')}</p>
         </>
       )}
     </div>

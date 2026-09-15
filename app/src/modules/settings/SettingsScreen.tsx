@@ -17,6 +17,7 @@ import { MetricRow } from '../../components/MetricRow'
 import { RadioCard } from '../../components/RadioCard'
 import { RangeSlider } from '../../components/RangeSlider'
 import { IconChevron } from '../../components/icons'
+import { DemoTag } from '../../components/Tag'
 import { kitDict } from '../../components/i18n'
 import { dict } from './i18n'
 import { Toggle } from './Toggle'
@@ -41,11 +42,10 @@ const MODIFICADORES = ['Control', 'Alt', 'Shift', 'Meta']
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <Surface cut={8} flat>
-      <section className="p-5" aria-label={title}>
-        <h2 className="type-display text-xl">{title}</h2>
-        <div className="rule-fade mt-2 mb-1 w-40" />
-        {children}
+    <Surface>
+      <section aria-label={title}>
+        <div className="surface-head">{title}</div>
+        <div className="px-4">{children}</div>
       </section>
     </Surface>
   )
@@ -63,13 +63,13 @@ function Row({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-line py-3 last:border-b-0">
+    <div className="st-row">
       <div className="min-w-0">
         <div className="flex items-center gap-2">
-          <span className="type-kicker">{label}</span>
+          <span className="st-row-label">{label}</span>
           {tag}
         </div>
-        {note && <p className="mt-1 text-[11px] leading-snug text-ink-3">{note}</p>}
+        {note && <p className="st-row-note">{note}</p>}
       </div>
       <div className="shrink-0">{children}</div>
     </div>
@@ -109,17 +109,15 @@ function ShortcutField() {
   }
 
   return (
-    <Surface cut={4} flat edge={capturing ? 'var(--color-signal)' : undefined} className="inline-block">
-      <input
-        readOnly
-        className={`pfx-shortcut ${capturing ? 'capturing' : ''}`}
-        value={capturing ? t('atalhoCapturando') : atalho}
-        aria-label={t('atalho')}
-        onClick={() => setCapturing(true)}
-        onBlur={() => setCapturing(false)}
-        onKeyDown={onKeyDown}
-      />
-    </Surface>
+    <input
+      readOnly
+      className={`pfx-shortcut ${capturing ? 'capturing' : ''}`}
+      value={capturing ? t('atalhoCapturando') : atalho}
+      aria-label={t('atalho')}
+      onClick={() => setCapturing(true)}
+      onBlur={() => setCapturing(false)}
+      onKeyDown={onKeyDown}
+    />
   )
 }
 
@@ -222,7 +220,7 @@ export default function SettingsScreen() {
           <div className="flex flex-col gap-6">
             <Group title={t('gGeral')}>
               <Row label={t('idioma')}>
-                <Surface cut={4} flat className="pfx-select-wrap">
+                <div className="pfx-select-wrap">
                   <select
                     className="pfx-select"
                     value={locale}
@@ -239,7 +237,7 @@ export default function SettingsScreen() {
                     ))}
                   </select>
                   <IconChevron className="pfx-select-chev" width={12} height={12} />
-                </Surface>
+                </div>
               </Row>
               <Row label={t('iniciarWindows')}>
                 <Toggle
@@ -262,8 +260,8 @@ export default function SettingsScreen() {
 
             <Group title={t('gInterface')}>
               <div className="border-b border-line py-3">
-                <span className="type-kicker">{t('anim')}</span>
-                <div role="radiogroup" aria-label={t('anim')} className="mt-2 grid grid-cols-3 gap-2">
+                <span className="st-row-label">{t('anim')}</span>
+                <div role="radiogroup" aria-label={t('anim')} className="mt-3 grid grid-cols-3 gap-2">
                   {animOptions.map((o) => (
                     <RadioCard
                       key={o.id}
@@ -328,17 +326,24 @@ export default function SettingsScreen() {
                   label={t('dadosAvancados')}
                 />
               </Row>
+              <Row label={t('modoDemo')} tag={settings.modoDemo ? <DemoTag /> : undefined}>
+                <Toggle
+                  checked={settings.modoDemo}
+                  onChange={(v) => settings.update({ modoDemo: v })}
+                  label={t('modoDemo')}
+                />
+              </Row>
             </Group>
 
             <Group title={t('gManutencao')}>
-              <div className="flex items-center justify-between gap-4 py-3">
-                <p className="max-w-[190px] text-[11px] leading-snug text-ink-3">{t('exportNota')}</p>
+              <div className="st-row">
+                <p className="st-row-note max-w-[220px]">{t('exportNota')}</p>
                 <Button onClick={() => void exportLogs()}>{t('exportarLogs')}</Button>
               </div>
-              <div className="mt-2">
-                <div className="hazard h-1.5" aria-hidden />
-                <div className="flex items-center justify-between gap-4 border border-t-0 border-line p-3">
-                  <p className="max-w-[190px] text-[11px] leading-snug text-ink-3">{t('zonaNota')}</p>
+              <div className="mb-4 overflow-hidden rounded-md border border-edge">
+                <div className="hazard-bar" aria-hidden />
+                <div className="flex items-center justify-between gap-4 bg-surface-2 p-3">
+                  <p className="st-row-note max-w-[220px]">{t('zonaNota')}</p>
                   <Button variant="danger" onClick={() => setResetOpen(true)}>
                     {t('restaurar')}
                   </Button>

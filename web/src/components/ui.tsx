@@ -1,119 +1,100 @@
-import type { CSSProperties, HTMLAttributes, ReactNode } from 'react'
+import type { HTMLAttributes, ReactNode } from 'react'
 
-// Kit base portado do aplicativo. REGRA ZERO: sem canto arredondado, chanfro
-// via clip-path, número em mono tabular, barra SEMPRE segmentada.
+// Kit base espelhado do app: card com raio 10, botão raio 6, pílula 999,
+// número em tabular-nums, barra lisa amarela.
 
-type ChamferCut = 4 | 6 | 8 | 12
-
-interface ChamferProps extends HTMLAttributes<HTMLDivElement> {
-  cut?: ChamferCut
-  allCorners?: boolean
-  edge?: string
-  fill?: string
+interface SurfaceProps extends HTMLAttributes<HTMLDivElement> {
   flat?: boolean
-  brackets?: boolean
+  edge?: string
 }
 
-export function Chamfer({
-  cut = 8,
-  allCorners = false,
-  edge,
-  fill,
-  flat = false,
-  brackets = false,
-  className = '',
-  style,
-  children,
-  ...rest
-}: ChamferProps) {
-  const vars: CSSProperties = {
-    ...style,
-    '--cut': `${cut}px`,
-    ...(edge ? { '--ch-edge': edge } : null),
-    ...(fill ? { '--ch-fill': fill } : null),
-  } as CSSProperties
+export function Surface({ flat = false, edge, className = '', style, children, ...rest }: SurfaceProps) {
   return (
     <div
-      className={`chamfer ${allCorners ? 'chamfer--all' : ''} ${flat ? 'chamfer--flat' : ''} ${brackets ? 'brackets' : ''} ${className}`}
-      style={vars}
+      className={`surface ${flat ? 'surface--flat' : ''} ${className}`}
+      style={edge ? { ...style, borderColor: edge } : style}
       {...rest}
     >
-      {brackets && (
-        <>
-          <span className="bk" />
-          <span className="bk" />
-          <span className="bk" />
-          <span className="bk" />
-        </>
-      )}
       {children}
     </div>
   )
+}
+
+export function SurfaceHead({
+  children,
+  aside,
+  className = '',
+}: {
+  children: ReactNode
+  aside?: ReactNode
+  className?: string
+}) {
+  return (
+    <div className={`surface-head ${className}`}>
+      <span>{children}</span>
+      {aside && <span className="ml-auto type-num text-[10px] tracking-[0.18em] text-ink-3">{aside}</span>}
+    </div>
+  )
+}
+
+// ponytail: admin/afiliado/revenda (fora do redesign) ainda passam props de chanfro; hoje é só um Surface.
+interface ChamferProps extends SurfaceProps {
+  cut?: number
+  allCorners?: boolean
+  fill?: string
+  brackets?: boolean
+}
+export function Chamfer({ cut: _cut, allCorners: _all, fill: _fill, brackets: _b, ...rest }: ChamferProps) {
+  return <Surface {...rest} />
 }
 
 export function Kicker({ children, className = '' }: { children: ReactNode; className?: string }) {
   return <p className={`type-kicker ${className}`}>{children}</p>
 }
 
-// Barra segmentada: blocos com gap — nunca barra lisa, nunca spinner infinito.
-export function SegProgress({
+export function ProgressBar({
   value,
   max = 100,
-  segments = 24,
   className = '',
   label,
+  hot = false,
 }: {
   value: number
   max?: number
-  segments?: number
   className?: string
   label?: string
+  hot?: boolean
 }) {
-  const on = max > 0 ? Math.round((Math.min(value, max) / max) * segments) : 0
+  const pct = max > 0 ? Math.min(100, Math.round((Math.min(value, max) / max) * 100)) : 0
   return (
     <div
-      className={`segprog ${className}`}
+      className={`progress ${hot ? 'progress--hot' : ''} ${className}`}
       role="progressbar"
       aria-valuenow={value}
       aria-valuemin={0}
       aria-valuemax={max}
       aria-label={label}
     >
-      {Array.from({ length: segments }, (_, i) => (
-        <i key={i} className={i < on ? 'on' : ''} />
-      ))}
+      <i style={{ width: `${pct}%` }} />
     </div>
   )
 }
+export const SegProgress = ProgressBar
 
 // Selo obrigatório em qualquer dado ilustrativo/simulado.
 export function DemoSeal({ children = 'DEMONSTRAÇÃO' }: { children?: ReactNode }) {
   return <span className="demo-seal">{children}</span>
 }
 
-const TAG_COLORS = {
-  ok: 'var(--color-ink-1)',
-  danger: 'var(--color-signal)',
-  warn: 'var(--color-heat)',
-  muted: 'var(--color-ink-3)',
-} as const
-
-// Estado nunca só por cor: o texto do tag É o estado.
+// Estado nunca só por cor: o texto da pílula É o estado.
 export function StatusTag({
   tone = 'muted',
   children,
 }: {
-  tone?: keyof typeof TAG_COLORS
+  tone?: 'ok' | 'danger' | 'warn' | 'muted'
   children: ReactNode
 }) {
-  return (
-    <span
-      className="type-mono inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] uppercase tracking-widest"
-      style={{ color: TAG_COLORS[tone], boxShadow: 'inset 0 0 0 1px var(--color-edge)' }}
-    >
-      {children}
-    </span>
-  )
+  return <span className={`pill ${tone === 'muted' ? '' : `pill--${tone}`}`}>{children}</span>
 }
 
 export function RuleFade({ className = '' }: { className?: string }) {
@@ -156,5 +137,45 @@ export function Field({
         className="field"
       />
     </div>
+  )
+}
+
+// Aviso inline: ícone + texto, nunca só cor.
+export function Notice({
+  tone = 'warn',
+  title,
+  children,
+  className = '',
+  role,
+}: {
+  tone?: 'warn' | 'danger' | 'ok'
+  title?: string
+  children: ReactNode
+  className?: string
+  role?: string
+}) {
+  const color =
+    tone === 'danger' ? 'var(--color-blood)' : tone === 'ok' ? 'var(--color-ink-1)' : 'var(--color-signal)'
+  const icon = tone === 'ok' ? '✓' : '!'
+  return (
+    <Surface flat edge={tone === 'ok' ? undefined : color} className={`px-4 py-3 ${className}`} role={role}>
+      <div className="flex gap-3">
+        <span
+          aria-hidden
+          className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold"
+          style={{ color, border: `1px solid ${color}` }}
+        >
+          {icon}
+        </span>
+        <div className="min-w-0 text-sm text-ink-2">
+          {title && (
+            <p className="type-kicker mb-1" style={{ color }}>
+              {title}
+            </p>
+          )}
+          {children}
+        </div>
+      </div>
+    </Surface>
   )
 }

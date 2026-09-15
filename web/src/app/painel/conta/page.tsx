@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { requireUser } from '@/lib/auth'
 import { discordConfigured } from '@/lib/env'
 import {
@@ -6,13 +5,13 @@ import {
   salvarPreferenciasAction,
   solicitarExclusaoAction,
 } from '@/lib/actions/painel'
-import { Chamfer, Kicker, StatusTag } from '@/components/ui'
+import { Kicker, Notice, Surface, SurfaceHead } from '@/components/ui'
 import { firstParam, type SearchParams } from '../helpers'
 import { ConfirmSubmit } from '../confirm-submit'
 
 const OK_MSG: Record<string, string> = {
-  preferencias: '✓ Preferências salvas.',
-  'discord-desvinculado': '✓ Discord desvinculado.',
+  preferencias: 'Preferências salvas.',
+  'discord-desvinculado': 'Discord desvinculado.',
 }
 
 const ERRO_MSG: Record<string, string> = {
@@ -31,118 +30,104 @@ export default async function ContaPage({ searchParams }: { searchParams: Search
     <div>
       <header className="mb-6">
         <Kicker>PAINEL</Kicker>
-        <h1 className="type-display text-3xl">CONTA</h1>
+        <h1 className="type-display text-3xl">Conta</h1>
       </header>
 
       {ok && OK_MSG[ok] && (
-        <Chamfer cut={6} flat className="mb-4 px-4 py-3">
-          <p className="text-sm text-ink-1">{OK_MSG[ok]}</p>
-        </Chamfer>
+        <Notice tone="ok" className="mb-4">
+          <p className="text-ink-1">{OK_MSG[ok]}</p>
+        </Notice>
       )}
       {discordParam === 'vinculado' && (
-        <Chamfer cut={6} flat className="mb-4 px-4 py-3">
-          <p className="text-sm text-ink-1">✓ Discord vinculado.</p>
-        </Chamfer>
+        <Notice tone="ok" className="mb-4">
+          <p className="text-ink-1">Discord vinculado.</p>
+        </Notice>
       )}
       {erro && (
-        <Chamfer cut={6} flat className="mb-4 px-4 py-3" role="alert">
-          <p className="text-sm" style={{ color: 'var(--color-signal)' }}>
-            {erro}
-          </p>
-        </Chamfer>
+        <Notice tone="danger" title="Erro" className="mb-4" role="alert">
+          <p>{erro}</p>
+        </Notice>
       )}
 
-      <Chamfer cut={8} className="p-6">
-        <Kicker className="mb-4">DADOS</Kicker>
-        <dl className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <dt className="type-kicker mb-1">NOME</dt>
-            <dd className="text-ink-1">{user.name}</dd>
+      <Surface>
+        <SurfaceHead>Dados</SurfaceHead>
+        <dl className="p-3">
+          <div className="datarow">
+            <dt>Nome</dt>
+            <dd className="normal-case">{user.name}</dd>
           </div>
-          <div>
-            <dt className="type-kicker mb-1">E-MAIL</dt>
-            <dd className="text-ink-1">
-              <span className="type-mono text-sm">{user.email}</span>
-            </dd>
+          <div className="datarow">
+            <dt>E-mail</dt>
+            <dd className="normal-case">{user.email}</dd>
           </div>
-          <div>
-            <dt className="type-kicker mb-1">PAÍS</dt>
-            <dd className="text-ink-1">{user.country ?? 'NÃO INFORMADO'}</dd>
+          <div className="datarow">
+            <dt>País</dt>
+            <dd>{user.country ?? 'NÃO INFORMADO'}</dd>
           </div>
         </dl>
-      </Chamfer>
+      </Surface>
 
-      <Chamfer cut={8} className="mt-6 p-6">
-        <Kicker className="mb-4">DISCORD</Kicker>
-        {user.discordId ? (
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-ink-1">
-                <span className="type-mono">{user.discordUsername ?? user.discordId}</span>
-              </p>
-              <p className="mt-1 text-xs text-ink-3">
-                Vinculado — usado para avisos por DM quando o recurso estiver ativo. Sua chave fica
-                sempre no painel.
-              </p>
+      <Surface className="mt-6">
+        <SurfaceHead>Discord</SurfaceHead>
+        <div className="p-5">
+          {user.discordId ? (
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="font-semibold text-ink-1">{user.discordUsername ?? user.discordId}</p>
+                <p className="mt-1 text-xs text-ink-3">
+                  Vinculado — usado para avisos por DM quando o recurso estiver ativo. Sua chave fica
+                  sempre no painel.
+                </p>
+              </div>
+              <form action={desvincularDiscordAction}>
+                <ConfirmSubmit message="Desvincular o Discord desta conta?">DESVINCULAR</ConfirmSubmit>
+              </form>
             </div>
-            <form action={desvincularDiscordAction}>
-              <ConfirmSubmit message="Desvincular o Discord desta conta?">
-                DESVINCULAR
-              </ConfirmSubmit>
-            </form>
-          </div>
-        ) : (
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm text-ink-2">Nenhuma conta do Discord vinculada.</p>
-            {discordConfigured() ? (
-              <a href="/api/auth/discord?link=1" className="btn btn--ghost btn--sm chamfer">
-                VINCULAR
-              </a>
-            ) : (
-              <p className="type-mono text-xs text-ink-3">INDISPONÍVEL NESTE AMBIENTE</p>
-            )}
-          </div>
-        )}
-      </Chamfer>
+          ) : (
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-ink-2">Nenhuma conta do Discord vinculada.</p>
+              {discordConfigured() ? (
+                <a href="/api/auth/discord?link=1" className="btn btn--ghost btn--sm">
+                  VINCULAR
+                </a>
+              ) : (
+                <p className="type-kicker">INDISPONÍVEL NESTE AMBIENTE</p>
+              )}
+            </div>
+          )}
+        </div>
+      </Surface>
 
-      <Chamfer cut={8} className="mt-6 p-6">
-        <Kicker className="mb-4">PREFERÊNCIAS</Kicker>
-        <form action={salvarPreferenciasAction} className="flex flex-wrap items-center justify-between gap-3">
+      <Surface className="mt-6">
+        <SurfaceHead>Preferências</SurfaceHead>
+        <form action={salvarPreferenciasAction} className="flex flex-wrap items-center justify-between gap-3 p-5">
           <label className="flex items-center gap-3 text-sm text-ink-2">
-            <input
-              type="checkbox"
-              name="notifyOptIn"
-              defaultChecked={user.notifyOptIn}
-              className="h-4 w-4 accent-[var(--color-signal)]"
-            />
+            <input type="checkbox" name="notifyOptIn" defaultChecked={user.notifyOptIn} className="size-4" />
             Receber avisos de vencimento e novas versões por DM do Discord, quando o vínculo
             estiver ativo.
           </label>
-          <button type="submit" className="btn btn--ghost btn--sm chamfer">
+          <button type="submit" className="btn btn--ghost btn--sm">
             SALVAR
           </button>
         </form>
-      </Chamfer>
+      </Surface>
 
-      <Chamfer cut={8} className="mt-6 p-6">
-        <Kicker className="mb-4">MEUS DADOS</Kicker>
-        <div className="flex flex-wrap items-center justify-between gap-3">
+      <Surface className="mt-6">
+        <SurfaceHead>Meus dados</SurfaceHead>
+        <div className="flex flex-wrap items-center justify-between gap-3 p-5">
           <p className="text-sm text-ink-2">
             Baixe uma cópia dos seus dados (perfil, pedidos e licenças) em JSON.
           </p>
-          <a href="/painel/conta/exportar" className="btn btn--ghost btn--sm chamfer">
+          <a href="/painel/conta/exportar" className="btn btn--ghost btn--sm">
             EXPORTAR MEUS DADOS
           </a>
         </div>
-      </Chamfer>
+      </Surface>
 
-      <section className="mt-6">
-        <div className="hazard px-4 py-1.5">
-          <p className="type-kicker" style={{ color: 'var(--color-signal)' }}>
-            ZONA DESTRUTIVA
-          </p>
-        </div>
-        <Chamfer cut={8} flat className="p-6">
+      <Surface className="mt-6 overflow-hidden">
+        <div className="hazard-bar" aria-hidden />
+        <SurfaceHead>Zona destrutiva</SurfaceHead>
+        <div className="p-5">
           <p className="text-sm text-ink-2">
             Solicitar a exclusão definitiva da conta e dos dados pessoais (LGPD). Abrimos um ticket de
             privacidade e o processo é conduzido pelo suporte — licenças ativas deixam de funcionar.
@@ -152,8 +137,8 @@ export default async function ContaPage({ searchParams }: { searchParams: Search
               SOLICITAR EXCLUSÃO DA CONTA
             </ConfirmSubmit>
           </form>
-        </Chamfer>
-      </section>
+        </div>
+      </Surface>
     </div>
   )
 }

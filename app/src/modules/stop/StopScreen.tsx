@@ -5,7 +5,6 @@ import { Button } from '../../components/Button'
 import { HoldButton } from '../../components/HoldButton'
 import { ProgressBar } from '../../components/ProgressBar'
 import { StatusLED } from '../../components/StatusLED'
-import { ScanLine } from '../../components/ScanLine'
 import { Modal } from '../../components/Modal'
 import { MetricRow } from '../../components/MetricRow'
 import { ScreenTitle } from '../../components/Kicker'
@@ -51,7 +50,7 @@ const HIST_ICONE: Partial<Record<JobState, typeof IconCheck>> = {
 }
 const HIST_CLS: Partial<Record<JobState, string>> = {
   success: 'text-ink-1',
-  warning: 'text-heat',
+  warning: 'text-signal',
   error: 'tag--critical',
   cancelled: 'text-ink-3',
 }
@@ -196,20 +195,28 @@ export default function StopScreen() {
 
   return (
     <div className="p-8">
-      <ScreenTitle kicker={t('kicker')} title={t('title')} />
+      <ScreenTitle
+        kicker={t('kicker')}
+        title={t('title')}
+        actions={jobAtivo && <StatusLED state="live" label={rotuloEstado(jobAtivo.state)} />}
+      />
 
-      <div className="grid max-w-[1180px] grid-cols-[minmax(0,7fr)_minmax(0,5fr)] items-start gap-6">
+      <div className="grid max-w-[1180px] grid-cols-[minmax(0,7fr)_minmax(0,5fr)] items-start gap-5">
         {/* ── coluna de dados ─────────────────────────────────────────── */}
-        <div className="flex min-w-0 flex-col gap-6">
-          <Surface cut={8} className="relative">
+        <div className="flex min-w-0 flex-col gap-5">
+          <Surface className="overflow-hidden">
+            <div className="surface-head">
+              <span>{t('opAtual')}</span>
+              {jobAtivo && (
+                <span className="type-num ml-auto text-[11px] font-normal tracking-normal text-ink-3">
+                  {fmtDecorrido(Math.max(0, (agora - jobAtivo.inicioMs) / 1000))}
+                </span>
+              )}
+            </div>
             <div className="p-5">
-              <div className="flex items-center justify-between">
-                <span className="type-kicker">{t('opAtual')}</span>
-                {jobAtivo && <StatusLED state="heat" label={rotuloEstado(jobAtivo.state)} />}
-              </div>
               {jobAtivo ? (
                 <>
-                  <p className="type-display mt-3 text-3xl">{rotuloModulo(jobAtivo.moduloId)}</p>
+                  <p className="type-display text-[32px]">{rotuloModulo(jobAtivo.moduloId)}</p>
                   <div className="mt-3">
                     <MetricRow label={t('etapa')} value={rotuloEtapa(jobAtivo)} />
                     <MetricRow label={t('estado')} value={rotuloEstado(jobAtivo.state)} />
@@ -227,166 +234,158 @@ export default function StopScreen() {
                 <EmptyState code={t('vazioCode')} message={t('vazioMsg')} />
               )}
             </div>
-            {jobAtivo && <ScanLine durationS={2.6} />}
           </Surface>
 
-          <Surface cut={6} flat>
-            <div className="p-5">
-              <div className="flex items-center justify-between">
-                <span className="type-kicker">{t('fila')}</span>
-                <span className="type-mono text-xs font-bold text-ink-3">{fila.length}</span>
-              </div>
-              {fila.length === 0 ? (
-                <p className="type-mono mt-3 text-[11px] tracking-[0.1em] text-ink-4">{t('filaVazia')}</p>
-              ) : (
-                <ol className="mt-2">
-                  {fila.map((j, i) => (
-                    <li key={j.id} className="flex items-center gap-3 border-b border-line py-[5px]">
-                      <span className="type-mono text-[11px] text-ink-4">{pad(i + 1)}</span>
-                      <span className="type-mono min-w-0 flex-1 truncate text-xs font-bold text-ink-2">
+          <Surface className="overflow-hidden">
+            <div className="surface-head">
+              <span>{t('fila')}</span>
+              <span className="pill--value ml-auto">{fila.length}</span>
+            </div>
+            {fila.length === 0 ? (
+              <p className="px-4 py-3 text-[11px] font-semibold tracking-[0.1em] text-ink-4">{t('filaVazia')}</p>
+            ) : (
+              <ol className="px-4 pb-2">
+                {fila.map((j, i) => (
+                  <li key={j.id} className="flex min-h-8 items-center gap-3 border-b border-line last:border-b-0">
+                    <span className="type-num text-[11px] text-ink-4">{pad(i + 1)}</span>
+                    <span className="min-w-0 flex-1 truncate text-xs font-bold text-ink-1">
+                      {rotuloModulo(j.moduloId)}
+                    </span>
+                    <span className="tag">{t('naFila')}</span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </Surface>
+
+          <Surface className="overflow-hidden">
+            <div className="surface-head">
+              <span>{t('historico')}</span>
+              <span className="pill--value ml-auto">{historico.length}</span>
+            </div>
+            {historico.length === 0 ? (
+              <p className="px-4 py-3 text-[11px] font-semibold tracking-[0.1em] text-ink-4">{t('historicoVazio')}</p>
+            ) : (
+              <ul className="max-h-72 overflow-y-auto px-4 pb-2">
+                {historico.map((j) => {
+                  const Icone = HIST_ICONE[j.state] ?? IconMinus
+                  return (
+                    <li key={j.id} className="flex min-h-8 items-center gap-3 border-b border-line last:border-b-0">
+                      <span className="type-num text-[11px] text-ink-4">
+                        {fmtRelogio(j.inicioMs + (j.duracaoMs ?? 0))}
+                      </span>
+                      <span className="min-w-0 flex-1 truncate text-xs font-bold text-ink-1">
                         {rotuloModulo(j.moduloId)}
                       </span>
-                      <span className="tag text-ink-3">{t('naFila')}</span>
+                      <span className="type-num w-16 text-right text-[11px] text-ink-3">
+                        {j.duracaoMs !== null ? `${(j.duracaoMs / 1000).toFixed(1)}s` : '—'}
+                      </span>
+                      <span className={`tag ${HIST_CLS[j.state] ?? 'text-ink-3'}`}>
+                        <Icone width={10} height={10} />
+                        {rotuloEstado(j.state)}
+                      </span>
                     </li>
-                  ))}
-                </ol>
-              )}
-            </div>
-          </Surface>
-
-          <Surface cut={6} flat>
-            <div className="p-5">
-              <div className="flex items-center justify-between">
-                <span className="type-kicker">{t('historico')}</span>
-                <span className="type-mono text-xs font-bold text-ink-3">{historico.length}</span>
-              </div>
-              {historico.length === 0 ? (
-                <p className="type-mono mt-3 text-[11px] tracking-[0.1em] text-ink-4">{t('historicoVazio')}</p>
-              ) : (
-                <ul className="scanlines mt-2 max-h-72 overflow-y-auto">
-                  {historico.map((j) => {
-                    const Icone = HIST_ICONE[j.state] ?? IconMinus
-                    return (
-                      <li key={j.id} className="flex items-center gap-3 border-b border-line py-1.5">
-                        <span className="type-mono text-[11px] text-ink-4">
-                          {fmtRelogio(j.inicioMs + (j.duracaoMs ?? 0))}
-                        </span>
-                        <span className="type-mono min-w-0 flex-1 truncate text-xs font-bold text-ink-2">
-                          {rotuloModulo(j.moduloId)}
-                        </span>
-                        <span className="type-mono w-16 text-right text-[11px] text-ink-3">
-                          {j.duracaoMs !== null ? `${(j.duracaoMs / 1000).toFixed(1)}s` : '—'}
-                        </span>
-                        <span className={`tag ${HIST_CLS[j.state] ?? 'text-ink-3'}`}>
-                          <Icone width={10} height={10} />
-                          {rotuloEstado(j.state)}
-                        </span>
-                      </li>
-                    )
-                  })}
-                </ul>
-              )}
-            </div>
+                  )
+                })}
+              </ul>
+            )}
           </Surface>
         </div>
 
         {/* ── zona de interrupção (elemento dominante) ────────────────── */}
-        <Surface cut={12} allCorners brackets className="min-h-[420px]">
-          <div className="flex h-full min-h-[420px] flex-col">
-            <div className="hazard h-2 w-full" aria-hidden />
-            <div className="flex flex-1 flex-col gap-5 p-6">
-              <div className="flex items-center justify-between">
-                <span className="type-kicker">{t('zona')}</span>
-                {jobAtivo && !fase && <StatusLED state="live" />}
+        <Surface className="flex min-h-[420px] flex-col overflow-hidden">
+          <div className="hazard-bar shrink-0" aria-hidden />
+          <div className="surface-head">
+            <span>{t('zona')}</span>
+            {jobAtivo && !fase && (
+              <span className="ml-auto">
+                <StatusLED state="live" />
+              </span>
+            )}
+          </div>
+          <div className="flex flex-1 flex-col gap-5 p-5">
+            {fase ? (
+              <div
+                className="flex flex-1 flex-col items-center justify-center gap-4 text-center"
+                aria-live="polite"
+              >
+                {fase === 'interrompendo' && (
+                  <>
+                    <StatusLED state="live" />
+                    <p className="type-display text-[32px] text-signal">{t('stInterrompendo')}</p>
+                  </>
+                )}
+                {fase === 'cancelada' && (
+                  <>
+                    <IconMinus width={24} height={24} className="text-ink-3" />
+                    <p className="type-display stamp text-[32px] text-ink-3">{t('stCancelada')}</p>
+                  </>
+                )}
+                {fase === 'restaurando' && (
+                  <>
+                    <p className="type-display text-[32px]">{t('stRestaurando')}</p>
+                    <ProgressBar pct={jobRestauro?.progressoPct ?? null} className="w-full" />
+                  </>
+                )}
+                {fase === 'restaurada' && (
+                  <>
+                    <IconCheck width={24} height={24} className="text-ink-1" />
+                    <p className="type-display stamp text-[32px]">{t('stRestaurada')}</p>
+                  </>
+                )}
               </div>
-
-              {fase ? (
-                <div
-                  className="flex flex-1 flex-col items-center justify-center gap-4 text-center"
-                  aria-live="polite"
-                >
-                  {fase === 'interrompendo' && (
-                    <>
-                      <StatusLED state="heat" />
-                      <p className="type-display text-3xl" style={{ color: 'var(--color-heat)' }}>
-                        {t('stInterrompendo')}
-                      </p>
-                    </>
-                  )}
-                  {fase === 'cancelada' && (
-                    <>
-                      <IconMinus width={24} height={24} className="text-ink-3" />
-                      <p className="type-display stamp text-3xl" style={{ color: 'var(--color-ink-3)' }}>
-                        {t('stCancelada')}
-                      </p>
-                    </>
-                  )}
-                  {fase === 'restaurando' && (
-                    <>
-                      <p className="type-display text-3xl">{t('stRestaurando')}</p>
-                      <ProgressBar pct={jobRestauro?.progressoPct ?? null} className="w-full" />
-                    </>
-                  )}
-                  {fase === 'restaurada' && (
-                    <>
-                      <IconCheck width={24} height={24} className="text-ink-1" />
-                      <p className="type-display stamp text-3xl">{t('stRestaurada')}</p>
-                    </>
-                  )}
-                </div>
-              ) : (
-                <>
-                  <p className="text-sm text-ink-2">{t('zonaDesc')}</p>
-                  {jobAtivo && !jobAtivo.cancelavel && (
-                    <div role="status" className="flex items-start gap-2 border border-heat/60 bg-heat/10 p-3">
-                      <IconWarn width={16} height={16} className="mt-0.5 shrink-0 text-heat" />
-                      <div className="min-w-0">
-                        <p className="type-mono text-xs font-bold tracking-[0.08em] text-heat">
-                          {t('insegura')}
-                        </p>
-                        <p className="mt-1 text-xs text-ink-2">{t('inseguraDesc')}</p>
-                      </div>
-                    </div>
-                  )}
-                  <div className="mt-auto">
-                    <div className="hazard p-3">
-                      <Button
-                        variant="primary"
-                        className="min-h-[64px] w-full text-xl"
-                        disabled={!jobAtivo?.cancelavel}
-                        onClick={abrirConfirmacao}
-                      >
-                        <IconX width={18} height={18} />
-                        {t('stopBtn')}
-                      </Button>
+            ) : (
+              <>
+                <p className="text-sm text-ink-2">{t('zonaDesc')}</p>
+                {jobAtivo && !jobAtivo.cancelavel && (
+                  <div
+                    role="status"
+                    className="flex items-start gap-2 rounded-[6px] border border-[var(--signal-edge)] bg-[var(--signal-soft)] p-3"
+                  >
+                    <IconWarn width={16} height={16} className="mt-0.5 shrink-0 text-signal" />
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold tracking-[0.06em] text-signal">{t('insegura')}</p>
+                      <p className="mt-1 text-xs text-ink-2">{t('inseguraDesc')}</p>
                     </div>
                   </div>
-                </>
-              )}
-            </div>
+                )}
+                <div className="mt-auto">
+                  <Button
+                    variant="danger"
+                    size="lg"
+                    className="w-full"
+                    disabled={!jobAtivo?.cancelavel}
+                    onClick={abrirConfirmacao}
+                  >
+                    <IconX width={18} height={18} />
+                    {t('stopBtn')}
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </Surface>
       </div>
 
       <Modal open={confirmar} title={t('stopBtn')} danger onClose={() => setConfirmar(false)}>
         <div className="flex items-start gap-3">
-          <IconWarn width={20} height={20} className="mt-0.5 shrink-0 text-signal" />
+          <IconWarn width={20} height={20} className="mt-0.5 shrink-0 text-blood" />
           <p className="text-sm text-ink-2">
             {t('consequencia', { modulo: jobAlvo ? rotuloModulo(jobAlvo.moduloId) : '—' })}
           </p>
         </div>
-        <p className={`type-mono mt-3 text-xs font-bold ${alvoReversivel ? 'text-ink-1' : 'text-ink-3'}`}>
+        <p className={`mt-3 text-xs font-bold ${alvoReversivel ? 'text-ink-1' : 'text-ink-3'}`}>
           {alvoReversivel ? t('reversivel') : t('semMudancas')}
         </p>
         <div className="mt-6 flex flex-col gap-2">
           <HoldButton onConfirm={confirmarStop} className="min-h-[52px] w-full">
             {t('stopBtn')}
           </HoldButton>
-          <p className="type-mono text-center text-[10px] tracking-[0.14em] text-ink-4">
+          <p className="text-center text-[10px] font-semibold tracking-[0.14em] text-ink-4">
             {tk('segureParaConfirmar')}
           </p>
           <div className="flex justify-end">
-            <Button size="sm" onClick={() => setConfirmar(false)}>
+            <Button size="sm" variant="ghost" onClick={() => setConfirmar(false)}>
               {tk('cancelar')}
             </Button>
           </div>

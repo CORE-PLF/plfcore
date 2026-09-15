@@ -4,7 +4,7 @@ import { db } from '@/lib/db'
 import { requireUser } from '@/lib/auth'
 import { formatCents } from '@/lib/money'
 import { BRAND } from '@/lib/brand'
-import { Chamfer, Kicker, RuleFade, StatusTag } from '@/components/ui'
+import { Surface, Kicker, RuleFade, StatusTag } from '@/components/ui'
 import { ORDER_TAG, PAYMENT_METHOD_LABEL, PAYMENT_TAG, fmtDateTime } from '../../helpers'
 import { PrintButton } from './print-button'
 
@@ -40,13 +40,13 @@ export default async function PedidoDetalhePage({
             </Link>{' '}
             / DETALHE
           </Kicker>
-          <h1 className="type-display text-3xl">PEDIDO</h1>
+          <h1 className="type-display text-3xl">Pedido</h1>
           <p className="type-mono mt-1 text-xs text-ink-3">{order.id}</p>
         </div>
         <StatusTag tone={ORDER_TAG[order.status].tone}>{ORDER_TAG[order.status].label}</StatusTag>
       </header>
 
-      <Chamfer cut={8} className="p-6">
+      <Surface className="p-6">
         <Kicker className="mb-3">ITENS</Kicker>
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <p className="text-ink-1">
@@ -81,9 +81,9 @@ export default async function PedidoDetalhePage({
           CRIADO EM {fmtDateTime(order.createdAt)}
           {order.paidAt ? ` · PAGO EM ${fmtDateTime(order.paidAt)}` : ''}
         </p>
-      </Chamfer>
+      </Surface>
 
-      <Chamfer cut={8} flat className="mt-6 p-6">
+      <Surface flat className="mt-6 p-6">
         <Kicker className="mb-3">PAGAMENTOS</Kicker>
         {order.payments.length === 0 ? (
           <p className="text-sm text-ink-3">Nenhum pagamento registrado.</p>
@@ -99,7 +99,7 @@ export default async function PedidoDetalhePage({
             ))}
           </ul>
         )}
-      </Chamfer>
+      </Surface>
 
       <section className="mt-6">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">

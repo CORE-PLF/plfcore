@@ -149,7 +149,7 @@ function Install-Runtime($item) {
   return [pscustomobject]@{ codigo = $codigo; ok = ($WingetOk -contains $codigo); reinicio = ($codigo -eq $WingetReinicio) }
 }
 
-$acao = [string]$env:RESYNC_RUNTIMES_ACTION
+$acao = [string]$env:PLFCORE_RUNTIMES_ACTION
 
 if ($acao -eq 'scan') {
   $itens = foreach ($item in $Runtimes) { Get-Estado $item }
@@ -158,7 +158,7 @@ if ($acao -eq 'scan') {
 }
 
 if ($acao -eq 'install') {
-  $id = [string]$env:RESYNC_RUNTIMES_ID
+  $id = [string]$env:PLFCORE_RUNTIMES_ID
   $item = $Runtimes | Where-Object { $_.id -eq $id } | Select-Object -First 1
   if ($null -eq $item) { throw 'ERR_RUNTIME_NOT_FOUND' }
   if (-not (Get-WingetOk)) { throw 'ERR_WINGET_AUSENTE' }

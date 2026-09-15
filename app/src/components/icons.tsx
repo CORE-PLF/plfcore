@@ -62,3 +62,20 @@ export const IconArrow = (p: SVGProps<SVGSVGElement>) => (
     <path d="M2 8h11M9 4l4 4-4 4" />
   </svg>
 )
+export const IconBolt = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base({ strokeWidth: 1.7, ...p })}>
+    <path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z" />
+  </svg>
+)
+export const IconSearch = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}>
+    <circle cx="7" cy="7" r="4.5" />
+    <path d="M10.5 10.5 14 14" />
+  </svg>
+)
+export const IconInfo = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}>
+    <circle cx="8" cy="8" r="6" />
+    <path d="M8 7.5v4M8 5.2v.6" />
+  </svg>
+)

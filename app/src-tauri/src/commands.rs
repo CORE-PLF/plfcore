@@ -528,6 +528,19 @@ pub fn relaunch_elevated(app: AppHandle) -> Result<(), String> {
     Ok(())
 }
 
+/// Reinicia o Windows. A confirmação é da UI (ARMAR + segurar); aqui só executa.
+/// `/t 8` dá uma janela pra cancelar por fora (`shutdown /a`) se o usuário se arrepender.
+#[tauri::command]
+pub fn restart_windows() -> Result<(), String> {
+    crate::license::ensure_licensed()?;
+    Command::new("shutdown.exe")
+        .args(["/r", "/t", "8", "/c", "PLF CORE: reinicio pedido pelo usuario"])
+        .creation_flags(CREATE_NO_WINDOW)
+        .spawn()
+        .map_err(|e| format!("ERR_RESTART:{e}"))?;
+    Ok(())
+}
+
 #[tauri::command]
 pub async fn get_inventory() -> Result<Value, String> {
     crate::license::ensure_licensed()?;
@@ -671,8 +684,8 @@ pub async fn scan_debloat() -> Result<Vec<DebloatScanItem>, String> {
             &DEBLOAT_PS,
             PS_TIMEOUT,
             &[
-                ("RESYNC_DEBLOAT_ACTION", "scan"),
-                ("RESYNC_DEBLOAT_ID", ""),
+                ("PLFCORE_DEBLOAT_ACTION", "scan"),
+                ("PLFCORE_DEBLOAT_ID", ""),
             ],
         )?;
         let parsed: DebloatScanScriptResult = parse_script_json(&out)?;
@@ -699,8 +712,8 @@ pub async fn prepare_debloat_restore() -> Result<DebloatRestoreResult, String> {
             &DEBLOAT_PS,
             PS_TIMEOUT,
             &[
-                ("RESYNC_DEBLOAT_ACTION", "restore"),
-                ("RESYNC_DEBLOAT_ID", ""),
+                ("PLFCORE_DEBLOAT_ACTION", "restore"),
+                ("PLFCORE_DEBLOAT_ID", ""),
             ],
         )?;
         let parsed: DebloatRestoreResult = parse_script_json(&out)?;
@@ -725,8 +738,8 @@ pub async fn remove_debloat_item(id: String) -> Result<DebloatItemResult, String
             &DEBLOAT_PS,
             DEBLOAT_TIMEOUT,
             &[
-                ("RESYNC_DEBLOAT_ACTION", "remove"),
-                ("RESYNC_DEBLOAT_ID", id.as_str()),
+                ("PLFCORE_DEBLOAT_ACTION", "remove"),
+                ("PLFCORE_DEBLOAT_ID", id.as_str()),
             ],
         )?;
         let parsed: DebloatItemResult = parse_script_json(&out)?;
@@ -785,7 +798,7 @@ pub async fn scan_games() -> Result<Vec<GameScanItem>, String> {
         let out = run_powershell_env(
             &GAMES_PS,
             PS_TIMEOUT,
-            &[("RESYNC_GAMES_ACTION", "scan"), ("RESYNC_GAMES_ID", "")],
+            &[("PLFCORE_GAMES_ACTION", "scan"), ("PLFCORE_GAMES_ID", "")],
         )?;
         let parsed: GameScanScriptResult = parse_script_json(&out)?;
         if parsed.origin != "measured" || parsed.items.iter().any(|item| !game_id_allowed(&item.id))
@@ -810,8 +823,8 @@ pub async fn clean_game_cache(id: String) -> Result<GameCacheResult, String> {
             &GAMES_PS,
             DEBLOAT_TIMEOUT,
             &[
-                ("RESYNC_GAMES_ACTION", "clean"),
-                ("RESYNC_GAMES_ID", id.as_str()),
+                ("PLFCORE_GAMES_ACTION", "clean"),
+                ("PLFCORE_GAMES_ID", id.as_str()),
             ],
         )?;
         let parsed: GameCacheResult = parse_script_json(&out)?;
@@ -886,9 +899,9 @@ pub async fn scan_game_configs() -> Result<Vec<GameConfigItem>, String> {
             &GAMECONFIG_PS,
             PS_TIMEOUT,
             &[
-                ("RESYNC_GAMECFG_ACTION", "scan"),
-                ("RESYNC_GAMECFG_ID", ""),
-                ("RESYNC_GAMECFG_PRESET", ""),
+                ("PLFCORE_GAMECFG_ACTION", "scan"),
+                ("PLFCORE_GAMECFG_ID", ""),
+                ("PLFCORE_GAMECFG_PRESET", ""),
             ],
         )?;
         let parsed: GameConfigScanResult = parse_script_json(&out)?;
@@ -922,9 +935,9 @@ pub async fn apply_game_config(id: String, preset: String) -> Result<GameConfigA
             &GAMECONFIG_PS,
             PS_TIMEOUT,
             &[
-                ("RESYNC_GAMECFG_ACTION", "apply"),
-                ("RESYNC_GAMECFG_ID", id.as_str()),
-                ("RESYNC_GAMECFG_PRESET", preset.as_str()),
+                ("PLFCORE_GAMECFG_ACTION", "apply"),
+                ("PLFCORE_GAMECFG_ID", id.as_str()),
+                ("PLFCORE_GAMECFG_PRESET", preset.as_str()),
             ],
         )?;
         let parsed: GameConfigApplyResult = parse_script_json(&out)?;
@@ -949,9 +962,9 @@ pub async fn restore_game_config(id: String) -> Result<GameConfigRestoreResult, 
             &GAMECONFIG_PS,
             PS_TIMEOUT,
             &[
-                ("RESYNC_GAMECFG_ACTION", "restore"),
-                ("RESYNC_GAMECFG_ID", id.as_str()),
-                ("RESYNC_GAMECFG_PRESET", ""),
+                ("PLFCORE_GAMECFG_ACTION", "restore"),
+                ("PLFCORE_GAMECFG_ID", id.as_str()),
+                ("PLFCORE_GAMECFG_PRESET", ""),
             ],
         )?;
         let parsed: GameConfigRestoreResult = parse_script_json(&out)?;
@@ -1027,7 +1040,7 @@ pub async fn scan_fivem() -> Result<FiveMScan, String> {
         let out = run_powershell_env(
             &FIVEM_PS,
             DEBLOAT_TIMEOUT,
-            &[("RESYNC_FIVEM_ACTION", "scan"), ("RESYNC_FIVEM_PASTA", "")],
+            &[("PLFCORE_FIVEM_ACTION", "scan"), ("PLFCORE_FIVEM_PASTA", "")],
         )?;
         let parsed: FiveMScan = parse_script_json(&out)?;
         if parsed.origin != "measured" {
@@ -1047,7 +1060,7 @@ pub async fn clean_fivem_cache() -> Result<FiveMCleanResult, String> {
         let out = run_powershell_env(
             &FIVEM_PS,
             DEBLOAT_TIMEOUT,
-            &[("RESYNC_FIVEM_ACTION", "clean"), ("RESYNC_FIVEM_PASTA", "")],
+            &[("PLFCORE_FIVEM_ACTION", "clean"), ("PLFCORE_FIVEM_PASTA", "")],
         )?;
         let parsed: FiveMCleanResult = parse_script_json(&out)?;
         if parsed.origin != "measured" {
@@ -1071,8 +1084,8 @@ pub async fn isolate_fivem_folder(pasta: String) -> Result<FiveMIsolateResult, S
             &FIVEM_PS,
             DEBLOAT_TIMEOUT,
             &[
-                ("RESYNC_FIVEM_ACTION", "isolar"),
-                ("RESYNC_FIVEM_PASTA", pasta.as_str()),
+                ("PLFCORE_FIVEM_ACTION", "isolar"),
+                ("PLFCORE_FIVEM_PASTA", pasta.as_str()),
             ],
         )?;
         let parsed: FiveMIsolateResult = parse_script_json(&out)?;
@@ -1130,9 +1143,9 @@ pub async fn scan_startup() -> Result<Vec<StartupItem>, String> {
             &STARTUP_PS,
             PS_TIMEOUT,
             &[
-                ("RESYNC_STARTUP_ACTION", "scan"),
-                ("RESYNC_STARTUP_ID", ""),
-                ("RESYNC_STARTUP_STATE", ""),
+                ("PLFCORE_STARTUP_ACTION", "scan"),
+                ("PLFCORE_STARTUP_ID", ""),
+                ("PLFCORE_STARTUP_STATE", ""),
             ],
         )?;
         let parsed: StartupScanScriptResult = parse_script_json(&out)?;
@@ -1159,9 +1172,9 @@ pub async fn toggle_startup(id: String, ativar: bool) -> Result<StartupToggleRes
             &STARTUP_PS,
             PS_TIMEOUT,
             &[
-                ("RESYNC_STARTUP_ACTION", "toggle"),
-                ("RESYNC_STARTUP_ID", id.as_str()),
-                ("RESYNC_STARTUP_STATE", if ativar { "on" } else { "off" }),
+                ("PLFCORE_STARTUP_ACTION", "toggle"),
+                ("PLFCORE_STARTUP_ID", id.as_str()),
+                ("PLFCORE_STARTUP_STATE", if ativar { "on" } else { "off" }),
             ],
         )?;
         let parsed: StartupToggleResult = parse_script_json(&out)?;
@@ -1213,7 +1226,7 @@ pub async fn scan_tweaks() -> Result<TweakScanResult, String> {
         let out = run_powershell_env(
             &TWEAKS_PS,
             PS_TIMEOUT,
-            &[("RESYNC_TWEAKS_ACTION", "scan"), ("RESYNC_TWEAKS_ID", "")],
+            &[("PLFCORE_TWEAKS_ACTION", "scan"), ("PLFCORE_TWEAKS_ID", "")],
         )?;
         let parsed: TweakScanScriptResult = parse_script_json(&out)?;
         if parsed.origin != "measured"
@@ -1242,8 +1255,8 @@ pub async fn set_tweak(id: String, ligar: bool) -> Result<TweakToggleResult, Str
             &TWEAKS_PS,
             PS_TIMEOUT,
             &[
-                ("RESYNC_TWEAKS_ACTION", if ligar { "on" } else { "off" }),
-                ("RESYNC_TWEAKS_ID", id.as_str()),
+                ("PLFCORE_TWEAKS_ACTION", if ligar { "on" } else { "off" }),
+                ("PLFCORE_TWEAKS_ID", id.as_str()),
             ],
         )?;
         let parsed: TweakToggleResult = parse_script_json(&out)?;
@@ -1304,7 +1317,7 @@ pub async fn scan_fpsboost() -> Result<FpsBoostScanResult, String> {
         let out = run_powershell_env(
             &FPSBOOST_PS,
             PS_TIMEOUT,
-            &[("RESYNC_FPSBOOST_ACTION", "scan"), ("RESYNC_FPSBOOST_ID", "")],
+            &[("PLFCORE_FPSBOOST_ACTION", "scan"), ("PLFCORE_FPSBOOST_ID", "")],
         )?;
         let parsed: FpsBoostScanScriptResult = parse_script_json(&out)?;
         if parsed.origin != "measured"
@@ -1340,8 +1353,8 @@ pub async fn set_fpsboost(id: String, ligar: bool) -> Result<FpsBoostToggleResul
             &FPSBOOST_PS,
             DEBLOAT_TIMEOUT,
             &[
-                ("RESYNC_FPSBOOST_ACTION", if ligar { "on" } else { "off" }),
-                ("RESYNC_FPSBOOST_ID", id.as_str()),
+                ("PLFCORE_FPSBOOST_ACTION", if ligar { "on" } else { "off" }),
+                ("PLFCORE_FPSBOOST_ID", id.as_str()),
             ],
         )?;
         let parsed: FpsBoostToggleResult = parse_script_json(&out)?;
@@ -1404,7 +1417,7 @@ pub async fn scan_runtimes() -> Result<RuntimeScanResult, String> {
         let out = run_powershell_env(
             &RUNTIMES_PS,
             PS_TIMEOUT,
-            &[("RESYNC_RUNTIMES_ACTION", "scan"), ("RESYNC_RUNTIMES_ID", "")],
+            &[("PLFCORE_RUNTIMES_ACTION", "scan"), ("PLFCORE_RUNTIMES_ID", "")],
         )?;
         let parsed: RuntimeScanScriptResult = parse_script_json(&out)?;
         if parsed.origin != "measured"
@@ -1437,8 +1450,8 @@ pub async fn install_runtime(id: String) -> Result<RuntimeInstallResult, String>
             &RUNTIMES_PS,
             RUNTIME_INSTALL_TIMEOUT,
             &[
-                ("RESYNC_RUNTIMES_ACTION", "install"),
-                ("RESYNC_RUNTIMES_ID", id.as_str()),
+                ("PLFCORE_RUNTIMES_ACTION", "install"),
+                ("PLFCORE_RUNTIMES_ID", id.as_str()),
             ],
         )?;
         let parsed: RuntimeInstallResult = parse_script_json(&out)?;
@@ -1494,8 +1507,8 @@ pub async fn apply_optimization(profile_id: String) -> Result<OptimizationResult
             &APPLY_PS,
             PS_TIMEOUT,
             &[
-                ("RESYNC_OPT_ACTION", "apply"),
-                ("RESYNC_OPT_PROFILE", profile_id.as_str()),
+                ("PLFCORE_OPT_ACTION", "apply"),
+                ("PLFCORE_OPT_PROFILE", profile_id.as_str()),
             ],
         )?;
         let parsed: ApplyScriptResult = parse_script_json(&out)?;
@@ -1529,8 +1542,8 @@ pub async fn revert_optimization() -> Result<OptimizationResult, String> {
             &APPLY_PS,
             PS_TIMEOUT,
             &[
-                ("RESYNC_OPT_ACTION", "revert"),
-                ("RESYNC_OPT_PROFILE", ""),
+                ("PLFCORE_OPT_ACTION", "revert"),
+                ("PLFCORE_OPT_PROFILE", ""),
             ],
         )?;
         let parsed: RevertScriptResult = parse_script_json(&out)?;
@@ -2093,7 +2106,7 @@ pub fn hide_to_tray(app: AppHandle, abrir: String, sair: String) -> Result<(), S
         let menu =
             Menu::with_items(&app, &[&item_abrir, &item_sair]).map_err(|e| e.to_string())?;
         let mut tray = TrayIconBuilder::with_id("resync")
-            .tooltip("RESYNC")
+            .tooltip("PLF CORE")
             .menu(&menu)
             .show_menu_on_left_click(false)
             .on_menu_event(|app, ev| match ev.id.as_ref() {

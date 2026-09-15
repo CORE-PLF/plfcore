@@ -1,9 +1,9 @@
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-$stateDir = Join-Path $env:LOCALAPPDATA 'Resync'
+$stateDir = Join-Path $env:LOCALAPPDATA 'PLFCore'
 $stateFile = Join-Path $stateDir 'fpsboost.json'
-$mutex = New-Object System.Threading.Mutex($false, 'Local\ResyncFpsBoost')
+$mutex = New-Object System.Threading.Mutex($false, 'Local\PLFCoreFpsBoost')
 $locked = $false
 
 function Reg([string]$path, [string]$name, $on, $off, [string]$kind = 'DWord', [string]$cmp = 'eq') {
@@ -156,7 +156,7 @@ function Get-StorPortContagem {
 }
 
 # A varredura de drivers custa segundos: só o scan precisa do detalhe, o toggle não.
-$eScan = ([string]$env:RESYNC_FPSBOOST_ACTION -eq 'scan')
+$eScan = ([string]$env:PLFCORE_FPSBOOST_ACTION -eq 'scan')
 
 $ramBytes = 0
 try { $ramBytes = [double](Get-CimInstance Win32_ComputerSystem -ErrorAction Stop).TotalPhysicalMemory } catch {}
@@ -561,7 +561,7 @@ try {
   if (-not $locked) { throw 'ERR_FPSBOOST_BUSY' }
   Load-State
 
-  $acao = [string]$env:RESYNC_FPSBOOST_ACTION
+  $acao = [string]$env:PLFCORE_FPSBOOST_ACTION
 
   if ($acao -eq 'scan') {
     $itens = foreach ($ajuste in $Ajustes) {
@@ -581,7 +581,7 @@ try {
   }
 
   if ($acao -eq 'on' -or $acao -eq 'off') {
-    $id = [string]$env:RESYNC_FPSBOOST_ID
+    $id = [string]$env:PLFCORE_FPSBOOST_ID
     $ajuste = $Ajustes | Where-Object { $_.id -eq $id } | Select-Object -First 1
     if ($null -eq $ajuste) { throw 'ERR_FPSBOOST_NOT_FOUND' }
     if ($ajuste.admin -and -not (Test-IsAdmin)) { throw 'ERR_FPSBOOST_ADMIN' }

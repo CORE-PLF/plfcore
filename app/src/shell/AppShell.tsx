@@ -6,6 +6,7 @@ import { Topbar } from './Topbar'
 import { BottomBar } from './BottomBar'
 import { KillFeed } from './KillFeed'
 import { ToastHost } from './ToastHost'
+import { RestartBanner } from './RestartBanner'
 import { Skeleton } from '../components/states'
 import './shell.css'
 
@@ -18,6 +19,7 @@ export function AppShell({ stagger }: { stagger: boolean }) {
     <div className="appshell">
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} stagger={stagger} />
       <Topbar stagger={stagger} />
+      <RestartBanner />
       {/* wipe diagonal a cada navegação — nunca crossfade */}
       <main key={wipeKey} className={`mainarea wipe-in ${stagger ? 'hud-in' : ''}`} style={{ animationDelay: stagger ? '120ms' : undefined }}>
         <Suspense

@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Button } from '../../components/Button'
 import { Surface } from '../../components/Surface'
+import { Gauge } from '../../components/Gauge'
 import { HoldButton } from '../../components/HoldButton'
 import { ScreenTitle } from '../../components/Kicker'
-import { MetricRow } from '../../components/MetricRow'
 import { Modal } from '../../components/Modal'
-import { Odometer } from '../../components/Odometer'
 import { ProgressBar } from '../../components/ProgressBar'
 import { DemoTag, EstimatedTag } from '../../components/Tag'
 import { kitDict } from '../../components/i18n'
-import { IconCheck, IconChevron, IconX } from '../../components/icons'
+import { IconCheck, IconChevron, IconWarn, IconX } from '../../components/icons'
 import { ErrorState, Skeleton } from '../../components/states'
 import { t as tr, useT } from '../../i18n'
 import { getAdapter } from '../../services/adapter'
@@ -65,7 +64,7 @@ function useElapsedS(startMs: number | null): number {
   return s
 }
 
-/** Etapa nomeada + barra segmentada + % + tempo decorrido de um job vivo. */
+/** Etapa nomeada + barra + % + tempo decorrido de um job vivo. */
 function JobProgress({ jobId }: { jobId: string | null }) {
   const t = useT(dict)
   const tk = useT(kitDict)
@@ -80,20 +79,20 @@ function JobProgress({ jobId }: { jobId: string | null }) {
       : null
   return (
     <div aria-live="polite">
-      <p className="type-mono text-xs font-bold tracking-[0.1em] text-ink-2">
+      <p className="text-xs font-bold tracking-[0.1em] text-ink-2">
         {stateKey ? t(stateKey) : ''}
         {etapaKey ? ` — ${t(etapaKey)}` : ''}
       </p>
       <ProgressBar pct={job.progressoPct} className="mt-3" />
-      <p className="type-mono mt-3 text-[11px] text-ink-3">
+      <p className="type-num mt-3 text-[11px] text-ink-3">
         {tk('tempoDecorrido')} {mmss(elapsed)}
       </p>
     </div>
   )
 }
 
-/** Feixe entre CPU e GPU: espessura de cada lado ∝ uso ao vivo do componente. */
-function FlowBeam({ cpu, gpu }: { cpu: number | null; gpu: number | null }) {
+/** Feixe entre CPU e GPU: espessura de cada lado ∝ uso ao vivo; amarelo quando há gargalo medido. */
+function FlowBeam({ cpu, gpu, hot }: { cpu: number | null; gpu: number | null; hot: boolean }) {
   const W = 220
   const H = 140
   const MID = H / 2
@@ -102,12 +101,8 @@ function FlowBeam({ cpu, gpu }: { cpu: number | null; gpu: number | null }) {
   const r = half(gpu)
   const LINES = 5
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="bn-flow" preserveAspectRatio="none" aria-hidden>
-      <polygon
-        points={`0,${MID - l} ${W},${MID - r} ${W},${MID + r} 0,${MID + l}`}
-        fill="var(--color-heat)"
-        opacity="0.08"
-      />
+    <svg viewBox={`0 0 ${W} ${H}`} className={`bn-flow ${hot ? 'bn-flow--hot' : ''}`} preserveAspectRatio="none" aria-hidden>
+      <polygon points={`0,${MID - l} ${W},${MID - r} ${W},${MID + r} 0,${MID + l}`} className="bn-flowfill" />
       {Array.from({ length: LINES }, (_, i) => {
         const f = i / (LINES - 1) - 0.5
         return (
@@ -126,32 +121,66 @@ function FlowBeam({ cpu, gpu }: { cpu: number | null; gpu: number | null }) {
   )
 }
 
+/** Linha de dado: rótulo caps à esquerda, valor tabular à direita. null = NÃO DISPONÍVEL. */
+function DataRow({ label, value, origin }: { label: string; value: string | null; origin?: SystemMetrics['cpuTempOrigin'] }) {
+  const tk = useT(kitDict)
+  return (
+    <div className="datarow">
+      <span className="shrink-0 text-[11px] font-semibold tracking-[0.06em] text-ink-3 uppercase">{label}</span>
+      <span className="flex min-w-0 items-center gap-2">
+        {value !== null && origin === 'demo' && <DemoTag />}
+        <span className={`type-num truncate text-xs font-bold ${value === null ? 'text-ink-4' : 'text-ink-1'}`}>
+          {value ?? tk('naoDisponivel')}
+        </span>
+      </span>
+    </div>
+  )
+}
+
 function ChipCard({
   tag,
   nome,
+  uso,
   carregando,
   rows,
 }: {
   tag: string
   nome: string | null
+  uso: number | null
   carregando: boolean
   rows: Array<{ label: string; value: string | null; origin?: SystemMetrics['cpuTempOrigin'] }>
 }) {
+  const t = useT(dict)
   const tk = useT(kitDict)
   return (
-    <Surface cut={6} flat className="p-4">
-      <p className="type-kicker">{tag}</p>
-      {carregando ? (
-        <Skeleton className="mt-2 h-6 w-3/4" />
-      ) : (
-        <p className={`type-display mt-1 text-xl ${nome ? '' : 'text-ink-4'}`}>
-          {nome ?? tk('naoDisponivel')}
-        </p>
-      )}
-      <div className="mt-3">
-        {rows.map((r) => (
-          <MetricRow key={r.label} label={r.label} value={r.value} origin={r.origin} />
-        ))}
+    <Surface className="overflow-hidden">
+      <div className="surface-head" style={{ minHeight: 40, padding: '0 14px' }}>
+        {tag}
+      </div>
+      <div className="flex gap-4 p-[14px]">
+        <Gauge value={uso} label={tag} size={150} showLabel={false} />
+        <div className="flex min-w-0 flex-1 flex-col gap-[10px]">
+          <div className="min-w-0">
+            <span className="block text-[11px] font-semibold tracking-[0.14em] text-ink-3">{t('usoAgora')}</span>
+            {uso === null ? (
+              <span className="block text-[20px] font-bold leading-[1.05] text-ink-4">{tk('naoDisponivel')}</span>
+            ) : (
+              <span className="type-num block text-[40px] font-bold leading-[1.05] text-ink-1">{Math.round(uso)}%</span>
+            )}
+            {carregando ? (
+              <Skeleton className="mt-1 h-3 w-3/4" />
+            ) : (
+              <span className={`block truncate text-[11px] ${nome ? 'text-ink-3' : 'text-ink-4'}`} title={nome ?? undefined}>
+                {nome ?? tk('naoDisponivel')}
+              </span>
+            )}
+          </div>
+          <div className="mt-auto flex flex-col gap-px overflow-hidden rounded-[6px]">
+            {rows.map((r) => (
+              <DataRow key={r.label} label={r.label} value={r.value} origin={r.origin} />
+            ))}
+          </div>
+        </div>
       </div>
     </Surface>
   )
@@ -168,7 +197,7 @@ function CheckHeadline({ text }: { text: string }) {
           className="check-draw"
         />
       </svg>
-      <span className="type-display stamp text-3xl text-ink-1">{text}</span>
+      <span className="stamp text-[28px] font-bold tracking-[-0.02em] text-ink-1">{text}</span>
     </div>
   )
 }
@@ -401,177 +430,163 @@ export default function BottleneckScreen() {
 
   return (
     <div className="h-full overflow-y-auto p-8">
-      <ScreenTitle kicker={t('kicker')} title={t('titulo')} />
+      <ScreenTitle kicker={t('kicker')} title={t('titulo')} meta={t('meta')} actions={demo ? <DemoTag full /> : undefined} />
 
-      {/* ===== palco dominante: CPU ◂ fluxo ▸ GPU ===== */}
-      <Surface cut={12} allCorners className="relative">
-        <div className="stage-grid p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <span className="type-kicker">{t('fluxo')}</span>
-            {demo && <DemoTag />}
+      {/* ===== hero: veredito + boost ===== */}
+      <div className="grid gap-4 grid-cols-[2fr_1fr]">
+        <Surface className="overflow-hidden" aria-live="polite">
+          <div className="surface-head">
+            <span>{t('resultadoTitulo')}</span>
+            {resultado?.origin === 'demo' && <span className="tag tag--demo ml-auto">{t('demoResultado')}</span>}
           </div>
-          {invErro && (
-            <div className="mb-4">
-              <ErrorState what={t('erroInventario')} todo={t('erroInventarioAcao')} />
-            </div>
-          )}
-          <div className="grid grid-cols-[1fr_clamp(120px,20vw,240px)_1fr] items-stretch gap-4">
-            <ChipCard
-              tag={t('cpuTag')}
-              nome={inv?.cpu.nome ?? null}
-              carregando={!inv && !invErro}
-              rows={[
-                { label: t('uso'), value: metrics ? `${metrics.cpuUsage.toFixed(0)}%` : null },
-                {
-                  label: t('clockBase'),
-                  value: inv ? `${inv.cpu.clockBaseGhz.toFixed(2)} GHz` : null,
-                },
-                {
-                  label: metrics?.cpuTempC != null ? t('temp') : t('velocidadeAtual'),
-                  value:
-                    metrics?.cpuTempC != null
-                      ? `${metrics.cpuTempC} °C`
-                      : metrics?.cpuClockGhz != null
-                        ? `${metrics.cpuClockGhz.toFixed(2)} GHz`
-                        : null,
-                },
-              ]}
-            />
-            <div className="flex items-stretch">
-              <FlowBeam cpu={metrics?.cpuUsage ?? null} gpu={metrics?.gpuUsage ?? null} />
-            </div>
-            <ChipCard
-              tag={t('gpuTag')}
-              nome={inv?.gpu.nome ?? null}
-              carregando={!inv && !invErro}
-              rows={[
-                { label: t('uso'), value: metrics && metrics.gpuUsage !== null ? `${metrics.gpuUsage.toFixed(0)}%` : null },
-                {
-                  label: t('temp'),
-                  value: metrics?.gpuTempC != null ? `${metrics.gpuTempC} °C` : null,
-                },
-                { label: t('vram'), value: inv ? `${inv.gpu.vramGb} GB` : null },
-              ]}
-            />
-          </div>
-        </div>
-      </Surface>
-
-      {/* ===== medição + boost ===== */}
-      <div className="mt-6 grid gap-6 lg:grid-cols-[2fr_1fr]">
-        <Surface cut={8} className="p-6" aria-live="polite">
-          <p className="type-kicker mb-4">{t('resultadoTitulo')}</p>
-
-          {medindo ? (
-            <JobProgress jobId={medirJobId} />
-          ) : medirErro ? (
-            <ErrorState what={t('erroMedir')} todo={t('erroMedirAcao')} onRetry={() => void medir()} />
-          ) : resultado ? (
-            <>
-              {resultado.origin === 'demo' && (
-                <div className="mb-3">
-                  <span className="tag tag--demo">{t('demoResultado')}</span>
-                </div>
-              )}
-              {resultado.pctEstimado === null ? (
-                <>
-                  <p className="type-display text-4xl leading-none text-ink-1">{t('semCarga')}</p>
-                  <p className="type-mono mt-3 max-w-md text-xs leading-5 text-ink-3">
-                    {t('semCargaAcao', { pico: resultado.cargaPico })}
+          <div className="p-5">
+            {medindo ? (
+              <JobProgress jobId={medirJobId} />
+            ) : medirErro ? (
+              <ErrorState what={t('erroMedir')} todo={t('erroMedirAcao')} onRetry={() => void medir()} />
+            ) : resultado ? (
+              <>
+                {resultado.pctEstimado === null ? (
+                  <>
+                    <p className="text-[40px] font-bold leading-none tracking-[-0.02em] text-ink-1">{t('semCarga')}</p>
+                    <p className="mt-3 max-w-lg text-xs leading-5 text-ink-3">{t('semCargaAcao', { pico: resultado.cargaPico })}</p>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-end gap-3">
+                      <span className="type-num text-[72px] font-bold leading-none tracking-[-0.02em] text-ink-1">
+                        {resultado.pctEstimado}%
+                      </span>
+                      <span className="mb-3 flex items-center gap-2">
+                        <span className="tag">{tk('estimado')}</span>
+                        <EstimatedTag />
+                      </span>
+                    </div>
+                    <p className="mt-3 max-w-lg text-xs text-ink-3">{t('disclaimer')}</p>
+                  </>
+                )}
+                {reduzido && (
+                  <p className="type-num mt-4 flex flex-wrap items-center gap-2 text-sm font-bold text-ink-1">
+                    {linhaReducao(reduzido)} <EstimatedTag />
                   </p>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-end gap-3">
-                    <Odometer
-                      value={resultado.pctEstimado}
-                      suffix="%"
-                      className="text-7xl font-extrabold leading-none text-ink-1"
-                    />
-                    <span className="mb-2">
-                      <EstimatedTag />
-                    </span>
-                  </div>
-                  <p className="mt-3 max-w-md text-xs text-ink-3">{t('disclaimer')}</p>
-                </>
-              )}
-              {reduzido && (
-                <p className="type-mono mt-4 flex flex-wrap items-center gap-2 text-base font-bold text-ink-1">
-                  {linhaReducao(reduzido)} <EstimatedTag />
-                </p>
-              )}
-              {boostFeito ? (
-                <BoostFeito nota={t('boostAtivoNota')} titulo={t('boostAtivo')} />
-              ) : (
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <Button variant="primary" onClick={() => void medir()} disabled={jobAtivo}>
-                    {t('medir')}
-                  </Button>
-                  {resultado.pctProjetado !== null && !reduzido && (
-                    <Button
-                      onClick={() => {
-                        setReduzFase('confirm')
-                        setReduzOpen(true)
-                      }}
-                      disabled={jobAtivo}
-                    >
-                      {t('reduzir')}
+                )}
+                {boostFeito ? (
+                  <BoostFeito nota={t('boostAtivoNota')} titulo={t('boostAtivo')} />
+                ) : (
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <Button variant="primary" onClick={() => void medir()} disabled={jobAtivo}>
+                      {t('medir')}
                     </Button>
-                  )}
-                </div>
-              )}
-            </>
-          ) : boostFeito ? (
-            <BoostFeito nota={t('boostAtivoNota')} titulo={t('boostAtivo')} />
-          ) : (
-            <>
-              <p className="mb-5 max-w-md text-sm text-ink-2">{t('semMedicao')}</p>
-              <Button variant="primary" onClick={() => void medir()} disabled={jobAtivo}>
-                {t('medir')}
-              </Button>
-            </>
-          )}
+                    {resultado.pctProjetado !== null && !reduzido && (
+                      <Button
+                        onClick={() => {
+                          setReduzFase('confirm')
+                          setReduzOpen(true)
+                        }}
+                        disabled={jobAtivo}
+                      >
+                        {t('reduzir')}
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </>
+            ) : boostFeito ? (
+              <BoostFeito nota={t('boostAtivoNota')} titulo={t('boostAtivo')} />
+            ) : (
+              <>
+                <p className="mb-5 max-w-lg text-sm text-ink-2">{t('semMedicao')}</p>
+                <Button variant="primary" onClick={() => void medir()} disabled={jobAtivo}>
+                  {t('medir')}
+                </Button>
+              </>
+            )}
+          </div>
         </Surface>
 
-        {/* zona hazard: perfil BOOST */}
-        <Surface cut={8} edge="var(--color-rust)">
-          <div className="hazard h-2 w-full" aria-hidden />
-          <div className="p-5">
-            <p className="type-display text-2xl">{t('boost')}</p>
-            <p className="type-kicker mt-1">{t('boostSubtitulo')}</p>
-            <ul className="mt-4 space-y-1.5">
+        {/* zona destrutiva: perfil BOOST */}
+        <Surface className="overflow-hidden">
+          <div className="hazard-bar" aria-hidden />
+          <div className="surface-head">
+            <span>{t('boost')}</span>
+            <span className="ml-auto text-[10px] font-semibold tracking-[0.14em] text-ink-3">{t('boostSubtitulo')}</span>
+          </div>
+          <div className="p-4">
+            <ul className="space-y-1.5">
               {garantias.map((k) => (
-                <li
-                  key={k}
-                  className="type-mono flex items-center gap-2 text-[11px] font-bold text-ink-2"
-                >
-                  <IconX width={10} height={10} className="shrink-0 text-signal" />
+                <li key={k} className="flex items-center gap-2 text-[11px] font-bold tracking-[0.04em] text-ink-2">
+                  <IconX width={10} height={10} className="shrink-0 text-ink-3" />
                   {t(k)}
                 </li>
               ))}
             </ul>
             {boostMedicao && (
-              <p className="type-mono mt-4 flex flex-wrap items-center gap-2 text-xs font-bold text-ink-1">
+              <p className="type-num mt-4 flex flex-wrap items-center gap-2 text-xs font-bold text-ink-1">
                 {linhaBoost(boostMedicao)} <EstimatedTag />
               </p>
             )}
             {boostFeito ? (
-              <div className="mt-5 flex items-center gap-2">
+              <div className="mt-4 flex items-center gap-2">
                 <IconCheck width={12} height={12} className="shrink-0 text-ink-1" />
-                <span className="type-display stamp text-lg text-ink-1">{t('boostAtivo')}</span>
+                <span className="stamp text-base font-bold text-ink-1">{t('boostAtivo')}</span>
               </div>
             ) : (
               <>
-                <HoldButton className="mt-5 w-full" onConfirm={() => void aplicarBoost()} disabled={jobAtivo}>
+                <HoldButton className="mt-4 w-full" onConfirm={() => void aplicarBoost()} disabled={jobAtivo}>
                   {t('boost')}
                 </HoldButton>
-                <p className="type-mono mt-2 text-center text-[10px] tracking-[0.12em] text-ink-4">
-                  {tk('segureParaConfirmar')}
-                </p>
+                <p className="mt-2 text-center text-[10px] font-semibold tracking-[0.12em] text-ink-4">{tk('segureParaConfirmar')}</p>
               </>
             )}
           </div>
         </Surface>
+      </div>
+
+      {/* ===== fluxo CPU ↔ GPU ===== */}
+      {invErro && (
+        <div className="mt-4">
+          <ErrorState what={t('erroInventario')} todo={t('erroInventarioAcao')} />
+        </div>
+      )}
+      <div className="mt-4 grid grid-cols-[1fr_clamp(140px,16vw,240px)_1fr] items-stretch gap-4">
+        <ChipCard
+          tag={t('cpuTag')}
+          nome={inv?.cpu.nome ?? null}
+          uso={metrics?.cpuUsage ?? null}
+          carregando={!inv && !invErro}
+          rows={[
+            {
+              label: t('clockBase'),
+              value: inv ? `${inv.cpu.clockBaseGhz.toFixed(2)} GHz` : null,
+            },
+            {
+              label: metrics?.cpuTempC != null ? t('temp') : t('velocidadeAtual'),
+              value:
+                metrics?.cpuTempC != null
+                  ? `${metrics.cpuTempC} °C`
+                  : metrics?.cpuClockGhz != null
+                    ? `${metrics.cpuClockGhz.toFixed(2)} GHz`
+                    : null,
+            },
+          ]}
+        />
+        <div className="flex flex-col items-center justify-center gap-2">
+          <span className="type-kicker">{t('fluxo')}</span>
+          <FlowBeam cpu={metrics?.cpuUsage ?? null} gpu={metrics?.gpuUsage ?? null} hot={resultado?.pctEstimado != null} />
+        </div>
+        <ChipCard
+          tag={t('gpuTag')}
+          nome={inv?.gpu.nome ?? null}
+          uso={metrics?.gpuUsage ?? null}
+          carregando={!inv && !invErro}
+          rows={[
+            {
+              label: t('temp'),
+              value: metrics?.gpuTempC != null ? `${metrics.gpuTempC} °C` : null,
+            },
+            { label: t('vram'), value: inv ? `${inv.gpu.vramGb} GB` : null },
+          ]}
+        />
       </div>
 
       {/* ===== modal REDUZIR ===== */}
@@ -605,7 +620,7 @@ export default function BottleneckScreen() {
         {reduzFase === 'done' && reduzido && (
           <>
             <CheckHeadline text={t('acoesAplicadas')} />
-            <p className="type-mono flex flex-wrap items-center gap-2 text-lg font-bold text-ink-1">
+            <p className="type-num flex flex-wrap items-center gap-2 text-lg font-bold text-ink-1">
               {linhaReducao(reduzido)} <EstimatedTag />
             </p>
             <div className="mt-5 flex justify-end">
@@ -622,7 +637,7 @@ export default function BottleneckScreen() {
               todo={t('erroAplicarAcao')}
               onRetry={() => void aplicarReducao()}
             />
-            {applyErro && <p className="type-mono mt-2 text-xs font-bold text-signal">{applyErro}</p>}
+            {applyErro && <p className="type-mono mt-2 text-xs font-bold text-blood">{applyErro}</p>}
           </>
         )}
       </Modal>
@@ -636,20 +651,17 @@ export default function BottleneckScreen() {
       >
         <ul className="mb-5 flex flex-wrap gap-x-5 gap-y-1.5">
           {garantias.map((k) => (
-            <li
-              key={k}
-              className="type-mono flex items-center gap-2 text-[11px] font-bold text-ink-2"
-            >
-              <IconX width={10} height={10} className="shrink-0 text-signal" />
+            <li key={k} className="flex items-center gap-2 text-[11px] font-bold tracking-[0.04em] text-ink-2">
+              <IconX width={10} height={10} className="shrink-0 text-ink-3" />
               {t(k)}
             </li>
           ))}
         </ul>
         {boostFase === 'run' && (
           <div aria-live="polite">
-            <p className="type-mono text-xs font-bold tracking-[0.1em] text-ink-2">{t(boostEtapa)}</p>
-            <ProgressBar pct={boostPct} className="mt-3" />
-            <p className="type-mono mt-3 text-right text-[11px] text-ink-3">{boostPct}%</p>
+            <p className="text-xs font-bold tracking-[0.1em] text-ink-2">{t(boostEtapa)}</p>
+            <ProgressBar pct={boostPct} className="mt-3" showPct={false} />
+            <p className="type-num mt-3 text-right text-[11px] text-ink-3">{boostPct}%</p>
           </div>
         )}
         {boostFase === 'done' && boostRes && (
@@ -658,13 +670,16 @@ export default function BottleneckScreen() {
             {boostMedicao && (
               <div className="mb-5 border-y border-line py-3">
                 <p className="type-kicker mb-2">{t('boostResultado')}</p>
-                <p className="type-mono flex flex-wrap items-center gap-2 text-base font-bold text-ink-1">
+                <p className="type-num flex flex-wrap items-center gap-2 text-base font-bold text-ink-1">
                   {linhaBoost(boostMedicao)} <EstimatedTag />
                 </p>
               </div>
             )}
             {boostMedicaoFalhou && (
-              <p className="type-mono mb-5 text-xs font-bold text-heat">{t('boostMedicaoFalhou')}</p>
+              <p className="mb-5 flex items-center gap-2 text-xs font-bold text-signal">
+                <IconWarn width={12} height={12} className="shrink-0" />
+                {t('boostMedicaoFalhou')}
+              </p>
             )}
             <p className="type-kicker mb-2">{t('alteracoes')}</p>
             <ul className="mb-4 space-y-1">
@@ -701,7 +716,7 @@ export default function BottleneckScreen() {
               todo={t('erroAplicarAcao')}
               onRetry={() => void aplicarBoost()}
             />
-            {applyErro && <p className="type-mono mt-2 text-xs font-bold text-signal">{applyErro}</p>}
+            {applyErro && <p className="type-mono mt-2 text-xs font-bold text-blood">{applyErro}</p>}
           </>
         )}
       </Modal>

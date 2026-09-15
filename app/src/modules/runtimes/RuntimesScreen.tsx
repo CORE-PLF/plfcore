@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useRestartStore } from '../../stores/restart'
 import { useT } from '../../i18n'
 import { getAdapter } from '../../services/adapter'
 import { useLogStore } from '../../stores/log'
@@ -8,9 +9,8 @@ import { Button } from '../../components/Button'
 import { Surface } from '../../components/Surface'
 import { ScreenTitle } from '../../components/Kicker'
 import { ProgressBar } from '../../components/ProgressBar'
-import { StatusLED } from '../../components/StatusLED'
 import { ErrorState } from '../../components/states'
-import { IconCheck } from '../../components/icons'
+import { IconCheck, IconWarn } from '../../components/icons'
 import { dict } from './i18n'
 import type { RuntimeId } from './i18n'
 import './runtimes.css'
@@ -75,6 +75,7 @@ export default function RuntimesScreen() {
     () => (itens ?? []).filter((i) => !i.instalado && i.instalavel && i.opcional),
     [itens],
   )
+  const instalados = useMemo(() => (itens ?? []).filter((i) => i.instalado).length, [itens])
   const ocupadoGeral = ocupado !== null || lote !== null
 
   async function instalar(item: RuntimeState): Promise<boolean> {
@@ -87,7 +88,10 @@ export default function RuntimesScreen() {
       reversivel: false,
       detalhes: `winget ${res.codigo} · ${nome}`,
     })
-    if (res.reinicio) setReinicio(true)
+    if (res.reinicio) {
+      setReinicio(true)
+      useRestartStore.getState().marcar(item.id)
+    }
     setItens((old) =>
       old
         ? old.map((i) =>
@@ -140,8 +144,23 @@ export default function RuntimesScreen() {
   }
 
   return (
-    <div className="h-full overflow-y-auto p-8">
-      <ScreenTitle kicker={t('kicker')} title={t('titulo')} />
+    <div className="rt-screen">
+      <ScreenTitle
+        kicker={t('kicker')}
+        title={t('titulo')}
+        actions={
+          <>
+            {itens !== null && (
+              <Button variant="ghost" onClick={() => setDetalhes((d) => !d)}>
+                {detalhes ? t('esconderDetalhes') : t('verDetalhes')}
+              </Button>
+            )}
+            <Button disabled={ocupadoGeral} onClick={() => void ler()}>
+              {t('reler')}
+            </Button>
+          </>
+        }
+      />
 
       {erro && <ErrorState what={t('erroLer')} todo={t('erroLerAcao')} onRetry={() => void ler()} />}
 
@@ -151,84 +170,104 @@ export default function RuntimesScreen() {
 
       {itens !== null && (
         <>
-          <Surface cut={12} className="rt-hero">
-            <div className="rt-hero-info">
-              <span className="rt-hero-kicker">{t('heroKicker')}</span>
-              <strong className="rt-hero-num type-mono">{faltando.length}</strong>
+          <Surface className="rt-hero">
+            <div className="rt-hero-main">
+              <div className="rt-hero-num-wrap">
+                <span className="type-kicker">{t('heroKicker')}</span>
+                <strong className={`type-num rt-hero-num ${faltando.length > 0 ? 'rt-hero-num--hot' : ''}`}>
+                  {faltando.length}
+                </strong>
+              </div>
               <span className="rt-hero-desc">
                 {faltando.length === 0 ? t('heroCompleto') : t('heroResumo', { n: faltando.length })}
               </span>
-            </div>
-            <div className="rt-hero-acao">
-              {lote ? (
-                <div className="rt-hero-progresso">
-                  <ProgressBar pct={(lote.feitos / lote.total) * 100} segments={20} hot />
-                  <span className="type-mono text-[10px] tracking-[0.12em] text-ink-3">
-                    {t('loteAndamento', { feitos: lote.feitos, total: lote.total })}
+              <div className="rt-hero-acao">
+                {lote ? (
+                  <div className="rt-hero-progresso">
+                    <ProgressBar pct={(lote.feitos / lote.total) * 100} />
+                    <span className="type-num text-[11px] font-semibold tracking-[0.08em] text-ink-3">
+                      {t('loteAndamento', { feitos: lote.feitos, total: lote.total })}
+                    </span>
+                  </div>
+                ) : faltando.length === 0 ? (
+                  <span className="rt-hero-ok">
+                    <IconCheck width={18} height={18} aria-hidden />
+                    {t('tudoCerto')}
                   </span>
-                </div>
-              ) : faltando.length === 0 ? (
-                <span className="rt-hero-ok type-display">
-                  <IconCheck width={16} height={16} /> {t('tudoCerto')}
-                </span>
-              ) : (
-                <Button
-                  variant="primary"
-                  disabled={ocupadoGeral || !winget}
-                  onClick={() => void instalarFaltando()}
-                >
-                  {t('instalarFaltando', { n: faltando.length })}
-                </Button>
-              )}
-              <Button size="sm" disabled={ocupadoGeral} onClick={() => void ler()}>
-                {t('reler')}
-              </Button>
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    disabled={ocupadoGeral || !winget}
+                    onClick={() => void instalarFaltando()}
+                  >
+                    {t('instalarFaltando', { n: faltando.length })}
+                  </Button>
+                )}
+              </div>
             </div>
+            <div className="rt-hero-foot">{t('heroNota')}</div>
           </Surface>
 
-          {!winget && <p className="rt-aviso mt-4">{t('semWinget')}</p>}
-          {reinicio && <p className="rt-aviso mt-4">{t('pedeReinicio')}</p>}
-          <p className="rt-nota my-4">{t('heroNota')}</p>
-
-          <div className="mb-4 flex justify-end">
-            <Button size="sm" onClick={() => setDetalhes((d) => !d)}>
-              {detalhes ? t('esconderDetalhes') : t('verDetalhes')}
-            </Button>
-          </div>
+          {!winget && (
+            <div className="rt-aviso">
+              <IconWarn width={14} height={14} aria-hidden />
+              <span>{t('semWinget')}</span>
+            </div>
+          )}
+          {reinicio && (
+            <div className="rt-aviso">
+              <IconWarn width={14} height={14} aria-hidden />
+              <span>{t('pedeReinicio')}</span>
+            </div>
+          )}
 
           {detalhes && (
-            <Surface cut={8} className="p-2">
-              <div className="rt-list">
+            <Surface className="rt-lista">
+              <div className="surface-head">
+                {t('listaTitulo')}
+                <span className="pill pill--value">{instalados}/{itens.length}</span>
+              </div>
+              <div className="rt-lista-scroll">
                 {itens.map((item) => {
                   const id = item.id as RuntimeId
                   return (
-                    <div key={item.id} className={`rt-row ${item.instalado ? '' : 'rt-row--falta'}`}>
-                      <span className="rt-nome">
-                        {t(`nome.${id}`)}
-                        {item.opcional && <i className="rt-tag">{t('opcional')}</i>}
-                      </span>
+                    <div key={item.id} className="rt-row">
+                      <div className="rt-row-id">
+                        <span className="rt-nome">{t(`nome.${id}`)}</span>
+                        {item.opcional && <span className="tag self-start">{t('opcional')}</span>}
+                      </div>
                       <span className="rt-desc" title={t(`desc.${id}`)}>
                         {t(`desc.${id}`)}
                       </span>
-                      <span className="rt-versao type-mono">
+                      <span className="type-mono rt-versao">
                         {item.instalado ? item.versao || t('presente') : item.detalhe || '—'}
                       </span>
                       {item.instalado ? (
                         <span className="rt-estado rt-estado--ok">
-                          <StatusLED state="live" label="" />
+                          <IconCheck width={13} height={13} aria-hidden />
                           {t('instalado')}
                         </span>
-                      ) : item.instalavel ? (
-                        <Button
-                          size="sm"
-                          disabled={ocupadoGeral || !winget}
-                          onClick={() => void instalarUm(item)}
-                        >
-                          {ocupado === item.id ? t('instalando') : t('instalar')}
-                        </Button>
                       ) : (
-                        <span className="rt-estado">{t('viaWindowsUpdate')}</span>
+                        <span className="rt-estado rt-estado--falta">
+                          <IconWarn width={13} height={13} aria-hidden />
+                          {t('faltando')}
+                        </span>
                       )}
+                      <span className="rt-acao">
+                        {!item.instalado && item.instalavel && (
+                          <Button
+                            size="sm"
+                            disabled={ocupadoGeral || !winget}
+                            onClick={() => void instalarUm(item)}
+                          >
+                            {ocupado === item.id ? t('instalando') : t('instalar')}
+                          </Button>
+                        )}
+                        {!item.instalado && !item.instalavel && (
+                          <span className="rt-via">{t('viaWindowsUpdate')}</span>
+                        )}
+                      </span>
                     </div>
                   )
                 })}
@@ -240,7 +279,7 @@ export default function RuntimesScreen() {
             <p className="rt-nota">{t('opcionaisFora', { n: faltandoOpcional.length })}</p>
           )}
 
-          <p className="rt-nota mt-5">{t('nota')}</p>
+          <p className="rt-nota">{t('nota')}</p>
         </>
       )}
     </div>

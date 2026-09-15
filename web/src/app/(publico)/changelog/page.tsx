@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
-import { Chamfer, StatusTag } from '@/components/ui'
+import { StatusTag, Surface, SurfaceHead } from '@/components/ui'
+import { BRAND } from '@/lib/brand'
 import { db } from '@/lib/db'
 import { PageHeader } from '../_shared'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'CHANGELOG',
-  description: 'Histórico de versões da Resync, com notas de cada lançamento.',
+  title: 'Changelog',
+  description: `Histórico de versões do ${BRAND.name}, com notas de cada lançamento.`,
 }
 
 export default async function ChangelogPage() {
@@ -20,7 +21,7 @@ export default async function ChangelogPage() {
     <>
       <PageHeader
         kicker="VERSÕES"
-        title="CHANGELOG"
+        title="Changelog"
         lead="O que mudou em cada versão do app. Sem nota de versão, sem lançamento."
       />
 
@@ -29,29 +30,30 @@ export default async function ChangelogPage() {
           <ol className="space-y-4">
             {versions.map((v, i) => (
               <li key={v.id}>
-                <Chamfer cut={6} flat={i > 0} className="p-6">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="type-mono text-xl font-bold text-ink-1">v{v.version}</h2>
-                    <StatusTag tone={i === 0 ? 'ok' : 'muted'}>
-                      {i === 0 ? 'ATUAL' : v.channel.toUpperCase()}
-                    </StatusTag>
-                    {v.publishedAt && (
-                      <span className="type-mono ml-auto text-xs text-ink-3">
-                        {v.publishedAt.toLocaleDateString('pt-BR', {
-                          timeZone: 'America/Sao_Paulo',
-                        })}
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-4 whitespace-pre-line text-sm text-ink-2">{v.notes}</p>
-                </Chamfer>
+                <Surface flat={i > 0}>
+                  <SurfaceHead
+                    aside={
+                      v.publishedAt
+                        ? v.publishedAt.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+                        : undefined
+                    }
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="type-num">v{v.version}</span>
+                      <StatusTag tone={i === 0 ? 'ok' : 'muted'}>{i === 0 ? 'ATUAL' : v.channel.toUpperCase()}</StatusTag>
+                    </span>
+                  </SurfaceHead>
+                  <p className="whitespace-pre-line p-5 text-sm text-ink-2">{v.notes}</p>
+                </Surface>
               </li>
             ))}
           </ol>
         ) : (
-          <Chamfer cut={8} flat className="p-8 text-center">
-            <p className="type-mono text-sm text-ink-3">NENHUMA VERSÃO PUBLICADA AINDA.</p>
-          </Chamfer>
+          <Surface flat className="p-8 text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.08em] text-ink-3">
+              Nenhuma versão publicada ainda.
+            </p>
+          </Surface>
         )}
       </section>
     </>

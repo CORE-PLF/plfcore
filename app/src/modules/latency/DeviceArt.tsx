@@ -1,5 +1,5 @@
 // Vista técnica explodida: clique abre o desenho em camadas e inclina em 3D.
-// SVG em traço 1px dentro de um envelope CSS 3D — o ponteiro dá a paralaxe.
+// SVG em traço 1px cinza (amarelo só no destaque) dentro de um envelope CSS 3D — o ponteiro dá a paralaxe.
 // Os números seguem no painel LEITURAS; aqui eles somem quando a peça abre.
 
 import { useState } from 'react'
@@ -12,9 +12,9 @@ export interface ArtCallout {
   tag?: { kind: 'demo' | 'estimated'; text: string } | null
 }
 
-const TRACO = 'rgba(255,255,255,0.52)'
-const TRACO_FRACO = 'rgba(255,255,255,0.2)'
-const MONO = { fontFamily: 'var(--font-mono)' } as const
+const TRACO = 'var(--color-ink-3)'
+const TRACO_FRACO = 'var(--color-ink-4)'
+const FONTE = { fontFamily: 'var(--font-ui)', fontVariantNumeric: 'tabular-nums' } as const
 /** Passo do leque explodido do mouse: pouco menos que a largura da camada. */
 const PASSO = 96
 
@@ -25,7 +25,7 @@ function Callout({ c, ax, ay, tx, ty, na }: { c: ArtCallout; ax: number; ay: num
     <g className="da-fade">
       <polyline points={`${ax},${ay} ${tx - 24},${ty - 5} ${tx - 6},${ty - 5}`} fill="none" stroke={TRACO_FRACO} strokeWidth="1" />
       <rect x={ax - 2} y={ay - 2} width={4} height={4} fill="var(--color-signal)" />
-      <text x={tx} y={ty} fontSize={9} letterSpacing="1.3" fill="rgba(255,255,255,0.42)" style={MONO}>
+      <text x={tx} y={ty} fontSize={9} fontWeight={600} letterSpacing="1.3" fill="var(--color-ink-3)" style={FONTE}>
         {c.label}
       </text>
       <text
@@ -33,8 +33,8 @@ function Callout({ c, ax, ay, tx, ty, na }: { c: ArtCallout; ax: number; ay: num
         y={ty + 18}
         fontSize={c.value === null ? 11 : 13}
         fontWeight={700}
-        fill={c.value === null ? 'rgba(255,255,255,0.26)' : 'rgba(255,255,255,0.96)'}
-        style={MONO}
+        fill={c.value === null ? 'var(--color-ink-4)' : 'var(--color-ink-1)'}
+        style={FONTE}
       >
         {val}
       </text>
@@ -46,7 +46,7 @@ function Callout({ c, ax, ay, tx, ty, na }: { c: ArtCallout; ax: number; ay: num
             width={c.tag.text.length * 5 + 9}
             height={13}
             fill="none"
-            stroke={c.tag.kind === 'demo' ? 'var(--color-heat)' : 'rgba(255,255,255,0.42)'}
+            stroke={c.tag.kind === 'demo' ? 'var(--color-signal)' : 'var(--color-ink-3)'}
             strokeWidth="1"
           />
           <text
@@ -54,8 +54,8 @@ function Callout({ c, ax, ay, tx, ty, na }: { c: ArtCallout; ax: number; ay: num
             y={ty + 17}
             fontSize={8}
             letterSpacing="1"
-            fill={c.tag.kind === 'demo' ? 'var(--color-heat)' : 'rgba(255,255,255,0.42)'}
-            style={MONO}
+            fill={c.tag.kind === 'demo' ? 'var(--color-signal)' : 'var(--color-ink-3)'}
+            style={FONTE}
           >
             {c.tag.text}
           </text>
@@ -71,7 +71,7 @@ function Rotulo({ ax, y, texto }: { ax: number; y: number; texto: string }) {
     <g className="da-rot">
       <polyline points={`${ax},${y} ${290},${y}`} fill="none" stroke={TRACO_FRACO} strokeWidth="1" />
       <rect x={ax - 2} y={y - 2} width={4} height={4} fill="var(--color-ink-3)" />
-      <text x={298} y={y + 4} fontSize={11} letterSpacing="1.3" fill="rgba(255,255,255,0.66)" style={MONO}>
+      <text x={298} y={y + 4} fontSize={11} letterSpacing="1.3" fill="var(--color-ink-2)" style={FONTE}>
         {texto}
       </text>
     </g>
@@ -95,8 +95,8 @@ function RotuloEixo({ cx, acima, ate, texto }: { cx: number; acima: boolean; ate
         textAnchor="middle"
         fontSize={10}
         letterSpacing="1.2"
-        fill="rgba(255,255,255,0.66)"
-        style={MONO}
+        fill="var(--color-ink-2)"
+        style={FONTE}
       >
         {texto}
       </text>
@@ -156,7 +156,7 @@ function Palco({ aberto, onToggle, rotulo, children }: PalcoProps) {
       <span className="da-paralaxe" style={{ transform: `rotateX(${par.x}deg) rotateY(${par.y}deg)` }}>
         <span className="da-orbita">{children}</span>
       </span>
-      <span className="da-dica type-mono">{rotulo}</span>
+      <span className="da-dica">{rotulo}</span>
     </button>
   )
 }
@@ -414,12 +414,12 @@ export function KeyboardArt({ polling, latencia, atraso, na }: KeyboardArtProps)
 
           {/* mola */}
           <g className="da-peca" style={{ transform: aberto ? 'none' : 'translateY(-16px)' }}>
-            <g stroke="var(--color-heat)" strokeWidth="1.4" fill="none" strokeLinecap="round">
+            <g stroke="var(--color-signal)" strokeWidth="1.4" fill="none" strokeLinecap="round">
               {MOLA.frente.map((p, i) => (
                 <polyline key={i} points={p} />
               ))}
             </g>
-            <g stroke="var(--color-heat)" strokeWidth="1" fill="none" opacity="0.32">
+            <g stroke="var(--color-signal)" strokeWidth="1" fill="none" opacity="0.32">
               {MOLA.fundo.map((p, i) => (
                 <polyline key={i} points={p} />
               ))}

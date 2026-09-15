@@ -106,59 +106,65 @@ export default function StartupScreen() {
   const ocupadoGeral = ocupado !== null || lote !== null
 
   return (
-    <div className="p-8">
-      <ScreenTitle kicker={t('kicker')} title={t('titulo')} />
+    <div className="h-full overflow-y-auto p-8">
+      <ScreenTitle
+        kicker={t('kicker')}
+        title={t('titulo')}
+        actions={
+          entradas !== null && (
+            <Button size="sm" disabled={ocupadoGeral} onClick={() => void ler()}>
+              {t('reler')}
+            </Button>
+          )
+        }
+      />
 
       {erro && <ErrorState what={t('erroLer')} todo={t('erroLerAcao')} onRetry={() => void ler()} />}
 
-      {!erro && entradas === null && (
-        <p className="type-mono p-6 text-center text-xs text-ink-3">{t('lendo')}</p>
-      )}
+      {!erro && entradas === null && <p className="type-kicker p-6 text-center">{t('lendo')}</p>}
 
       {entradas !== null && (
         <>
-          <Surface cut={12} className="st-hero">
-            <div className="st-hero-info">
-              <span className="st-hero-kicker">{t('heroKicker')}</span>
-              <strong className="st-hero-num type-mono">{ativos}</strong>
-              <span className="st-hero-desc">
-                {t('heroResumo', { n: ativos, total: entradas.length })}
-              </span>
-            </div>
-            <div className="st-hero-acao">
-              {lote ? (
-                <div className="st-hero-progresso">
-                  <ProgressBar pct={(lote.feitos / lote.total) * 100} segments={20} hot />
-                  <span className="type-mono text-[10px] tracking-[0.12em] text-ink-3">
-                    {t('loteAndamento', { feitos: lote.feitos, total: lote.total })}
-                  </span>
-                </div>
-              ) : (
-                <>
-                  <ArmSwitch armed={armado} onChange={setArmado} disabled={desativaveis === 0} />
-                  <HoldButton
-                    armed={armado && !ocupadoGeral && desativaveis > 0}
-                    onConfirm={() => void desativarTodos()}
-                  >
-                    {t('desativarTodos', { n: desativaveis })}
-                  </HoldButton>
-                </>
-              )}
-              <Button size="sm" disabled={ocupadoGeral} onClick={() => void ler()}>
-                {t('reler')}
-              </Button>
+          <Surface className="overflow-hidden">
+            <div className="hazard-bar" aria-hidden />
+            <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-8 p-5">
+              <div className="flex flex-col gap-1">
+                <span className="type-kicker">{t('heroKicker')}</span>
+                <span className="st-hero-num">{ativos}</span>
+                <span className="text-[11px] font-semibold text-ink-3">{t('heroResumo', { n: ativos, total: entradas.length })}</span>
+              </div>
+              <p className="st-nota">{t('heroNota')}</p>
+              <div className="flex flex-col items-end gap-2">
+                {lote ? (
+                  <div className="st-hero-progresso">
+                    <ProgressBar pct={(lote.feitos / lote.total) * 100} hot showPct={false} />
+                    <span className="type-kicker text-right">{t('loteAndamento', { feitos: lote.feitos, total: lote.total })}</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <ArmSwitch armed={armado} onChange={setArmado} disabled={desativaveis === 0} />
+                    <HoldButton
+                      armed={armado && !ocupadoGeral && desativaveis > 0}
+                      onConfirm={() => void desativarTodos()}
+                    >
+                      {t('desativarTodos', { n: desativaveis })}
+                    </HoldButton>
+                  </div>
+                )}
+                <span className="text-[10px] font-semibold tracking-[0.1em] text-ink-3">{t('armeSegure')}</span>
+              </div>
             </div>
           </Surface>
 
-          <p className="st-nota my-4">{t('heroNota')}</p>
-
-          {entradas.length === 0 && (
-            <p className="type-mono p-6 text-center text-xs text-ink-3">{t('vazio')}</p>
-          )}
+          {entradas.length === 0 && <p className="type-kicker p-6 text-center">{t('vazio')}</p>}
 
           {entradas.length > 0 && (
-            <Surface cut={8} className="p-2">
-              <div className="st-list">
+            <Surface className="mt-4 overflow-hidden">
+              <div className="surface-head">
+                {t('listaTitulo')}
+                <span className="pill pill--value ml-auto">{t('listaAtivos', { n: ativos, total: entradas.length })}</span>
+              </div>
+              <div>
                 {entradas.map((entrada) => (
                   <div key={entrada.id} className={`st-row ${entrada.ativado ? '' : 'st-row--off'}`}>
                     <span className="st-nome" title={entrada.nome}>
@@ -167,7 +173,7 @@ export default function StartupScreen() {
                     <span className="st-cmd" title={entrada.comando}>
                       {entrada.comando}
                     </span>
-                    <span className="st-origem">{t(`origem.${entrada.origemId}`)}</span>
+                    <span className="tag">{t(`origem.${entrada.origemId}`)}</span>
                     <button
                       role="switch"
                       aria-checked={entrada.ativado}
@@ -176,11 +182,7 @@ export default function StartupScreen() {
                       onClick={() => void alternar(entrada)}
                     >
                       <StatusLED state={entrada.ativado ? 'live' : 'off'} label="" />
-                      {entrada.protegido
-                        ? t('protegido')
-                        : entrada.ativado
-                          ? t('ativo')
-                          : t('desativado')}
+                      {entrada.protegido ? t('protegido') : entrada.ativado ? t('ativo') : t('desativado')}
                     </button>
                   </div>
                 ))}
@@ -188,7 +190,7 @@ export default function StartupScreen() {
             </Surface>
           )}
 
-          <p className="st-nota mt-5">{t('nota')}</p>
+          <p className="st-nota mt-4">{t('nota')}</p>
         </>
       )}
     </div>

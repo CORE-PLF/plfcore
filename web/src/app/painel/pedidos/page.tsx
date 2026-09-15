@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { db } from '@/lib/db'
 import { requireUser } from '@/lib/auth'
 import { formatCents } from '@/lib/money'
-import { Chamfer, Kicker, StatusTag } from '@/components/ui'
+import { Surface, Kicker, StatusTag } from '@/components/ui'
 import { ORDER_TAG, PAYMENT_METHOD_LABEL, fmtDateTime } from '../helpers'
 
 export default async function PedidosPage() {
@@ -21,18 +21,18 @@ export default async function PedidosPage() {
     <div>
       <header className="mb-6">
         <Kicker>PAINEL</Kicker>
-        <h1 className="type-display text-3xl">PEDIDOS</h1>
+        <h1 className="type-display text-3xl">Pedidos</h1>
       </header>
 
       {orders.length === 0 ? (
-        <Chamfer cut={8} flat className="p-6">
+        <Surface flat className="p-6">
           <p className="text-ink-2">Nenhum pedido até agora.</p>
-          <Link href="/planos" className="btn btn--primary chamfer mt-4">
+          <Link href="/planos" className="btn btn--primary mt-4">
             VER PLANOS
           </Link>
-        </Chamfer>
+        </Surface>
       ) : (
-        <Chamfer cut={8} flat className="overflow-x-auto">
+        <Surface flat className="overflow-x-auto">
           <table className="w-full min-w-190 text-left text-sm">
             <thead>
               <tr className="border-b" style={{ borderColor: 'var(--color-line)' }}>
@@ -78,7 +78,7 @@ export default async function PedidosPage() {
                     )}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Link href={`/painel/pedidos/${order.id}`} className="btn btn--ghost btn--sm chamfer">
+                    <Link href={`/painel/pedidos/${order.id}`} className="btn btn--ghost btn--sm">
                       DETALHE
                     </Link>
                   </td>
@@ -86,7 +86,7 @@ export default async function PedidosPage() {
               ))}
             </tbody>
           </table>
-        </Chamfer>
+        </Surface>
       )}
     </div>
   )

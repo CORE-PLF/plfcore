@@ -37,21 +37,9 @@ interface PartProps {
   children: ReactNode
 }
 
-function Brackets({ b }: { b: Box }) {
+function Selection({ b }: { b: Box }) {
   const o = 5
-  const L = 12
-  const x1 = b.x - o
-  const y1 = b.y - o
-  const x2 = b.x + b.w + o
-  const y2 = b.y + b.h + o
-  return (
-    <g className="bp-brackets" aria-hidden>
-      <path d={`M${x1} ${y1 + L} V${y1} H${x1 + L}`} />
-      <path d={`M${x2 - L} ${y1} H${x2} V${y1 + L}`} />
-      <path d={`M${x2} ${y2 - L} V${y2} H${x2 - L}`} />
-      <path d={`M${x1 + L} ${y2} H${x1} V${y2 - L}`} />
-    </g>
-  )
+  return <rect className="bp-sel" x={b.x - o} y={b.y - o} width={b.w + o * 2} height={b.h + o * 2} aria-hidden />
 }
 
 /** Componente interativo do diagrama: hover acende, Enter/clique fixa a seleção. */
@@ -92,7 +80,7 @@ function Part({ id, num, box, badge, aria, active, selected, ghost, ghostLabel, 
         <rect x={badge.x - 9} y={badge.y - 9} width={18} height={18} />
         <text x={badge.x} y={badge.y + 3.5}>{num}</text>
       </g>
-      {selected && <Brackets b={box} />}
+      {selected && <Selection b={box} />}
     </g>
   )
 }
@@ -111,8 +99,8 @@ interface BlueprintProps {
 }
 
 /**
- * Placa-mãe em vista superior, estilo manual de manutenção: traço 1px, cotas,
- * callouts numerados. Só desenha o que o inventário tem.
+ * Placa-mãe em vista superior: traço fino cinza, callouts numerados,
+ * componente ativo em amarelo. Só desenha o que o inventário tem.
  */
 export function Blueprint({ inv, active, selected, numOf, ariaOf, livre, naoDetectado, ariaDiagram, onHot, onPick }: BlueprintProps) {
   const part = (id: SectionId, box: Box, badge: { x: number; y: number }, ghost: boolean, children: ReactNode) => (
@@ -140,45 +128,9 @@ export function Blueprint({ inv, active, selected, numOf, ariaOf, livre, naoDete
   const sata = inv.discos.filter((d) => d.tipo !== 'NVMe')
 
   return (
-    <svg viewBox="0 0 720 580" className="bp" role="group" aria-label={ariaDiagram}>
-      {/* cotas — identificação real da placa, não medida inventada */}
-      <g className="bp-cota" aria-hidden>
-        <line x1={116} y1={16} x2={640} y2={16} />
-        <line x1={116} y1={11} x2={116} y2={21} />
-        <line x1={640} y1={11} x2={640} y2={21} />
-        <text x={378} y={12}>{(inv.board.modelo ?? naoDetectado).toUpperCase()}</text>
-        <line x1={104} y1={32} x2={104} y2={548} />
-        <line x1={99} y1={32} x2={109} y2={32} />
-        <line x1={99} y1={548} x2={109} y2={548} />
-        <text transform="rotate(-90 96 290)" x={96} y={290}>{(inv.board.fabricante ?? naoDetectado).toUpperCase()}</text>
-      </g>
-
-      {/* contorno da placa + furos de fixação */}
-      <path className="bp-board" d="M116 32 H640 V548 H136 L116 528 Z" />
-      <g aria-hidden>
-        {[[132, 48], [624, 48], [624, 532], [152, 532], [380, 300]].map(([cx, cy]) => (
-          <circle key={`${cx}-${cy}`} className="bp-deco" cx={cx} cy={cy} r={4} />
-        ))}
-      </g>
-
-      {/* EPS 8 pinos — detalhe estrutural */}
-      <g className="bp-deco" aria-hidden>
-        <rect x={232} y={40} width={64} height={18} />
-        {[1, 2, 3].map((i) => (
-          <line key={i} x1={232 + i * 16} y1={40} x2={232 + i * 16} y2={58} />
-        ))}
-        <text className="bp-text bp-text--dim" x={304} y={53} fontSize={8}>EPS 8</text>
-      </g>
-
-      {/* CMOS + header de painel frontal — decorativos */}
-      <g className="bp-deco" aria-hidden>
-        <circle cx={466} cy={318} r={14} />
-        <text className="bp-text bp-text--dim" x={466} y={321} textAnchor="middle" fontSize={6}>CMOS</text>
-        <rect x={300} y={534} width={80} height={10} />
-        {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-          <line key={i} x1={300 + i * 10} y1={534} x2={300 + i * 10} y2={544} />
-        ))}
-      </g>
+    <svg viewBox="100 24 556 536" className="bp" role="group" aria-label={ariaDiagram}>
+      {/* contorno da placa */}
+      <rect className="bp-board" x={116} y={32} width={524} height={516} rx={10} />
 
       {/* painel traseiro: USB → periféricos */}
       {part('peripherals', { x: 136, y: 64, w: 64, h: 84 }, { x: 214, y: 74 }, false, (

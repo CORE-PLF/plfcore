@@ -3,7 +3,7 @@ import { defineDict } from '../../i18n'
 export const stopDict = defineDict({
   pt: {
     kicker: 'CONTROLE',
-    title: 'CENTRAL DE OPERAÇÕES',
+    title: 'Central de operações',
     opAtual: 'OPERAÇÃO ATUAL',
     estado: 'ESTADO',
     etapa: 'ETAPA',
@@ -37,7 +37,7 @@ export const stopDict = defineDict({
   },
   en: {
     kicker: 'CONTROL',
-    title: 'OPERATIONS CENTER',
+    title: 'Operations center',
     opAtual: 'CURRENT OPERATION',
     estado: 'STATE',
     etapa: 'STAGE',
@@ -71,7 +71,7 @@ export const stopDict = defineDict({
   },
   es: {
     kicker: 'CONTROL',
-    title: 'CENTRAL DE OPERACIONES',
+    title: 'Central de operaciones',
     opAtual: 'OPERACIÓN ACTUAL',
     estado: 'ESTADO',
     etapa: 'ETAPA',
@@ -105,7 +105,7 @@ export const stopDict = defineDict({
   },
   fr: {
     kicker: 'CONTRÔLE',
-    title: 'CENTRE DES OPÉRATIONS',
+    title: 'Centre des opérations',
     opAtual: 'OPÉRATION EN COURS',
     estado: 'ÉTAT',
     etapa: 'ÉTAPE',
@@ -139,7 +139,7 @@ export const stopDict = defineDict({
   },
   it: {
     kicker: 'CONTROLLO',
-    title: 'CENTRALE OPERATIVA',
+    title: 'Centrale operativa',
     opAtual: 'OPERAZIONE IN CORSO',
     estado: 'STATO',
     etapa: 'FASE',

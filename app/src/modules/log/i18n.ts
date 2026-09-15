@@ -3,7 +3,7 @@ import { defineDict } from '../../i18n'
 export const logDict = defineDict({
   pt: {
     kicker: 'REGISTRO',
-    titulo: 'LOG',
+    titulo: 'Log',
     registros: 'REGISTROS',
     exportar: 'EXPORTAR LOG',
     buscar: 'BUSCAR NO REGISTRO',
@@ -24,7 +24,7 @@ export const logDict = defineDict({
   },
   en: {
     kicker: 'HISTORY',
-    titulo: 'LOG',
+    titulo: 'Log',
     registros: 'RECORDS',
     exportar: 'EXPORT LOG',
     buscar: 'SEARCH LOG',
@@ -45,7 +45,7 @@ export const logDict = defineDict({
   },
   es: {
     kicker: 'REGISTRO',
-    titulo: 'LOG',
+    titulo: 'Log',
     registros: 'REGISTROS',
     exportar: 'EXPORTAR LOG',
     buscar: 'BUSCAR EN EL REGISTRO',
@@ -66,7 +66,7 @@ export const logDict = defineDict({
   },
   fr: {
     kicker: 'JOURNAL',
-    titulo: 'LOG',
+    titulo: 'Log',
     registros: 'ENTRÉES',
     exportar: 'EXPORTER LE LOG',
     buscar: 'RECHERCHER DANS LE JOURNAL',
@@ -87,7 +87,7 @@ export const logDict = defineDict({
   },
   it: {
     kicker: 'REGISTRO',
-    titulo: 'LOG',
+    titulo: 'Log',
     registros: 'VOCI',
     exportar: 'ESPORTA LOG',
     buscar: 'CERCA NEL REGISTRO',

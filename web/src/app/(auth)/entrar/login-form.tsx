@@ -13,7 +13,7 @@ export function LoginForm({ next }: { next?: string }) {
       <Field label="E-mail" name="email" type="email" required autoComplete="email" />
       <Field label="Senha" name="password" type="password" required autoComplete="current-password" />
       {state.error && (
-        <p role="alert" className="text-sm text-signal">
+        <p role="alert" className="text-sm text-blood">
           ERRO — {state.error}
         </p>
       )}
@@ -21,7 +21,7 @@ export function LoginForm({ next }: { next?: string }) {
         type="submit"
         disabled={pending}
         aria-busy={pending}
-        className="btn btn--ghost chamfer w-full focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ink-1"
+        className="btn btn--primary w-full focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ink-1"
       >
         ENTRAR
       </button>

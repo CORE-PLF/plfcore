@@ -11,7 +11,7 @@ interface Props {
   className?: string
 }
 
-/** Número em mono tabular com scramble de odômetro na entrada. */
+/** Número tabular com scramble de odômetro na entrada. */
 export function Odometer({ value, decimals = 0, durationMs = 400, suffix = '', className = '' }: Props) {
   const [text, setText] = useState('')
   const done = useRef(false)
@@ -44,7 +44,7 @@ export function Odometer({ value, decimals = 0, durationMs = 400, suffix = '', c
   }, [value, decimals, durationMs])
 
   return (
-    <span className={`type-mono ${className}`}>
+    <span className={`type-num ${className}`}>
       {text || value.toFixed(decimals)}
       {suffix}
     </span>

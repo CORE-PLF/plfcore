@@ -49,7 +49,7 @@ const dict = defineDict({
   },
 })
 
-const DEMO_FLAG = 'resync-gamesense-demo'
+const DEMO_FLAG = 'plfcore-gamesense-demo'
 const DEMO_DETECT_MS = 25_000
 const DEMO_CLOSE_MS = 90_000
 

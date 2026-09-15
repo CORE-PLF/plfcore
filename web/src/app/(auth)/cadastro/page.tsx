@@ -9,12 +9,12 @@ export default function CadastroPage() {
   return (
     <>
       <Kicker>ACESSO</Kicker>
-      <h1 className="type-display mt-1 text-2xl">CRIAR CONTA</h1>
+      <h1 className="type-display mt-1 text-2xl">Criar conta</h1>
 
       {/* Cadastro por Discord desativado por enquanto — religar quando decidirmos.
       <a
         href="/api/auth/discord"
-        className="btn btn--primary chamfer mt-5 w-full focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ink-1"
+        className="btn btn--primary mt-5 w-full focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ink-1"
       >
         CONTINUAR COM DISCORD
       </a>

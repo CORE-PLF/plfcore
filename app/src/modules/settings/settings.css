@@ -1,73 +1,54 @@
-/* ===== toggle quadrado (mini arm-switch) ===== */
-.pfx-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 28px;
-  padding: 4px 6px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  color: var(--color-ink-3);
-  transition: color var(--t-fast) var(--expo);
-}
-.pfx-toggle[aria-checked='true'] {
-  color: var(--color-ink-1);
-}
-.pfx-toggle:disabled {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-.pfx-toggle .track {
+/* ===== interruptor de linha: trilho como o ArmSwitch, amarelo quando ligado ===== */
+.pfx-toggle .rail {
   position: relative;
-  width: 28px;
-  height: 14px;
+  width: 34px;
+  height: 18px;
   flex: none;
-  background: rgba(255, 255, 255, 0.08);
-  clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
+  border-radius: var(--radius-pill);
+  background: #4a4a4a;
+  transition: background var(--t-fast);
 }
-.pfx-toggle .track::after {
+.pfx-toggle .rail::after {
   content: '';
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 10px;
-  height: 10px;
-  background: var(--color-ink-3);
-  transition: transform var(--t-fast) var(--snap), background var(--t-fast);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-void);
+  transition: transform 140ms ease;
 }
-.pfx-toggle[aria-checked='true'] .track::after {
-  transform: translateX(14px);
-  background: var(--color-signal);
-}
+.pfx-toggle.st-switch--on .rail { background: var(--color-signal); }
+.pfx-toggle.st-switch--on .rail::after { transform: translateX(16px); }
 .pfx-toggle .state {
-  width: 28px;
+  width: 26px;
   text-align: left;
+  font-variant-numeric: tabular-nums;
 }
 
-/* ===== select de idioma chanfrado ===== */
+/* ===== select de idioma ===== */
 .pfx-select-wrap {
+  position: relative;
   display: inline-block;
 }
 .pfx-select {
   appearance: none;
   -webkit-appearance: none;
-  min-height: 34px;
+  height: 32px;
   min-width: 180px;
   padding: 0 32px 0 12px;
-  border: none;
-  background: transparent;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-edge-2);
+  background: var(--color-surface-2);
   cursor: pointer;
-  font-family: var(--font-mono);
+  font-family: var(--font-ui);
   font-weight: 700;
   font-size: 12px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   color: var(--color-ink-1);
 }
+.pfx-select:hover { filter: brightness(1.08); }
 .pfx-select option {
   background: var(--color-carbon);
   color: var(--color-ink-1);
@@ -84,19 +65,47 @@
 /* ===== campo de captura do atalho ===== */
 .pfx-shortcut {
   width: 220px;
-  min-height: 34px;
+  height: 32px;
   padding: 0 12px;
-  border: none;
-  background: transparent;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-edge-2);
+  background: var(--color-surface-2);
   cursor: pointer;
   text-align: left;
-  font-family: var(--font-mono);
+  font-family: var(--font-ui);
   font-variant-numeric: tabular-nums;
   font-weight: 700;
   font-size: 12px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   color: var(--color-ink-1);
+  transition: border-color var(--t-fast), color var(--t-fast);
 }
 .pfx-shortcut.capturing {
+  border-color: var(--color-signal);
   color: var(--color-signal);
+}
+
+/* ===== linha de configuração ===== */
+.st-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 52px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-line);
+}
+.st-row:last-child { border-bottom: 0; }
+.st-row-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-1);
+}
+.st-row-note {
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--color-ink-3);
+  text-wrap: pretty;
 }

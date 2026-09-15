@@ -1,189 +1,224 @@
-.game-name {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 800;
-  font-size: 22px;
-  letter-spacing: 0.02em;
-  color: var(--color-ink-1);
+/* ===== tela: cabe em 1080 sem rolagem; a grade inferior estica ===== */
+.fm-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: 22px 24px;
+  overflow: hidden;
 }
-.game-nota {
-  max-width: 92ch;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 17px;
-  color: var(--color-ink-4);
+.fm-explica {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--color-ink-3);
+  text-wrap: pretty;
 }
 
 /* ===== hero: o número medido é o elemento dominante da tela ===== */
 .fm-hero {
-  padding: 24px 26px;
-  background: linear-gradient(180deg, rgba(255, 46, 63, 0.05), transparent 70%), var(--color-carbon);
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 22px;
 }
 .fm-hero-topo {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
+  align-items: center;
+  gap: 26px;
 }
 .fm-hero-num {
+  flex: none;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 .fm-hero-num strong {
   font-size: 52px;
+  font-weight: 700;
   line-height: 1;
   color: var(--color-ink-1);
 }
-.fm-hero-kicker {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--color-ink-3);
-}
 .fm-hero-pastas {
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--color-ink-4);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-3);
 }
 .fm-hero-desc {
-  flex: 1 1 320px;
-  max-width: 48ch;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  line-height: 17px;
-  color: var(--color-ink-3);
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-ink-2);
+  text-wrap: pretty;
 }
 
-/* distribuição do cache por pasta — blocos 8px, gap 2px (nunca lisa) */
+/* barra empilhada por pasta — 3 tons de amarelo, copiados da referência PAINEL */
 .fm-distrib {
-  margin-top: 22px;
-  padding-top: 18px;
-  border-top: 1px solid var(--color-line);
-}
-.fm-distrib-rot {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--color-ink-3);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .fm-barra {
   display: flex;
   gap: 2px;
-  height: 10px;
+  height: 14px;
 }
-.fm-bloco {
-  flex: 1 1 8px;
-  min-width: 4px;
-  background: rgba(255, 255, 255, 0.07);
+.fm-barra--vazia {
+  background: var(--color-surface-3);
 }
-.fm-bloco--0 { background: var(--color-signal); }
-.fm-bloco--1 { background: var(--color-heat); }
-.fm-bloco--2 { background: var(--color-rust); }
+.fm-barra > span {
+  height: 14px;
+  transition: width var(--t-base) var(--expo);
+}
+.fm-cor-0 { background: #f8e800; }
+.fm-cor-1 { background: #c4b814; }
+.fm-cor-2 { background: #7e7818; }
+.fm-cor-off { background: var(--color-surface-3); }
 .fm-legenda {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 6px 20px;
-  margin-top: 14px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
 }
 .fm-legenda li {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid var(--color-line);
-  font-size: 11px;
-}
-.fm-legenda li .fm-bloco {
-  flex: none;
-  width: 8px;
-  height: 8px;
+  flex-direction: column;
+  gap: 3px;
   min-width: 0;
 }
 .fm-legenda-nome {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
   overflow: hidden;
-  font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   color: var(--color-ink-3);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.fm-legenda li span:last-child {
-  font-size: 11px;
+.fm-legenda-nome i {
+  flex: none;
+  width: 8px;
+  height: 8px;
+}
+.fm-legenda li > span:last-child {
+  font-size: 13px;
   font-weight: 700;
 }
 
-/* ===== colunas de diagnóstico ===== */
+/* ===== linha inferior: cliente 380px + coluna de mods/zona ===== */
 .fm-colunas {
+  flex: 1;
+  min-height: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 16px;
+  grid-template-columns: 380px minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+}
+.fm-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.fm-cliente-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+}
+.fm-cliente-body > * {
+  flex: 1;
+}
+.fm-cliente-body > :last-child {
+  border-bottom: 0;
+}
+.fm-card-rodape {
+  flex: none;
+  padding: 10px 16px;
+  border-top: 1px solid var(--color-line);
+}
+.fm-coluna-dir {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 .fm-mods {
+  flex: 1;
+}
+.fm-mods-explica {
+  flex: none;
+  padding: 12px 16px 10px;
+}
+.fm-mods-linhas {
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 16px;
 }
 .fm-mod-linha {
-  display: grid;
-  grid-template-columns: 100px 1fr auto;
-  align-items: center;
-  gap: 12px;
-  padding: 7px 0;
-  border-bottom: 1px solid var(--color-line);
-}
-.cfg-head {
+  flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.cfg-explica {
-  font-size: 11px;
-  line-height: 1.5;
-  color: var(--color-ink-3);
-}
-.cfg-chave {
-  overflow: hidden;
-  color: var(--color-ink-3);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.cfg-backup {
-  margin-top: auto;
-  font-size: 10px;
-  line-height: 1.4;
-  color: var(--color-ink-4);
-}
-
-/* ===== zona destrutiva: único caminho pra limpar ===== */
-.game-zona-limpeza {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-top: 32px;
-  padding: 18px 22px;
-}
-.game-zona-texto {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  max-width: 62ch;
-}
-.game-zona-acao {
-  display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: 14px;
+  padding: 0 16px;
+  border-top: 1px solid var(--color-line);
+}
+.fm-mod-nome {
+  width: 92px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-1);
+}
+.fm-mod-info {
+  flex: 1;
+  font-size: 12px;
+  color: var(--color-ink-2);
+}
+.fm-backup {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-3);
+}
+
+/* ===== zona destrutiva: único caminho pra limpar tudo ===== */
+.fm-zona {
+  flex: none;
+  overflow: hidden;
+}
+.fm-zona-corpo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 16px;
+}
+.fm-zona-texto {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.fm-zona-titulo {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-1);
+}
+.fm-zona-hint {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-4);
+}
+.fm-zona-hold {
+  width: 210px;
+  flex: none;
 }

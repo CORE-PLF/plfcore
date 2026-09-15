@@ -16,7 +16,7 @@ interface Props {
 export function RangeSlider({ value, onChange, min = 0, max = 100, step = 25, liveLabel, ariaLabel, leftCaption, rightCaption }: Props) {
   return (
     <div>
-      <p className="type-mono mb-2 text-center text-xs font-bold tracking-[0.1em] text-ink-1" aria-live="polite">
+      <p className="type-num mb-1 text-[11px] font-bold tracking-[0.06em] text-ink-1 uppercase" aria-live="polite">
         {liveLabel}
       </p>
       <input

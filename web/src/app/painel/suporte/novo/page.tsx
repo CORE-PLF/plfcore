@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { requireUser } from '@/lib/auth'
 import { criarTicketAction } from '@/lib/actions/painel'
-import { Chamfer, Field, Kicker } from '@/components/ui'
+import { Surface, Field, Kicker } from '@/components/ui'
 import { TICKET_CATEGORIES, TICKET_PRIORITY_LABEL, firstParam, type SearchParams } from '../../helpers'
 
 export default async function NovoTicketPage({ searchParams }: { searchParams: SearchParams }) {
@@ -17,12 +17,12 @@ export default async function NovoTicketPage({ searchParams }: { searchParams: S
           </Link>{' '}
           / NOVO
         </Kicker>
-        <h1 className="type-display text-3xl">ABRIR TICKET</h1>
+        <h1 className="type-display text-3xl">Abrir ticket</h1>
       </header>
 
-      <Chamfer cut={8} className="max-w-2xl p-6">
+      <Surface className="max-w-2xl p-6">
         {erro && (
-          <p className="mb-4 text-sm" style={{ color: 'var(--color-signal)' }} role="alert">
+          <p className="mb-4 text-sm" style={{ color: 'var(--color-blood)' }} role="alert">
             {erro}
           </p>
         )}
@@ -79,15 +79,15 @@ export default async function NovoTicketPage({ searchParams }: { searchParams: S
           </div>
 
           <div className="flex gap-3">
-            <button type="submit" className="btn btn--primary chamfer">
+            <button type="submit" className="btn btn--primary">
               ENVIAR
             </button>
-            <Link href="/painel/suporte" className="btn btn--ghost chamfer">
+            <Link href="/painel/suporte" className="btn btn--ghost">
               CANCELAR
             </Link>
           </div>
         </form>
-      </Chamfer>
+      </Surface>
     </div>
   )
 }

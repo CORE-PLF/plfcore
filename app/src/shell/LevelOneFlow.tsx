@@ -21,6 +21,7 @@ import { useLevelStore } from '../stores/level'
 import { useToastsStore } from '../stores/toasts'
 import type { ProcessInfo, SystemMetrics } from '../types'
 import { kitDict } from '../components/i18n'
+import { IconCheck, IconWarn } from '../components/icons'
 import { shellDict } from './i18n'
 
 interface Snapshot {
@@ -327,20 +328,20 @@ export function LevelOneFlow({ open, onCancel }: { open: boolean; onCancel: () =
       <Modal open={open || running} danger title={`L1 — ${t('level.nome.1')}`} onClose={close} width={760}>
         {running ? (
           <div className="l1-running">
-            <p className="type-kicker text-heat">{t('level.l1.executing')}</p>
-            <h3 className="type-display mt-2 text-xl">{phaseLabel(t, phase, phaseDetail)}</h3>
+            <p className="type-kicker text-signal">{t('level.l1.executing')}</p>
+            <h3 className="mt-2 text-xl font-bold tracking-[-0.02em] text-ink-1">{phaseLabel(t, phase, phaseDetail)}</h3>
             {(phase === 'applying' || phase === 'debloating') && phaseDetail && (
-              <p className="type-mono mt-2 text-xs text-ink-3">{phaseDetail}</p>
+              <p className="mt-2 text-xs text-ink-3">{phaseDetail}</p>
             )}
             <ProgressBar pct={progress} hot className="mt-5" />
-            <p className="type-mono mt-3 text-[11px] leading-5 text-ink-3">{t('level.l1.doNotClose')}</p>
+            <p className="mt-3 text-[11px] leading-5 text-ink-3">{t('level.l1.doNotClose')}</p>
           </div>
         ) : (
           <>
             <div className="l1-preflight-head">
               <div>
-                <p className="type-kicker text-heat">{t('level.l1.preflight')}</p>
-                <p className="type-mono mt-2 max-w-xl text-xs leading-5 text-ink-2">{t('level.l1.warning')}</p>
+                <p className="type-kicker text-signal">{t('level.l1.preflight')}</p>
+                <p className="mt-2 max-w-xl text-xs leading-5 text-ink-2">{t('level.l1.warning')}</p>
               </div>
               <div className="l1-live-readout">
                 <span><small>{t('level.l1.currentCpu')}</small><strong>{current ? fmtPct(current.cpuPct) : '—'}</strong></span>
@@ -351,7 +352,7 @@ export function LevelOneFlow({ open, onCancel }: { open: boolean; onCancel: () =
             <p className="type-kicker mt-4 mb-2">{t('level.l1.included')}</p>
             <div className="l1-change-grid">
               {L1_CHANGES.map((key) => (
-                <span key={key}><i aria-hidden>✓</i>{t(key)}</span>
+                <span key={key}><i aria-hidden><IconCheck width={11} height={11} strokeWidth={2} /></i>{t(key)}</span>
               ))}
             </div>
 
@@ -361,9 +362,9 @@ export function LevelOneFlow({ open, onCancel }: { open: boolean; onCancel: () =
             </div>
 
             <div className="l1-process-list">
-              {processes === null && <p className="type-mono p-5 text-center text-xs text-ink-3">{t('level.l1.scanning')}</p>}
+              {processes === null && <p className="p-5 text-center text-xs text-ink-3">{t('level.l1.scanning')}</p>}
               {processes !== null && candidates.length === 0 && (
-                <p className="type-mono p-5 text-center text-xs text-ink-3">{t('level.l1.noCandidates')}</p>
+                <p className="p-5 text-center text-xs text-ink-3">{t('level.l1.noCandidates')}</p>
               )}
               {candidates.map((process) => {
                 const key = processKey(process)
@@ -372,7 +373,7 @@ export function LevelOneFlow({ open, onCancel }: { open: boolean; onCancel: () =
                 return (
                   <label key={key} className={`l1-process-row l1-process-row--${meta.kind} ${checked ? 'is-selected' : ''}`}>
                     <input type="checkbox" checked={checked} onChange={() => toggle(key)} />
-                    <span className="l1-process-check">{checked ? '✓' : ''}</span>
+                    <span className="l1-process-check">{checked && <IconCheck width={11} height={11} strokeWidth={2.2} />}</span>
                     <span className="l1-process-name">
                       <strong>{process.nome}</strong>
                       <small>{meta.kind === 'recommended' ? t('level.l1.safeClose') : t('level.l1.saveWork')}</small>
@@ -392,16 +393,16 @@ export function LevelOneFlow({ open, onCancel }: { open: boolean; onCancel: () =
             </div>
 
             <div className="l1-process-list l1-debloat-list">
-              {debloatInstalled === null && <p className="type-mono p-5 text-center text-xs text-ink-3">{t('level.l1.debloatScanning')}</p>}
+              {debloatInstalled === null && <p className="p-5 text-center text-xs text-ink-3">{t('level.l1.debloatScanning')}</p>}
               {debloatInstalled !== null && debloatCandidates.length === 0 && (
-                <p className="type-mono p-5 text-center text-xs text-ink-3">{t('level.l1.debloatNone')}</p>
+                <p className="p-5 text-center text-xs text-ink-3">{t('level.l1.debloatNone')}</p>
               )}
               {debloatCandidates.map((item) => {
                 const checked = selectedDebloat.has(item.id)
                 return (
                   <label key={item.id} className={`l1-process-row ${checked ? 'is-selected' : ''}`}>
                     <input type="checkbox" checked={checked} onChange={() => toggleDebloat(item.id)} />
-                    <span className="l1-process-check">{checked ? '✓' : ''}</span>
+                    <span className="l1-process-check">{checked && <IconCheck width={11} height={11} strokeWidth={2.2} />}</span>
                     <span className="l1-process-name">
                       <strong>{item.label}</strong>
                       <small>{item.recommended ? t('level.l1.debloatRecommendedDesc') : t('level.l1.debloatOptionalDesc')}</small>
@@ -415,7 +416,10 @@ export function LevelOneFlow({ open, onCancel }: { open: boolean; onCancel: () =
               })}
             </div>
 
-            <p className="type-mono mt-3 text-[11px] leading-5 text-heat">{t('level.l1.debloatWarning')}</p>
+            <p className="mt-3 flex items-start gap-2 text-[11px] leading-5 text-signal">
+              <IconWarn width={14} height={14} className="mt-[3px] shrink-0" />
+              <span>{t('level.l1.debloatWarning')}</span>
+            </p>
             <div className="l1-actions">
               <Button size="sm" onClick={close}>{tk('cancelar')}</Button>
               <div className="flex items-center gap-3">

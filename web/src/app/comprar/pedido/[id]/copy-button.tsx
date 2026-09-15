@@ -7,7 +7,7 @@ export function CopyButton({ text }: { text: string }) {
   return (
     <button
       type="button"
-      className="btn btn--ghost btn--sm chamfer"
+      className="btn btn--ghost btn--sm"
       onClick={async () => {
         await navigator.clipboard.writeText(text)
         setCopied(true)

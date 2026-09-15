@@ -9,7 +9,7 @@ export default function RecuperarPage() {
   return (
     <>
       <Kicker>ACESSO</Kicker>
-      <h1 className="type-display mt-1 text-2xl">RECUPERAR ACESSO</h1>
+      <h1 className="type-display mt-1 text-2xl">Recuperar acesso</h1>
       <p className="mt-3 text-sm text-ink-3">
         Informe o e-mail da conta. A recuperação usa suas perguntas de segurança ou seu código de
         recuperação — sem depender de e-mail.

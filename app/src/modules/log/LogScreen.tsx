@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '../../components/Button'
 import { Surface } from '../../components/Surface'
 import { ScreenTitle } from '../../components/Kicker'
-import { Odometer } from '../../components/Odometer'
 import { KTag } from '../../components/Tag'
 import { EmptyState } from '../../components/states'
 import { useT } from '../../i18n'
@@ -86,122 +85,103 @@ export default function LogScreen() {
   }
 
   return (
-    <div className="h-full overflow-y-auto p-8">
-      <div className="mx-auto max-w-4xl">
-        <div className="flex items-start justify-between gap-6">
-          <ScreenTitle kicker={t('kicker')} title={t('titulo')} />
-          <div className="flex shrink-0 items-center gap-5">
-            <div className="text-right">
-              <p className="type-kicker">{t('registros')}</p>
-              <Odometer value={logs.length} className="text-3xl font-bold text-ink-1" />
-            </div>
-            <Button variant="primary" onClick={exportar} disabled={logs.length === 0}>
-              {t('exportar')}
-            </Button>
-          </div>
-        </div>
+    <div className="flex h-full flex-col p-8">
+      <ScreenTitle
+        kicker={t('kicker')}
+        title={t('titulo')}
+        actions={
+          <Button onClick={exportar} disabled={logs.length === 0}>
+            {t('exportar')}
+          </Button>
+        }
+      />
 
-        {logs.length === 0 ? (
-          <EmptyState
-            code={t('vazioCode')}
-            message={t('vazioMsg')}
-            action={<Button onClick={() => go('cleanup')}>{t('rodarAnalise')}</Button>}
-          />
-        ) : (
-          <>
-            <div className="mb-6 flex flex-wrap items-center gap-2">
-              <Surface cut={4} flat className="min-w-64 flex-1">
-                <input
-                  type="search"
-                  value={busca}
-                  onChange={(e) => setBusca(e.target.value)}
-                  placeholder={t('buscar')}
-                  aria-label={t('buscar')}
-                  className="type-mono w-full bg-transparent px-3 py-[9px] text-xs text-ink-1 placeholder:text-ink-4"
-                />
-              </Surface>
-              <div role="group" aria-label={t('filtrar')} className="flex flex-wrap gap-2">
+      {logs.length === 0 ? (
+        <EmptyState
+          code={t('vazioCode')}
+          message={t('vazioMsg')}
+          action={<Button onClick={() => go('cleanup')}>{t('rodarAnalise')}</Button>}
+        />
+      ) : (
+        <Surface className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className="surface-head">
+            <span>{t('registros')}</span>
+            <span className="pill--value">{logs.length}</span>
+            <div role="group" aria-label={t('filtrar')} className="ml-auto flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                className="pill log-chip"
+                aria-pressed={modulosSel.size === 0}
+                onClick={() => setModulosSel(new Set())}
+              >
+                {t('todos')}
+              </button>
+              {modulos.map((m) => (
                 <button
+                  key={m}
                   type="button"
-                  className="chamfer log-chip"
-                  aria-pressed={modulosSel.size === 0}
-                  onClick={() => setModulosSel(new Set())}
+                  className="pill log-chip"
+                  aria-pressed={modulosSel.has(m)}
+                  onClick={() => toggleModulo(m)}
                 >
-                  {t('todos')}
+                  {m}
                 </button>
-                {modulos.map((m) => (
-                  <button
-                    key={m}
-                    type="button"
-                    className="chamfer log-chip"
-                    aria-pressed={modulosSel.has(m)}
-                    onClick={() => toggleModulo(m)}
-                  >
-                    {m}
-                  </button>
-                ))}
-              </div>
+              ))}
             </div>
+            <input
+              type="search"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder={t('buscar')}
+              aria-label={t('buscar')}
+              className="log-busca"
+            />
+          </div>
 
-            {filtrados.length === 0 ? (
-              <div className="border border-line p-5">
-                <p className="type-mono text-xs font-bold tracking-[0.1em] text-ink-1">
-                  {t('semResultado')}
-                </p>
-                <p className="mt-1 text-sm text-ink-2">{t('semResultadoMsg')}</p>
-                <Button size="sm" className="mt-3" onClick={limparFiltros}>
-                  {t('limparFiltros')}
-                </Button>
-              </div>
-            ) : (
-              <ol className="log-timeline">
-                {filtrados.map((l, i) => {
-                  const ancorado = anchor === l.id
-                  return (
-                    <li
-                      key={l.id}
-                      ref={(el) => {
-                        if (el) refs.current.set(l.id, el)
-                        else refs.current.delete(l.id)
-                      }}
-                      className={`log-entry ${l.revertido ? 'log-reverted' : ''} ${ancorado ? 'brackets' : ''}`}
-                    >
-                      {ancorado && (
-                        <>
-                          <span /><span /><span /><span />
-                        </>
-                      )}
-                      <span
-                        className={`log-node led circle ${l.revertido ? 'led--off' : i === 0 ? 'led--live' : 'led--heat'}`}
-                        aria-hidden
-                      />
-                      <div className="flex flex-wrap items-center gap-2">
-                        <time dateTime={l.timestampIso} className="type-mono text-[11px] text-ink-3">
-                          {fmtTs(l.timestampIso)}
-                        </time>
-                        <span className="tag text-ink-3">{l.moduloId.toUpperCase()}</span>
-                        {l.revertido && <KTag variant="ok">{t('revertido')}</KTag>}
-                        <span className="flex-1" />
-                        {l.reversivel && !l.revertido && (
-                          <Button size="sm" onClick={() => void reverterLog(l)}>
-                            {t('reverter')}
-                          </Button>
-                        )}
-                      </div>
-                      <p className="log-strike type-mono mt-1 text-sm font-bold text-ink-1">
-                        {l.acao}
-                        <span className="mx-2 text-ink-4">/</span>
-                        <span className="text-xs font-normal text-ink-2">{l.resultado}</span>
-                      </p>
-                      {l.detalhes !== '' && <p className="mt-0.5 text-xs text-ink-3">{l.detalhes}</p>}
-                    </li>
-                  )
-                })}
-              </ol>
-            )}
-          </>
-        )}
-      </div>
+          {filtrados.length === 0 ? (
+            <div className="p-5">
+              <p className="text-xs font-bold tracking-[0.1em] text-ink-1">{t('semResultado')}</p>
+              <p className="mt-1 text-sm text-ink-2">{t('semResultadoMsg')}</p>
+              <Button size="sm" className="mt-3" onClick={limparFiltros}>
+                {t('limparFiltros')}
+              </Button>
+            </div>
+          ) : (
+            <ol className="min-h-0 flex-1 overflow-y-auto">
+              {filtrados.map((l) => (
+                <li
+                  key={l.id}
+                  ref={(el) => {
+                    if (el) refs.current.set(l.id, el)
+                    else refs.current.delete(l.id)
+                  }}
+                  className={`log-entry ${l.revertido ? 'log-reverted' : ''} ${anchor === l.id ? 'log-anchored' : ''}`}
+                >
+                  <time dateTime={l.timestampIso} className="type-num text-[11px] text-ink-3">
+                    {fmtTs(l.timestampIso)}
+                  </time>
+                  <span className="tag">{l.moduloId}</span>
+                  <span className="log-strike type-mono min-w-0 truncate text-xs font-bold text-ink-1" title={l.acao}>
+                    {l.acao}
+                  </span>
+                  <span className="type-mono text-[11px] text-ink-2">{l.resultado}</span>
+                  <span className="type-mono min-w-0 truncate text-[11px] text-ink-3" title={l.detalhes}>
+                    {l.detalhes}
+                  </span>
+                  <span className="flex justify-end">
+                    {l.revertido && <KTag variant="ok">{t('revertido')}</KTag>}
+                    {l.reversivel && !l.revertido && (
+                      <Button size="sm" variant="ghost" onClick={() => void reverterLog(l)}>
+                        {t('reverter')}
+                      </Button>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </Surface>
+      )}
     </div>
   )
 }

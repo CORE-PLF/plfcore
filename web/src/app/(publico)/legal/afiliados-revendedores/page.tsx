@@ -5,14 +5,14 @@ import { LegalDoc, LegalSection } from '../../_shared'
 export const metadata: Metadata = {
   title: 'POLÍTICA DE AFILIADOS E REVENDA',
   description:
-    'Regras dos programas de afiliados e revendedores da Resync: comissões, atribuição, fraude, créditos e limites.',
+    'Regras dos programas de afiliados e revendedores do PLF CORE: comissões, atribuição, fraude, créditos e limites.',
 }
 
 export default function AfiliadosRevendedoresPage() {
   return (
     <LegalDoc
       kicker="LEGAL"
-      title="POLÍTICA DE AFILIADOS E REVENDA"
+      title="Política de afiliados e revenda"
       updated="3 de agosto de 2026"
     >
       <LegalSection title="1. PARTICIPAÇÃO">

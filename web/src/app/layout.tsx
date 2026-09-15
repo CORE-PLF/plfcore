@@ -1,43 +1,26 @@
 import type { Metadata } from 'next'
-import { JetBrains_Mono, Quantico, Saira_Condensed } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import { BRAND } from '@/lib/brand'
 import './globals.css'
 
-// Saira Condensed não tem itálico verdadeiro — o .type-display usa oblíquo sintético, como no app
-const saira = Saira_Condensed({
-  variable: '--font-saira',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
-  weight: ['600', '800'],
-})
-
-const quantico = Quantico({
-  variable: '--font-quantico',
-  subsets: ['latin'],
-  weight: ['400', '700'],
-})
-
-const jetbrains = JetBrains_Mono({
-  variable: '--font-jetbrains',
-  subsets: ['latin'],
-  weight: ['500', '700', '800'],
+  weight: ['400', '500', '600', '700'],
 })
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL ?? 'http://localhost:3000'),
   title: {
-    default: `${BRAND.name} — Otimização que você consegue verificar`,
+    default: `${BRAND.name} — ${BRAND.tagline}`,
     template: `%s — ${BRAND.name}`,
   },
-  description:
-    'A Resync analisa dados reais do seu sistema, explica o que está acontecendo e mostra exatamente o que pode ser melhorado.',
+  description: `O ${BRAND.name} lê dados reais do seu Windows, explica o que encontrou e registra cada alteração. App oficial do servidor Pro League.`,
 }
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html
-      lang="pt-BR"
-      className={`${saira.variable} ${quantico.variable} ${jetbrains.variable} h-full antialiased`}
-    >
+    <html lang="pt-BR" className={`${inter.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
   )

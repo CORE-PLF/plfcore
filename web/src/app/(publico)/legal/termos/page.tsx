@@ -5,12 +5,12 @@ import { LegalDoc, LegalSection } from '../../_shared'
 
 export const metadata: Metadata = {
   title: 'TERMOS DE USO',
-  description: 'Termos de uso da plataforma e do software Resync.',
+  description: 'Termos de uso da plataforma e do software PLF CORE.',
 }
 
 export default function TermosPage() {
   return (
-    <LegalDoc kicker="LEGAL" title="TERMOS DE USO" updated="3 de agosto de 2026">
+    <LegalDoc kicker="LEGAL" title="Termos de uso" updated="3 de agosto de 2026">
       <LegalSection title="1. O QUE ESTES TERMOS COBREM">
         <p>
           Estes termos regem o uso do site, da conta de usuário e do software {BRAND.name} (o

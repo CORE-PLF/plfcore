@@ -13,12 +13,12 @@ import { Field } from '@/components/ui'
 const initial: RecoveryState = { error: null }
 
 const BTN =
-  'btn btn--primary chamfer w-full focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ink-1'
+  'btn btn--primary w-full focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ink-1'
 
 function ErrorLine({ message }: { message: string | null }) {
   if (!message) return null
   return (
-    <p role="alert" className="text-sm text-signal">
+    <p role="alert" className="text-sm text-blood">
       ERRO — {message}
     </p>
   )
@@ -65,7 +65,7 @@ export function RecoveryFlow() {
         <p className="type-kicker">GUARDE SEU NOVO CÓDIGO</p>
         <p
           className="type-mono break-all px-3 py-2 text-sm text-ink-1"
-          style={{ background: 'var(--color-void)', boxShadow: 'inset 0 0 0 1px var(--color-edge)' }}
+          style={{ background: 'var(--color-void)', border: '1px solid var(--color-edge)', borderRadius: 6 }}
         >
           {code.newCode}
         </p>

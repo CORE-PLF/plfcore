@@ -6,7 +6,7 @@ import type { ReactNode } from 'react'
 export function ConfirmSubmit({
   message,
   children,
-  className = 'btn btn--danger btn--sm chamfer',
+  className = 'btn btn--danger btn--sm',
 }: {
   message: string
   children: ReactNode

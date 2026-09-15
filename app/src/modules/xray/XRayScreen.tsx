@@ -4,8 +4,6 @@ import { Button } from '../../components/Button'
 import { Surface } from '../../components/Surface'
 import { HealthBadge } from '../../components/HealthBadge'
 import { ScreenTitle } from '../../components/Kicker'
-import { MetricRow } from '../../components/MetricRow'
-import { ScanLine } from '../../components/ScanLine'
 import { ProgressBar } from '../../components/ProgressBar'
 import { DemoTag, EstimatedTag } from '../../components/Tag'
 import { ErrorState, Skeleton } from '../../components/states'
@@ -52,16 +50,35 @@ function fmtDate(iso: string, tag: string): string {
   return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString(tag)
 }
 
-/** Valor curto rotulado da plaqueta (dog tag). */
+/** Valor rotulado do registro da máquina. */
 function Stat({ label, sub, value, accent }: { label: string; sub?: string; value: string | null; accent?: boolean }) {
   const tk = useT(kitDict)
   return (
-    <div>
+    <div className="min-w-0">
       <p className="type-kicker">{label}</p>
-      <p className={`type-mono text-sm font-bold ${value === null ? 'text-ink-4' : accent ? 'text-signal' : 'text-ink-1'}`}>
+      <p
+        className={`type-num mt-1 truncate text-[18px] font-bold leading-tight ${value === null ? 'text-ink-4' : accent ? 'text-signal' : 'text-ink-1'}`}
+        title={value ?? undefined}
+      >
         {value ?? tk('naoDisponivel')}
       </p>
-      {sub && <p className="type-mono mt-0.5 text-[9px] tracking-[0.12em] text-ink-4">{sub}</p>}
+      {sub && <p className="mt-0.5 text-[10px] tracking-[0.08em] text-ink-4">{sub}</p>}
+    </div>
+  )
+}
+
+/** Linha de dado: rótulo caps à esquerda, valor tabular à direita. null = NÃO DISPONÍVEL. */
+function Row({ label, value, children }: { label: string; value: string | null; children?: ReactNode }) {
+  const tk = useT(kitDict)
+  return (
+    <div className="datarow">
+      <span className="shrink-0 text-[11px] font-semibold tracking-[0.06em] text-ink-3 uppercase">{label}</span>
+      <span className="flex min-w-0 items-center gap-2">
+        {children}
+        <span className={`type-num truncate text-xs font-bold ${value === null ? 'text-ink-4' : 'text-ink-1'}`} title={value ?? undefined}>
+          {value ?? tk('naoDisponivel')}
+        </span>
+      </span>
     </div>
   )
 }
@@ -69,14 +86,10 @@ function Stat({ label, sub, value, accent }: { label: string; sub?: string; valu
 /** Linha com dado ao vivo: LED + selo ESTIMADO quando a métrica não é medida. */
 function LiveRow({ label, value, estimated }: { label: string; value: string; estimated: boolean }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-line py-[5px]">
-      <span className="type-kicker shrink-0">{label}</span>
-      <span className="flex items-center gap-2">
-        {estimated && <EstimatedTag />}
-        <span className="led circle led--live" aria-hidden />
-        <span className="type-mono text-xs font-bold text-ink-1">{value}</span>
-      </span>
-    </div>
+    <Row label={label} value={value}>
+      {estimated && <EstimatedTag />}
+      <span className="led circle led--live" aria-hidden />
+    </Row>
   )
 }
 
@@ -99,19 +112,23 @@ function Ficha({ id, num, title, selected, onHot, register, extra, children }: F
       }}
     >
       <Surface
-        flat
-        cut={6}
-        brackets={selected}
-        className="p-4"
+        className="overflow-hidden"
+        edge={selected ? 'var(--color-signal)' : undefined}
         onMouseEnter={() => onHot(id)}
         onMouseLeave={() => onHot(null)}
       >
-        <header className="mb-2 flex items-center gap-2">
-          <span className="type-mono border border-edge px-1.5 py-0.5 text-[10px] font-bold text-ink-3">{num}</span>
-          <h2 className="type-display text-lg">{title}</h2>
+        <header className="surface-head" style={{ minHeight: 40, padding: '0 14px' }}>
+          <span
+            className={`type-num rounded-[3px] px-1.5 py-0.5 text-[10px] ${selected ? 'bg-signal text-void' : 'bg-surface-3 text-ink-2'}`}
+          >
+            {num}
+          </span>
+          <h2 className="text-xs font-bold tracking-[0.1em] text-ink-1">{title}</h2>
           {extra && <div className="ml-auto flex items-center gap-2">{extra}</div>}
         </header>
-        {children}
+        <div className="p-3">
+          <div className="flex flex-col gap-px overflow-hidden rounded-[6px]">{children}</div>
+        </div>
       </Surface>
     </div>
   )
@@ -149,7 +166,7 @@ function CalloutOverlay({
         x1: p.right - c.left + 4,
         y1: p.top + p.height / 2 - c.top,
         x2: f.left - c.left - 3,
-        y2: f.top + 16 - c.top,
+        y2: f.top + 20 - c.top,
       })
     }
     update()
@@ -165,8 +182,8 @@ function CalloutOverlay({
   return (
     <svg className="xr-callout" aria-hidden>
       <path d={`M ${ln.x1} ${ln.y1} H ${ln.x2 - 16} V ${ln.y2} H ${ln.x2}`} />
-      <rect x={ln.x1 - 2} y={ln.y1 - 2} width={4} height={4} />
-      <rect x={ln.x2 - 2} y={ln.y2 - 2} width={4} height={4} />
+      <circle cx={ln.x1} cy={ln.y1} r={2.5} />
+      <circle cx={ln.x2} cy={ln.y2} r={2.5} />
     </svg>
   )
 }
@@ -186,7 +203,6 @@ export default function XRayScreen() {
   const [m, setM] = useState<SystemMetrics | null>(null)
   const [hot, setHot] = useState<SectionId | null>(null)
   const [sel, setSel] = useState<SectionId | null>(null)
-  const [scan, setScan] = useState(true)
   const [exporting, setExporting] = useState(false)
 
   const layoutRef = useRef<HTMLDivElement>(null)
@@ -295,13 +311,14 @@ export default function XRayScreen() {
     return (
       <div className="p-8">
         <ScreenTitle kicker={t('kicker')} title={t('title')} />
-        <Skeleton className="mb-6 h-28 w-full" />
-        <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-6">
-          <Skeleton className="h-[480px]" />
-          <div className="flex flex-col gap-4">
-            <Skeleton className="h-44" />
-            <Skeleton className="h-44" />
-            <Skeleton className="h-44" />
+        <Skeleton className="mb-4 h-28 w-full" />
+        <div className="grid grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-4">
+          <Skeleton className="h-[560px]" />
+          <div className="grid grid-cols-2 gap-4">
+            <Skeleton className="h-64" />
+            <Skeleton className="h-64" />
+            <Skeleton className="h-64" />
+            <Skeleton className="h-64" />
           </div>
         </div>
       </div>
@@ -337,42 +354,56 @@ export default function XRayScreen() {
   const bateria = inv.energia.bateria
 
   return (
-    <div className="p-8">
-      <ScreenTitle kicker={t('kicker')} title={t('title')} />
+    <div className="h-full overflow-y-auto p-8">
+      <ScreenTitle
+        kicker={t('kicker')}
+        title={t('title')}
+        meta={t('meta', { host: rec.hostname, n: sections.length })}
+        actions={
+          <>
+            {inv.origin === 'demo' && <DemoTag full />}
+            <Button variant="primary" onClick={onExport} disabled={exporting}>
+              {t('exportar')}
+            </Button>
+          </>
+        }
+      />
 
-      {/* registro da máquina — plaqueta */}
-      <Surface cut={8} className="relative">
-        <div className="hazard absolute inset-x-0 top-0 h-1.5" aria-hidden />
-        <div className="flex flex-wrap items-center gap-6 p-5 pt-6">
-          <span className="circle h-4 w-4 shrink-0 border border-ink-4" aria-hidden />
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="type-display text-3xl">{rec.hostname}</span>
-              {inv.origin === 'demo' && <DemoTag full />}
-            </div>
-            <div className="mt-4 flex flex-wrap gap-x-10 gap-y-3">
-              <Stat label={t('emServico')} value={fmtDate(rec.emServicoDesde, tag)} />
-              <Stat
-                label={t('horasOp')}
-                sub={t('horasOpFonte')}
-                value={rec.horasOperacao !== null ? `${fmtInt(rec.horasOperacao, tag)} h` : null}
-              />
-              <Stat label={t('serialBios')} value={rec.serialBios} />
-              <Stat label={t('assinatura')} value={rec.assinatura.toUpperCase()} accent />
-            </div>
+      {/* registro da máquina */}
+      <Surface className="overflow-hidden">
+        <div className="surface-head">
+          <span>{t('registro')}</span>
+          <span className="type-num ml-auto text-[10px] font-normal tracking-[0.18em] text-ink-3">{rec.serialBios ?? ''}</span>
+        </div>
+        <div className="grid grid-cols-[minmax(0,1.6fr)_repeat(4,minmax(0,1fr))] items-end gap-6 px-4 py-4">
+          <div className="min-w-0">
+            <p className="type-kicker">{t('hostname')}</p>
+            <p className="type-num mt-1 truncate text-[32px] font-bold leading-none text-ink-1" title={rec.hostname}>
+              {rec.hostname}
+            </p>
           </div>
-          <Button variant="primary" onClick={onExport} disabled={exporting}>
-            {t('exportar')}
-          </Button>
+          <Stat label={t('emServico')} value={fmtDate(rec.emServicoDesde, tag)} />
+          <Stat
+            label={t('horasOp')}
+            sub={t('horasOpFonte')}
+            value={rec.horasOperacao !== null ? `${fmtInt(rec.horasOperacao, tag)} h` : null}
+          />
+          <Stat label={t('serialBios')} value={rec.serialBios} />
+          <Stat label={t('assinatura')} value={rec.assinatura.toUpperCase()} accent />
         </div>
       </Surface>
 
-      <div ref={layoutRef} className="relative mt-6 grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)] items-start gap-6">
+      <div ref={layoutRef} className="relative mt-4 grid grid-cols-[minmax(0,5fr)_minmax(0,7fr)] items-start gap-4">
         {/* blueprint — elemento dominante */}
-        <div className="sticky top-6">
-          <Surface flat cut={8}>
-            <div className="stage-grid relative overflow-hidden p-4">
-              <ScanLine durationS={4} active={scan} />
+        <div className="sticky top-0">
+          <Surface className="overflow-hidden">
+            <div className="surface-head">
+              <span>{t('sBoard')}</span>
+              <span className="type-num ml-auto truncate text-[10px] font-normal tracking-[0.18em] text-ink-3">
+                {[inv.board.fabricante, inv.board.modelo].filter(Boolean).join(' ').toUpperCase() || t('naoDetectado')}
+              </span>
+            </div>
+            <div className="p-4">
               <Blueprint
                 inv={inv}
                 active={active}
@@ -385,53 +416,47 @@ export default function XRayScreen() {
                 onHot={onHot}
                 onPick={onPick}
               />
-              <div className="absolute right-3 top-3 z-10">
-                <Button size="sm" aria-pressed={scan} onClick={() => setScan((v) => !v)}>
-                  <span className={`led circle ${scan ? 'led--live' : 'led--off'}`} aria-hidden />
-                  {t('varredura')} {scan ? t('ligada') : t('desligada')}
-                </Button>
-              </div>
             </div>
           </Surface>
         </div>
 
-        {/* inventário — fichas densas */}
-        <div className="flex min-w-0 flex-col gap-4">
+        {/* inventário — grade de cards por componente */}
+        <div className="grid min-w-0 grid-cols-2 items-start gap-4">
           <Ficha id="cpu" num={numOf('cpu')} title={t('sCpu')} selected={sel === 'cpu'} onHot={onHot} register={register}>
-            <MetricRow label={t('modelo')} value={inv.cpu.nome} />
-            <MetricRow label={t('nucleosThreads')} value={`${inv.cpu.nucleos} / ${inv.cpu.threads}`} />
-            <MetricRow label={t('clockBase')} value={`${fmtNum1(inv.cpu.clockBaseGhz, tag)} GHz`} />
-            <MetricRow label={t('clockAtual')} value={`${clockAtual.toFixed(2)} GHz`} />
-            <MetricRow label={t('cacheL2')} value={`${inv.cpu.cacheL2Mb} MB`} />
-            <MetricRow label={t('cacheL3')} value={`${inv.cpu.cacheL3Mb} MB`} />
-            <MetricRow label={t('soquete')} value={inv.cpu.soquete} />
-            {tempAtual !== null && <MetricRow label={t('temperatura')} value={`${tempAtual} °C`} />}
+            <Row label={t('modelo')} value={inv.cpu.nome} />
+            <Row label={t('nucleosThreads')} value={`${inv.cpu.nucleos} / ${inv.cpu.threads}`} />
+            <Row label={t('clockBase')} value={`${fmtNum1(inv.cpu.clockBaseGhz, tag)} GHz`} />
+            <Row label={t('clockAtual')} value={`${clockAtual.toFixed(2)} GHz`} />
+            <Row label={t('cacheL2')} value={`${inv.cpu.cacheL2Mb} MB`} />
+            <Row label={t('cacheL3')} value={`${inv.cpu.cacheL3Mb} MB`} />
+            <Row label={t('soquete')} value={inv.cpu.soquete} />
+            {tempAtual !== null && <Row label={t('temperatura')} value={`${tempAtual} °C`} />}
             <LiveRow label={t('usoVivo')} value={`${fmtNum1(usoAtual, tag)}%`} estimated={m?.origin === 'estimated'} />
           </Ficha>
 
           <Ficha id="board" num={numOf('board')} title={t('sBoard')} selected={sel === 'board'} onHot={onHot} register={register}>
-            <MetricRow label={t('fabricante')} value={inv.board.fabricante} />
-            <MetricRow label={t('modelo')} value={inv.board.modelo} />
-            <MetricRow label={t('chipset')} value={inv.board.chipset} />
-            <MetricRow label={t('bios')} value={inv.board.biosVersao} />
-            <MetricRow label={t('biosData')} value={inv.board.biosData ? fmtDate(inv.board.biosData, tag) : null} />
-            <MetricRow label={t('firmware')} value={inv.board.modoUefi ? 'UEFI' : 'LEGACY'} />
-            <MetricRow
+            <Row label={t('fabricante')} value={inv.board.fabricante} />
+            <Row label={t('modelo')} value={inv.board.modelo} />
+            <Row label={t('chipset')} value={inv.board.chipset} />
+            <Row label={t('bios')} value={inv.board.biosVersao} />
+            <Row label={t('biosData')} value={inv.board.biosData ? fmtDate(inv.board.biosData, tag) : null} />
+            <Row label={t('firmware')} value={inv.board.modoUefi ? 'UEFI' : 'LEGACY'} />
+            <Row
               label={t('secureBoot')}
               value={inv.board.secureBoot === null ? null : inv.board.secureBoot ? t('ativado') : t('desativado')}
             />
           </Ficha>
 
           <Ficha id="memory" num={numOf('memory')} title={t('sMemoria')} selected={sel === 'memory'} onHot={onHot} register={register}>
-            <MetricRow label={t('total')} value={`${inv.memoria.totalGb} GB`} />
-            <MetricRow label={t('velocidade')} value={`${inv.memoria.velocidadeMhz} MHz`} />
-            <MetricRow label={t('tecnologia')} value={inv.memoria.tecnologia} />
-            <MetricRow
+            <Row label={t('total')} value={`${inv.memoria.totalGb} GB`} />
+            <Row label={t('velocidade')} value={`${inv.memoria.velocidadeMhz} MHz`} />
+            <Row label={t('tecnologia')} value={inv.memoria.tecnologia} />
+            <Row
               label={t('canal')}
               value={inv.memoria.canal === null ? null : inv.memoria.canal === 'dual' ? t('canalDual') : t('canalSingle')}
             />
             {inv.memoria.sticks.map((s) => (
-              <MetricRow
+              <Row
                 key={s.slot}
                 label={s.slot}
                 value={
@@ -441,7 +466,7 @@ export default function XRayScreen() {
                 }
               />
             ))}
-            <div className="mt-3 flex justify-end">
+            <div className="mt-2 flex justify-end">
               <Button size="sm" onClick={() => go('memory')}>
                 {t('abrirAnalise')} <IconChevron width={12} height={12} />
               </Button>
@@ -449,12 +474,12 @@ export default function XRayScreen() {
           </Ficha>
 
           <Ficha id="gpu" num={numOf('gpu')} title={t('sVideo')} selected={sel === 'gpu'} onHot={onHot} register={register}>
-            <MetricRow label={t('modelo')} value={inv.gpu.nome} />
-            <MetricRow label={t('vram')} value={`${inv.gpu.vramGb} GB`} />
-            <MetricRow label={t('driver')} value={inv.gpu.driverVersao} />
-            <MetricRow label={t('driverData')} value={inv.gpu.driverData ? fmtDate(inv.gpu.driverData, tag) : null} />
-            <MetricRow label={t('resolucao')} value={inv.gpu.resolucaoAtiva} />
-            <MetricRow label={t('taxa')} value={`${inv.gpu.taxaHz} Hz`} />
+            <Row label={t('modelo')} value={inv.gpu.nome} />
+            <Row label={t('vram')} value={`${inv.gpu.vramGb} GB`} />
+            <Row label={t('driver')} value={inv.gpu.driverVersao} />
+            <Row label={t('driverData')} value={inv.gpu.driverData ? fmtDate(inv.gpu.driverData, tag) : null} />
+            <Row label={t('resolucao')} value={inv.gpu.resolucaoAtiva} />
+            <Row label={t('taxa')} value={`${inv.gpu.taxaHz} Hz`} />
           </Ficha>
 
           {inv.discos.map((d, i) => {
@@ -471,46 +496,41 @@ export default function XRayScreen() {
                 register={register}
                 extra={<HealthBadge status={d.smart.status} />}
               >
-                <MetricRow label={t('modelo')} value={d.modelo} />
-                <MetricRow label={t('tipo')} value={d.tipo} />
-                <MetricRow label={t('capacidade')} value={`${fmtInt(d.capacidadeGb, tag)} GB`} />
-                <div className="border-b border-line py-[5px]">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <span className="type-kicker shrink-0">{t('emUso')}</span>
-                    <span className="type-mono text-xs font-bold text-ink-1">
-                      {fmtInt(d.usadoGb, tag)} GB · {pct}%
-                    </span>
-                  </div>
-                  <ProgressBar pct={pct} segments={24} showPct={false} className="mt-1.5" />
+                <Row label={t('modelo')} value={d.modelo} />
+                <Row label={t('tipo')} value={d.tipo} />
+                <Row label={t('capacidade')} value={`${fmtInt(d.capacidadeGb, tag)} GB`} />
+                <Row label={t('emUso')} value={`${fmtInt(d.usadoGb, tag)} GB · ${pct}%`} />
+                <div className="bg-surface-2 px-[10px] pb-3 pt-1">
+                  <ProgressBar pct={pct} showPct={false} />
                 </div>
-                <MetricRow label={t('temperatura')} value={d.tempC !== null ? `${d.tempC} °C` : null} />
-                <MetricRow label={t('particoes')} value={d.particoes.length ? d.particoes.join(' · ') : null} />
-                <MetricRow
+                <Row label={t('temperatura')} value={d.tempC !== null ? `${d.tempC} °C` : null} />
+                <Row label={t('particoes')} value={d.particoes.length ? d.particoes.join(' · ') : null} />
+                <Row
                   label={t('horasLigadas')}
                   value={d.smart.horasLigadas !== null ? `${fmtInt(d.smart.horasLigadas, tag)} h` : null}
                 />
-                <MetricRow label={t('ciclos')} value={d.smart.ciclos !== null ? fmtInt(d.smart.ciclos, tag) : null} />
-                <MetricRow label={t('tbw')} value={d.smart.tbw !== null ? `${fmtInt(d.smart.tbw, tag)} TB` : null} />
+                <Row label={t('ciclos')} value={d.smart.ciclos !== null ? fmtInt(d.smart.ciclos, tag) : null} />
+                <Row label={t('tbw')} value={d.smart.tbw !== null ? `${fmtInt(d.smart.tbw, tag)} TB` : null} />
               </Ficha>
             )
           })}
 
           <Ficha id="network" num={numOf('network')} title={t('sRede')} selected={sel === 'network'} onHot={onHot} register={register}>
-            <MetricRow label={t('adaptador')} value={inv.rede.adaptador} />
-            <MetricRow
+            <Row label={t('adaptador')} value={inv.rede.adaptador} />
+            <Row
               label={t('linkSpeed')}
               value={inv.rede.velocidadeLinkMbps !== null ? `${fmtInt(inv.rede.velocidadeLinkMbps, tag)} Mb/s` : null}
             />
-            <MetricRow label={t('ipv4')} value={inv.rede.ipv4} />
-            <MetricRow label={t('gateway')} value={inv.rede.gateway} />
-            <MetricRow label={t('mac')} value={inv.rede.mac} />
-            <MetricRow label={t('dhcp')} value={inv.rede.dhcp === null ? null : inv.rede.dhcp ? t('sim') : t('nao')} />
+            <Row label={t('ipv4')} value={inv.rede.ipv4} />
+            <Row label={t('gateway')} value={inv.rede.gateway} />
+            <Row label={t('mac')} value={inv.rede.mac} />
+            <Row label={t('dhcp')} value={inv.rede.dhcp === null ? null : inv.rede.dhcp ? t('sim') : t('nao')} />
           </Ficha>
 
           <Ficha id="monitors" num={numOf('monitors')} title={t('sMonitores')} selected={sel === 'monitors'} onHot={onHot} register={register}>
-            {inv.monitores.length === 0 && <MetricRow label={t('sMonitores')} value={null} />}
+            {inv.monitores.length === 0 && <Row label={t('sMonitores')} value={null} />}
             {inv.monitores.map((mon, i) => (
-              <MetricRow
+              <Row
                 key={i}
                 label={`M${i + 1}`}
                 value={[
@@ -526,26 +546,26 @@ export default function XRayScreen() {
           </Ficha>
 
           <Ficha id="audio" num={numOf('audio')} title={t('sAudio')} selected={sel === 'audio'} onHot={onHot} register={register}>
-            <MetricRow label={t('saidaPadrao')} value={inv.audio.saidaPadrao} />
-            <MetricRow
+            <Row label={t('saidaPadrao')} value={inv.audio.saidaPadrao} />
+            <Row
               label={t('dispositivos')}
               value={inv.audio.dispositivos.length ? inv.audio.dispositivos.join(' · ') : null}
             />
           </Ficha>
 
           <Ficha id="power" num={numOf('power')} title={t('sEnergia')} selected={sel === 'power'} onHot={onHot} register={register}>
-            <MetricRow label={t('planoAtivo')} value={inv.energia.planoAtivo} />
-            <MetricRow
+            <Row label={t('planoAtivo')} value={inv.energia.planoAtivo} />
+            <Row
               label={t('bateria')}
               value={bateria ? `${bateria.percentual}%${bateria.carregando ? ` · ${t('emCarga')}` : ''}` : null}
             />
           </Ficha>
 
           <Ficha id="peripherals" num={numOf('peripherals')} title={t('sPerifericos')} selected={sel === 'peripherals'} onHot={onHot} register={register}>
-            <MetricRow label={t('portasUsb')} value={String(inv.perifericos.usbCount)} />
-            <MetricRow label={t('mouse')} value={inv.perifericos.mouse} />
-            <MetricRow label={t('teclado')} value={inv.perifericos.teclado} />
-            <div className="mt-3 flex justify-end">
+            <Row label={t('portasUsb')} value={String(inv.perifericos.usbCount)} />
+            <Row label={t('mouse')} value={inv.perifericos.mouse} />
+            <Row label={t('teclado')} value={inv.perifericos.teclado} />
+            <div className="mt-2 flex justify-end">
               <Button size="sm" onClick={() => go('latency')}>
                 {t('abrirLatencia')} <IconChevron width={12} height={12} />
               </Button>
@@ -553,10 +573,10 @@ export default function XRayScreen() {
           </Ficha>
 
           <Ficha id="os" num={numOf('os')} title={t('sSistema')} selected={sel === 'os'} onHot={onHot} register={register}>
-            <MetricRow label={t('edicao')} value={inv.os.edicao} />
-            <MetricRow label={t('build')} value={inv.os.build} />
-            <MetricRow label={t('instalacao')} value={fmtDate(inv.os.dataInstalacao, tag)} />
-            <MetricRow label={t('uptime')} value={`${fmtInt(inv.os.uptimeHoras, tag)} h`} />
+            <Row label={t('edicao')} value={inv.os.edicao} />
+            <Row label={t('build')} value={inv.os.build} />
+            <Row label={t('instalacao')} value={fmtDate(inv.os.dataInstalacao, tag)} />
+            <Row label={t('uptime')} value={`${fmtInt(inv.os.uptimeHoras, tag)} h`} />
           </Ficha>
         </div>
 

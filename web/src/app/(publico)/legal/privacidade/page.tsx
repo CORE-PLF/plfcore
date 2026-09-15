@@ -6,12 +6,12 @@ import { LegalDoc, LegalSection } from '../../_shared'
 export const metadata: Metadata = {
   title: 'PRIVACIDADE',
   description:
-    'Política de privacidade da Resync: quais dados o site coleta, para quê, por quanto tempo e quais são os seus direitos (LGPD).',
+    'Política de privacidade do PLF CORE: quais dados o site coleta, para quê, por quanto tempo e quais são os seus direitos (LGPD).',
 }
 
 export default function PrivacidadePage() {
   return (
-    <LegalDoc kicker="LEGAL" title="POLÍTICA DE PRIVACIDADE" updated="3 de agosto de 2026">
+    <LegalDoc kicker="LEGAL" title="Política de privacidade" updated="3 de agosto de 2026">
       <LegalSection title="1. ESCOPO">
         <p>
           Esta política descreve os dados pessoais tratados pelo SITE e pela plataforma de contas

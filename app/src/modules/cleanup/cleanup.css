@@ -1,51 +1,49 @@
-/* linha de categoria: alvo grande, borda inferior, sem cara de lista genérica */
+/* linha de categoria: 47px, alvo grande, borda inferior */
 .clean-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
-  min-height: 48px;
-  padding: 6px 8px;
+  flex: none;
+  height: 47px;
+  padding: 0 16px;
   text-align: left;
   border: 0;
   border-bottom: 1px solid var(--color-line);
-  background: none;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
   cursor: pointer;
   transition: background var(--t-fast) var(--expo);
 }
 .clean-row:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.03);
 }
+.clean-row[aria-checked='true'] {
+  background: #1c1c1c;
+}
 .clean-row:disabled {
   cursor: default;
   opacity: 0.55;
 }
-.clean-row--solo {
-  border-bottom: 0;
-}
 
-/* checkbox quadrado chanfrado — o fundo é a borda, ::before pinta o miolo */
-.clean-check {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  flex: none;
-  background: var(--color-edge);
-  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+/* card de número: label caps + valor 32px */
+.clean-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 16px;
 }
-.clean-check::before {
-  content: '';
-  position: absolute;
-  inset: 1px;
-  background: var(--color-carbon);
-  clip-path: inherit;
+.clean-stat > b {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-ink-1);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
-.clean-check > svg {
-  position: relative;
-  z-index: 1;
-}
-.clean-row[aria-checked='true'] .clean-check {
-  background: var(--color-signal);
+.clean-stat > b.na {
+  font-size: 16px;
+  line-height: 32px;
+  color: var(--color-ink-4);
 }

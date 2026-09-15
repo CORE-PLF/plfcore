@@ -1,28 +1,44 @@
-.st-list { border: 1px solid var(--color-line); }
+.st-hero-num {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--color-ink-1);
+  font-variant-numeric: tabular-nums;
+}
+.st-hero-progresso {
+  display: flex;
+  min-width: 260px;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .st-row {
   display: grid;
-  grid-template-columns: minmax(140px, 220px) 1fr auto auto;
+  grid-template-columns: minmax(160px, 260px) minmax(0, 1fr) auto 128px;
   align-items: center;
-  gap: 14px;
-  padding: 10px 14px;
+  gap: 16px;
+  min-height: 48px;
+  padding: 0 16px;
   border-bottom: 1px solid var(--color-line);
 }
-.st-row:last-child { border-bottom: 0; }
-.st-row--off { background: rgba(0, 0, 0, 0.25); }
-.st-row--off .st-nome { color: var(--color-ink-3); }
+.st-row:last-child {
+  border-bottom: 0;
+}
 .st-nome {
   overflow: hidden;
-  font-family: var(--font-ui);
-  font-size: 13px;
-  letter-spacing: 0.04em;
+  font-size: 12px;
+  font-weight: 700;
   color: var(--color-ink-1);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.st-row--off .st-nome {
+  color: var(--color-ink-3);
+}
 .st-cmd {
   overflow: hidden;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   line-height: 14px;
   color: var(--color-ink-4);
   text-overflow: ellipsis;
@@ -30,69 +46,10 @@
   direction: rtl;
   text-align: left;
 }
-.st-origem {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-  color: var(--color-ink-4);
-}
-.st-resumo {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: var(--color-ink-3);
-}
 .st-nota {
-  max-width: 62ch;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 17px;
-  color: var(--color-ink-4);
-}
-
-.st-hero {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 22px 26px;
-  background: linear-gradient(180deg, rgba(255, 46, 63, 0.05), transparent 70%), var(--color-carbon);
-}
-.st-hero-info {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 14px;
-}
-.st-hero-kicker {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
+  max-width: 90ch;
+  font-size: 12px;
+  line-height: 1.45;
   color: var(--color-ink-3);
-}
-.st-hero-num {
-  font-size: 44px;
-  line-height: 1;
-  color: var(--color-ink-1);
-}
-.st-hero-desc {
-  max-width: 42ch;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  line-height: 17px;
-  color: var(--color-ink-3);
-}
-.st-hero-acao {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-}
-.st-hero-progresso {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 220px;
+  text-wrap: pretty;
 }

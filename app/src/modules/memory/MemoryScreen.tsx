@@ -14,6 +14,7 @@ import { useToastsStore } from '../../stores/toasts'
 import { getAdapter } from '../../services/adapter'
 import { getInventoryCached, invalidateInventory } from '../../services/inventoryCache'
 import { useT } from '../../i18n'
+import { kitDict } from '../../components/i18n'
 import type { CleanupCategoryId, HardwareInventory, SystemMetrics } from '../../types'
 import type { CleanupResult } from '../../services/SystemAdapter'
 import { RamStick } from './RamStick'
@@ -40,7 +41,7 @@ function fmtMmSs(s: number): string {
 function UsageChart({ samples, ariaLabel }: { samples: SystemMetrics[]; ariaLabel: string }) {
   const W = 240
   const H = 56
-  if (samples.length < 2) return <div className="stage-grid h-14 w-full" aria-hidden />
+  if (samples.length < 2) return <div className="h-14 w-full" aria-hidden />
   const max = Math.max(...samples.map((s) => s.ramTotalGb), 1)
   const step = W / 59
   const pts = samples.map((s, i) => {
@@ -50,12 +51,10 @@ function UsageChart({ samples, ariaLabel }: { samples: SystemMetrics[]; ariaLabe
   })
   const first = pts[0]!.split(',')[0]
   return (
-    <div className="stage-grid w-full">
-      <svg viewBox={`0 0 ${W} ${H}`} className="block h-14 w-full" preserveAspectRatio="none" role="img" aria-label={ariaLabel}>
-        <polygon points={`${first},${H} ${pts.join(' ')} ${W},${H}`} fill="rgba(255,77,46,0.12)" />
-        <polyline points={pts.join(' ')} fill="none" stroke="var(--color-heat)" strokeWidth="1.5" />
-      </svg>
-    </div>
+    <svg viewBox={`0 0 ${W} ${H}`} className="block h-14 w-full" preserveAspectRatio="none" role="img" aria-label={ariaLabel}>
+      <polygon points={`${first},${H} ${pts.join(' ')} ${W},${H}`} fill="rgba(248,232,0,0.1)" />
+      <polyline points={pts.join(' ')} fill="none" stroke="var(--color-signal)" strokeWidth="1.5" />
+    </svg>
   )
 }
 
@@ -65,6 +64,7 @@ const sessao: { otimizados: Set<string> } = { otimizados: new Set() }
 
 export default function MemoryScreen() {
   const t = useT(memDict)
+  const tk = useT(kitDict)
   const [inv, setInv] = useState<HardwareInventory | null>(null)
   const [invErr, setInvErr] = useState(false)
   const [retry, setRetry] = useState(0)
@@ -179,15 +179,19 @@ export default function MemoryScreen() {
 
   return (
     <div className="h-full overflow-y-auto p-8">
-      <div className="flex items-start justify-between gap-6">
-        <ScreenTitle kicker={t('kicker')} title={t('title')} />
-        <div className="flex shrink-0 items-center gap-3 pt-1">
-          {demo && <DemoTag full />}
-          <Button variant="primary" onClick={limparCache} disabled={cacheAtivo}>
-            {t('cacheAction')}
-          </Button>
-        </div>
-      </div>
+      <ScreenTitle
+        kicker={t('kicker')}
+        title={t('title')}
+        meta={mem ? t('meta', { total: mem.totalGb, n: ocupados, tec: mem.tecnologia }) : undefined}
+        actions={
+          <>
+            {demo && <DemoTag full />}
+            <Button onClick={limparCache} disabled={cacheAtivo}>
+              {t('cacheAction')}
+            </Button>
+          </>
+        }
+      />
 
       {invErr ? (
         <ErrorState
@@ -200,78 +204,90 @@ export default function MemoryScreen() {
           }}
         />
       ) : (
-        <div className="grid grid-cols-[1.7fr_1fr] items-start gap-6">
-          <section className="flex flex-col gap-4" aria-label={t('title')}>
-            {mem
-              ? mem.sticks.map((stick) => {
-                  const job = jobs.find((j) => j.id === stickJobs[stick.slot])
-                  return (
-                    <RamStick
-                      key={stick.slot}
-                      stick={stick}
-                      tecnologia={mem.tecnologia}
-                      usagePct={cargaPct}
-                      job={job}
-                      demo={demo}
-                      elapsedS={job ? Math.max(0, (now - job.inicioMs) / 1000) : 0}
-                      otimizado={otimizados.has(stick.slot)}
-                      onOptimize={() => void otimizarPente(stick.slot)}
-                      onCancel={() => job && useJobsStore.getState().cancelJob(job.id)}
-                    />
-                  )
-                })
-              : Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-[104px] w-full" />)}
-          </section>
-
-          <Surface cut={8} flat className="p-4">
-            <p className="type-kicker mb-2">{t('panelKicker')}</p>
-            {mem ? (
-              <>
-                <MetricRow label={t('mCapacidade')} value={`${mem.totalGb} GB`} />
-                <MetricRow label={t('mModulos')} value={`${ocupados}/${mem.sticks.length}`} />
-                <MetricRow label={t('mVelocidade')} value={`${mem.velocidadeMhz} MHz`} />
-                <MetricRow label={t('mTecnologia')} value={mem.tecnologia} />
-                <MetricRow
-                  label={t('mCanal')}
-                  value={mem.canal === 'dual' ? t('canalDual') : mem.canal === 'single' ? t('canalSingle') : null}
-                />
-                <MetricRow label={t('mEmUso')} value={last ? `${last.ramUsedGb.toFixed(1)} GB` : null} />
-                <MetricRow label={t('mDisponivel')} value={last ? `${(last.ramTotalGb - last.ramUsedGb).toFixed(1)} GB` : null} />
-                <MetricRow label={t('mFabricante')} value={fabricantes} />
-                <MetricRow label={t('mPartNumbers')} value={partNumbers} />
-              </>
-            ) : (
-              Array.from({ length: 9 }, (_, i) => <Skeleton key={i} className="mb-2 h-5 w-full" />)
-            )}
-
-            <div className="mt-5">
-              <div className="flex items-baseline justify-between">
+        <div className="grid grid-cols-[340px_minmax(0,1fr)_340px] items-stretch gap-4">
+          <Surface className="flex flex-col overflow-hidden">
+            <div className="surface-head">
+              {t('usoLive')}
+              <span className="pill pill--value ml-auto">{t('janela')}</span>
+            </div>
+            <div className="flex flex-1 flex-col gap-3 p-4">
+              <div>
                 <span className="type-kicker">{t('carga')}</span>
-                <span className="type-mono text-xs font-bold text-ink-1">
-                  {cargaPct !== null ? `${cargaPct}%` : '—'}
-                  {estimado && (
-                    <>
-                      {' '}
-                      <EstimatedTag />
-                    </>
-                  )}
+                <div className="flex items-baseline gap-2">
+                  <span className="mem-hero-num">{cargaPct !== null ? `${cargaPct}%` : '—'}</span>
+                  {estimado && <EstimatedTag />}
+                </div>
+                <span className="type-num text-[11px] text-ink-3">
+                  {last ? `${last.ramUsedGb.toFixed(1)} / ${last.ramTotalGb} GB` : tk('naoDisponivel')}
                 </span>
               </div>
-              <ProgressBar pct={cargaPct} showPct={false} hot={(cargaPct ?? 0) > 85} className="mt-1.5" />
+              <ProgressBar pct={cargaPct} showPct={false} hot={(cargaPct ?? 0) > 85} />
+              <UsageChart samples={samples} ariaLabel={t('chartAria')} />
+              <div className="mt-auto flex flex-col gap-px overflow-hidden rounded-[6px]">
+                <div className="datarow">
+                  <span className="type-kicker">{t('mEmUso')}</span>
+                  <span className="type-num text-xs font-bold text-ink-1">{last ? `${last.ramUsedGb.toFixed(1)} GB` : tk('naoDisponivel')}</span>
+                </div>
+                <div className="datarow">
+                  <span className="type-kicker">{t('mDisponivel')}</span>
+                  <span className="type-num text-xs font-bold text-ink-1">
+                    {last ? `${(last.ramTotalGb - last.ramUsedGb).toFixed(1)} GB` : tk('naoDisponivel')}
+                  </span>
+                </div>
+              </div>
             </div>
+          </Surface>
 
-            <div className="mt-5">
-              <div className="flex items-baseline justify-between">
-                <span className="type-kicker">{t('usoLive')}</span>
-                <span className="type-mono text-[10px] text-ink-4">{t('janela')}</span>
-              </div>
-              <div className="mt-1.5">
-                <UsageChart samples={samples} ariaLabel={t('chartAria')} />
-              </div>
-              {last && (
-                <p className="type-mono mt-1 text-right text-xs font-bold text-ink-1">
-                  {last.ramUsedGb.toFixed(1)} / {last.ramTotalGb} GB
-                </p>
+          <Surface className="flex flex-col overflow-hidden" aria-label={t('pentes')}>
+            <div className="surface-head">
+              {t('pentes')}
+              {mem && (
+                <span className="pill pill--value ml-auto">
+                  {ocupados}/{mem.sticks.length}
+                </span>
+              )}
+            </div>
+            <div className="grid flex-1 grid-cols-2 content-start gap-3 p-4">
+              {mem
+                ? mem.sticks.map((stick) => {
+                    const job = jobs.find((j) => j.id === stickJobs[stick.slot])
+                    return (
+                      <RamStick
+                        key={stick.slot}
+                        stick={stick}
+                        tecnologia={mem.tecnologia}
+                        usagePct={cargaPct}
+                        job={job}
+                        demo={demo}
+                        elapsedS={job ? Math.max(0, (now - job.inicioMs) / 1000) : 0}
+                        otimizado={otimizados.has(stick.slot)}
+                        onOptimize={() => void otimizarPente(stick.slot)}
+                        onCancel={() => job && useJobsStore.getState().cancelJob(job.id)}
+                      />
+                    )
+                  })
+                : Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-[132px] w-full" />)}
+            </div>
+          </Surface>
+
+          <Surface className="flex flex-col overflow-hidden">
+            <div className="surface-head">{t('panelKicker')}</div>
+            <div className="p-4">
+              {mem ? (
+                <>
+                  <MetricRow label={t('mCapacidade')} value={`${mem.totalGb} GB`} />
+                  <MetricRow label={t('mModulos')} value={`${ocupados}/${mem.sticks.length}`} />
+                  <MetricRow label={t('mVelocidade')} value={`${mem.velocidadeMhz} MHz`} />
+                  <MetricRow label={t('mTecnologia')} value={mem.tecnologia} />
+                  <MetricRow
+                    label={t('mCanal')}
+                    value={mem.canal === 'dual' ? t('canalDual') : mem.canal === 'single' ? t('canalSingle') : null}
+                  />
+                  <MetricRow label={t('mFabricante')} value={fabricantes} />
+                  <MetricRow label={t('mPartNumbers')} value={partNumbers} />
+                </>
+              ) : (
+                Array.from({ length: 7 }, (_, i) => <Skeleton key={i} className="mb-2 h-6 w-full" />)
               )}
             </div>
           </Surface>

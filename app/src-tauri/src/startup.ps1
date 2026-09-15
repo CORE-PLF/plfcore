@@ -73,7 +73,7 @@ function Get-Entradas {
   return $itens
 }
 
-$acao = [string]$env:RESYNC_STARTUP_ACTION
+$acao = [string]$env:PLFCORE_STARTUP_ACTION
 
 if ($acao -eq 'scan') {
   [pscustomobject]@{ items = @(Get-Entradas); admin = (Test-IsAdmin); origin = 'measured' } | ConvertTo-Json -Depth 4 -Compress
@@ -81,8 +81,8 @@ if ($acao -eq 'scan') {
 }
 
 if ($acao -eq 'toggle') {
-  $id = [string]$env:RESYNC_STARTUP_ID
-  $ativar = ([string]$env:RESYNC_STARTUP_STATE -eq 'on')
+  $id = [string]$env:PLFCORE_STARTUP_ID
+  $ativar = ([string]$env:PLFCORE_STARTUP_STATE -eq 'on')
   $alvo = @(Get-Entradas) | Where-Object { $_.id -eq $id } | Select-Object -First 1
   if ($null -eq $alvo) { throw 'ERR_STARTUP_NOT_FOUND' }
   if ($alvo.protegido) { throw 'ERR_STARTUP_PROTECTED' }

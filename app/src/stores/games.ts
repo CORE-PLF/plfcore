@@ -34,6 +34,6 @@ export const useGamesStore = create<GamesState>()(
       remove: (processo) => set((s) => ({ profiles: s.profiles.filter((x) => x.processo !== processo) })),
       setActive: (processo, previousLevel = null) => set({ activeGame: processo, previousLevel }),
     }),
-    { name: 'resync-games', partialize: (s) => ({ profiles: s.profiles }) as Partial<GamesState> },
+    { name: 'plfcore-games', partialize: (s) => ({ profiles: s.profiles }) as Partial<GamesState> },
   ),
 )

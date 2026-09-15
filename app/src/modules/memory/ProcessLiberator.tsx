@@ -2,6 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '../../components/Button'
 import { Surface } from '../../components/Surface'
 import { Modal, ResultModal } from '../../components/Modal'
+import { ProgressBar } from '../../components/ProgressBar'
+import { KTag } from '../../components/Tag'
+import { IconCheck } from '../../components/icons'
 import { Skeleton } from '../../components/states'
 import { useT } from '../../i18n'
 import { getAdapter } from '../../services/adapter'
@@ -10,6 +13,7 @@ import { useKillfeedStore } from '../../stores/killfeed'
 import { useToastsStore } from '../../stores/toasts'
 import type { ProcessInfo } from '../../types'
 import { memDict } from './i18n'
+import './memory.css'
 
 type ProcessKind = 'recommended' | 'attention' | 'optional'
 
@@ -66,6 +70,12 @@ const ATTENTION = [
   'premiere',
   'heidisql',
 ]
+
+const KIND_TAG: Record<ProcessKind, 'demo' | 'critical' | 'estimated'> = {
+  recommended: 'demo',
+  attention: 'critical',
+  optional: 'estimated',
+}
 
 function processMeta(nome: string): ProcessMeta {
   const n = nome.toLowerCase()
@@ -185,21 +195,17 @@ export function ProcessLiberator() {
   }
 
   return (
-    <Surface cut={8} className="process-liberator mt-6 p-5">
-      <div className="process-liberator__head">
-        <div>
-          <p className="type-kicker text-heat">{t('procKicker')}</p>
-          <h2 className="type-display mt-1 text-2xl">{t('procTitle')}</h2>
-          <p className="type-mono mt-1 max-w-2xl text-xs leading-5 text-ink-3">{t('procDescription')}</p>
-        </div>
-        <div className="process-liberator__score">
-          <span className="type-kicker">{t('procRecoverable')}</span>
-          <strong className="type-mono">{fmtRam(selectedRam)}</strong>
-          <small className="type-mono">{t('procSelected', { apps: chosen.length, processes: selectedInstances })}</small>
-        </div>
+    <Surface className="mt-4 overflow-hidden">
+      <div className="surface-head">
+        {t('procTitle')}
+        {processes !== null && <span className="pill pill--value">{t('procLidos', { n: processes.length })}</span>}
+        <span className="type-kicker ml-auto">{t('procRecoverable')}</span>
+        <span className="type-num text-[14px] font-bold text-signal">{fmtRam(selectedRam)}</span>
+        <span className="pill pill--value">{t('procSelected', { apps: chosen.length, processes: selectedInstances })}</span>
       </div>
 
-      <div className="process-liberator__toolbar">
+      <div className="flex flex-wrap items-center gap-2 px-4 py-3">
+        <p className="mr-auto max-w-[52ch] text-[12px] leading-snug text-ink-3">{t('procDescription')}</p>
         <label className="process-search">
           <span aria-hidden>⌕</span>
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('procSearch')} />
@@ -219,73 +225,89 @@ export function ProcessLiberator() {
       </div>
 
       <div className="process-list" aria-label={t('procTitle')}>
-        {processes === null && Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-14 w-full" />)}
-        {processes?.length === 0 && <p className="type-mono p-6 text-center text-xs text-ink-4">{t('procEmpty')}</p>}
+        {processes === null && (
+          <div className="flex flex-col gap-1 p-4">
+            {Array.from({ length: 4 }, (_, i) => (
+              <Skeleton key={i} className="h-10 w-full" />
+            ))}
+          </div>
+        )}
+        {processes?.length === 0 && <p className="type-kicker p-6 text-center">{t('procEmpty')}</p>}
         {visible.map((p) => {
           const key = procKey(p)
           const meta = processMeta(p.nome)
           const checked = selected.has(key)
           const instances = p.instances ?? p.pids?.length ?? 1
           return (
-            <label key={key} className={`process-row process-row--${meta.kind} ${checked ? 'is-selected' : ''}`}>
+            <label key={key} className={`process-row ${checked ? 'is-selected' : ''}`}>
               <input type="checkbox" checked={checked} onChange={() => toggle(key)} disabled={running} />
-              <span className="process-check" aria-hidden>{checked ? '✓' : ''}</span>
-              <span className="process-main">
-                <strong className="type-mono">{p.nome}</strong>
-                <small className="type-mono">
-                  {t(meta.reasonKey)} · {t('procInstances', { count: instances })}
-                </small>
+              <span className={`checkbox ${checked ? 'checkbox--on' : ''}`} aria-hidden>
+                {checked && <IconCheck width={11} height={11} strokeWidth={2.2} />}
               </span>
-              <span className={`process-badge process-badge--${meta.kind}`}>{t(`procKind.${meta.kind}`)}</span>
-              <strong className="type-mono process-ram">{fmtRam(p.ramMb)}</strong>
+              <span className="min-w-0">
+                <span className="process-nome">{p.nome}</span>
+                <span className="process-motivo">
+                  {t(meta.reasonKey)} · {t('procInstances', { count: instances })}
+                </span>
+              </span>
+              <KTag variant={KIND_TAG[meta.kind]}>{t(`procKind.${meta.kind}`)}</KTag>
+              <span className="process-ram">{fmtRam(p.ramMb)}</span>
             </label>
           )
         })}
       </div>
 
-      <div className="process-liberator__footer">
-        <p className="type-mono text-[11px] leading-4 text-ink-4">{t('procSafety')}</p>
+      <div className="flex items-center justify-between gap-5 px-4 py-3">
+        <p className="max-w-[80ch] text-[10px] font-semibold leading-4 tracking-[0.06em] text-ink-3">{t('procSafety')}</p>
         <Button variant="primary" disabled={!chosen.length || running} onClick={() => setConfirmOpen(true)}>
           {t('procRelease')} · {fmtRam(selectedRam)}
         </Button>
       </div>
 
       <Modal open={confirmOpen} title={t('procConfirmTitle')} onClose={() => setConfirmOpen(false)} danger={hasAttention}>
-        <p className="type-mono text-xs leading-5 text-ink-2">
-          {hasAttention ? t('procConfirmAttention') : t('procConfirmSafe')}
-        </p>
+        <p className="text-xs leading-5 text-ink-2">{hasAttention ? t('procConfirmAttention') : t('procConfirmSafe')}</p>
         <dl className="my-4">
           <div className="flex justify-between border-b border-line py-2">
             <dt className="type-kicker">{t('procApplications')}</dt>
-            <dd className="type-mono font-bold text-ink-1">{chosen.length}</dd>
+            <dd className="type-num text-xs font-bold text-ink-1">{chosen.length}</dd>
           </div>
           <div className="flex justify-between border-b border-line py-2">
             <dt className="type-kicker">{t('procEstimate')}</dt>
-            <dd className="type-mono font-bold text-heat">{fmtRam(selectedRam)}</dd>
+            <dd className="type-num text-xs font-bold text-signal">{fmtRam(selectedRam)}</dd>
           </div>
         </dl>
         <div className="flex justify-end gap-3">
-          <Button size="sm" onClick={() => setConfirmOpen(false)}>{t('procCancel')}</Button>
-          <Button size="sm" variant="danger" onClick={() => void liberate()}>{t('procConfirm')}</Button>
+          <Button size="sm" onClick={() => setConfirmOpen(false)}>
+            {t('procCancel')}
+          </Button>
+          <Button size="sm" variant="danger" onClick={() => void liberate()}>
+            {t('procConfirm')}
+          </Button>
         </div>
       </Modal>
 
       <Modal open={running} title={t('procRunningTitle')}>
-        <p className="type-mono mb-3 text-xs text-ink-2">{progress.name}</p>
-        <div className="process-running-bar"><i style={{ width: `${progress.total ? (progress.current / progress.total) * 100 : 0}%` }} /></div>
-        <p className="type-mono mt-2 text-right text-xs text-ink-3">{progress.current} / {progress.total}</p>
+        <p className="mb-3 text-xs text-ink-2">{progress.name}</p>
+        <ProgressBar pct={progress.total ? (progress.current / progress.total) * 100 : 0} showPct={false} />
+        <p className="type-num mt-2 text-right text-xs text-ink-3">
+          {progress.current} / {progress.total}
+        </p>
       </Modal>
 
       <ResultModal
         open={result !== null}
         title={t('procResultTitle')}
         headline={t('procResultHeadline')}
-        lines={result ? [
-          { label: t('procFreed'), value: fmtRam(result.ramMb) },
-          { label: t('procClosedApps'), value: String(result.apps) },
-          { label: t('procClosedProcesses'), value: String(result.processes) },
-          ...(result.failed ? [{ label: t('procFailed'), value: String(result.failed) }] : []),
-        ] : []}
+        lines={
+          result
+            ? [
+                { label: t('procFreed'), value: fmtRam(result.ramMb) },
+                { label: t('procClosedApps'), value: String(result.apps) },
+                { label: t('procClosedProcesses'), value: String(result.processes) },
+                ...(result.failed ? [{ label: t('procFailed'), value: String(result.failed) }] : []),
+              ]
+            : []
+        }
         onClose={() => setResult(null)}
       />
     </Surface>

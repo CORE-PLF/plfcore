@@ -18,6 +18,7 @@ pub fn run() {
             commands::is_elevated,
             commands::open_site,
             commands::relaunch_elevated,
+            commands::restart_windows,
             commands::get_inventory,
             commands::get_machine_record,
             commands::get_latency_info,

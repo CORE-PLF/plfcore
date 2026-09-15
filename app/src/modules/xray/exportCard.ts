@@ -1,14 +1,14 @@
 import { BRAND } from '../../brand'
 import type { HardwareInventory, MachineRecord } from '../../types'
 
-const BG = '#050506'
-const SIGNAL = '#FF2E3F'
-const BLOOD = '#C41230'
-const INK = 'rgba(255,255,255,0.96)'
-const INK3 = 'rgba(255,255,255,0.38)'
+const BG = '#101010'
+const SIGNAL = '#F8E800'
+const BLOOD = '#E5262B'
+const INK = '#ffffff'
+const INK3 = '#8a8a8a'
 
 const mono = (px: number, w = 700) => `${w} ${px}px "JetBrains Mono", monospace`
-const display = (px: number) => `italic 800 ${px}px "Saira Condensed", sans-serif`
+const display = (px: number) => `700 ${px}px Inter, sans-serif`
 
 function fit(g: CanvasRenderingContext2D, s: string, max: number): string {
   if (g.measureText(s).width <= max) return s

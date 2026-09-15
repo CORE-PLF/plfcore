@@ -7,8 +7,9 @@ import { HoldButton } from '../../components/HoldButton'
 import { ScreenTitle } from '../../components/Kicker'
 import { ProgressModal } from '../../components/Modal'
 import { DemoTag } from '../../components/Tag'
-import { IconCheck } from '../../components/icons'
+import { IconCheck, IconWarn } from '../../components/icons'
 import { ErrorState } from '../../components/states'
+import { useRestartStore } from '../../stores/restart'
 import { useT } from '../../i18n'
 import { isTauriEnv } from '../../services/adapter'
 import { LevelOneFlow } from '../../shell/LevelOneFlow'
@@ -81,10 +82,15 @@ export default function WindowsScreen() {
   const modoDemo = useSettingsStore((s) => s.modoDemo)
   const emDemo = !isTauriEnv() || modoDemo
 
+  const [sel, setSel] = useState<ReadinessLevel>(atual)
   const [progresso, setProgresso] = useState<Progresso | null>(null)
   const [elapsedS, setElapsedS] = useState(0)
   const [armado, setArmado] = useState(false)
   const [erro, setErro] = useState<{ nivel: ReadinessLevel; codigo: string } | null>(null)
+
+  useEffect(() => {
+    setSel(atual)
+  }, [atual])
 
   useEffect(() => {
     if (!progresso) {
@@ -110,6 +116,7 @@ export default function WindowsScreen() {
         setProgresso((p) => (p ? { ...p, pct, etapa: etapaId } : p)),
       )
       setArmado(false)
+      if (REINICIO.includes(n)) useRestartStore.getState().marcar(`nivel-l${n}`)
       useToastsStore.getState().push({
         tipo: 'sucesso',
         mensagem: `${t('toast.aplicado')} — L${n} ${t(`nome.${n}` as const)}`,
@@ -123,6 +130,7 @@ export default function WindowsScreen() {
   }
 
   const ocupado = progresso !== null
+  const exigeArmar = LEVEL_META[sel].exigeArmamento && sel !== 1
 
   const acao = (n: ReadinessLevel) => {
     if (atual === n) {
@@ -137,11 +145,11 @@ export default function WindowsScreen() {
       )
     }
     if (progresso?.nivel === n) {
-      return <Button variant="primary" disabled>{t('aplicando')}</Button>
+      return <Button variant="primary" size="lg" disabled>{t('aplicando')}</Button>
     }
     if (n === 1) {
       return (
-        <Button variant="primary" disabled={ocupado} onClick={() => setPending(1)}>
+        <Button variant="primary" size="lg" disabled={ocupado} onClick={() => setPending(1)}>
           {t('prepararL1')}
         </Button>
       )
@@ -150,44 +158,43 @@ export default function WindowsScreen() {
       return (
         <div className="win-armar">
           <ArmSwitch armed={armado} onChange={setArmado} disabled={ocupado} />
-          <HoldButton armed={armado && !ocupado} onConfirm={() => void aplicar(n)}>
+          <HoldButton variant="primary" armed={armado && !ocupado} onConfirm={() => void aplicar(n)}>
             {t('aplicar')}
           </HoldButton>
         </div>
       )
     }
     return (
-      <Button variant="primary" disabled={ocupado} onClick={() => void aplicar(n)}>
+      <Button variant="primary" size="lg" disabled={ocupado} onClick={() => void aplicar(n)}>
         {t('aplicar')}
       </Button>
     )
   }
 
   return (
-    <div className="h-full overflow-y-auto p-8">
-      <ScreenTitle kicker={t('kicker')} title={t('titulo')} />
-
-      <Surface cut={12} className="win-hero">
-        <div className="win-hero-info">
-          <span className="type-mono win-hero-code">L{atual}</span>
-          <div className="win-hero-txt">
-            <div className="win-hero-linha">
-              <span className="type-display win-hero-nome">{t(`nome.${atual}` as const)}</span>
-              {atual !== 5 && <span className="win-tag">{t('reversivel')}</span>}
-              {emDemo && <DemoTag />}
-            </div>
-            <p className="win-hero-agora">{t(`agora.${atual}` as const, { marca })}</p>
-          </div>
-        </div>
-        {atual !== 5 && (
-          <Button disabled={ocupado} onClick={() => void aplicar(5)}>
-            {t('voltarOriginal')}
-          </Button>
-        )}
-      </Surface>
+    <div className="win-screen">
+      <ScreenTitle
+        kicker={t('kicker')}
+        title={t('titulo')}
+        meta={t(`agora.${atual}` as const, { marca })}
+        actions={
+          <>
+            {emDemo && <DemoTag full />}
+            <span className="pill">
+              {t('heroKicker')}
+              <span className="pill pill--value">L{atual} {t(`nome.${atual}` as const)}</span>
+            </span>
+            {atual !== 5 && (
+              <Button disabled={ocupado} onClick={() => void aplicar(5)}>
+                {t('voltarOriginal')}
+              </Button>
+            )}
+          </>
+        }
+      />
 
       {erro && (
-        <div className="mt-4">
+        <div className="mb-4">
           <ErrorState
             what={t('erro.titulo', { n: erro.nivel, codigo: erro.codigo })}
             todo={t('erro.acao')}
@@ -196,48 +203,73 @@ export default function WindowsScreen() {
         </div>
       )}
 
-      <section className="win-regua" aria-label={t('regua')}>
+      <section className="win-regua" role="radiogroup" aria-label={t('regua')}>
         {ORDEM.map((n) => (
-          <Surface
+          <button
             key={n}
-            cut={8}
-            className={`win-card ${atual === n ? 'is-current' : ''} ${n === 1 ? 'win-card--l1' : ''} ${n === 2 ? 'win-card--l2' : ''}`}
+            role="radio"
+            aria-checked={sel === n}
+            className="radiocard win-card"
+            onClick={() => setSel(n)}
           >
-            {n === 1 && <div className="hazard win-card-faixa" aria-hidden />}
-            <div className="win-card-corpo">
-              <div className="win-card-id">
-                <span className="type-mono win-card-code">L{n}</span>
-                <span className="type-display win-card-nome">{t(`nome.${n}` as const)}</span>
-                <p className="win-card-alvo">{t(`alvo.${n}` as const)}</p>
-                <div className="win-card-tags">
-                  {LEVEL_META[n].exigeArmamento && n !== 1 && (
-                    <span className="win-tag win-tag--atencao">▲ {t('tag.armar')}</span>
-                  )}
-                  {n === 1 && <span className="win-tag win-tag--atencao">▲ {t('tag.preflight')}</span>}
-                  {REINICIO.includes(n) && <span className="win-tag">{t('tag.reinicio')}</span>}
-                </div>
-              </div>
-
-              <div className="win-card-mud">
-                <p className="type-kicker">{t('mudancas')}</p>
-                <ul className="win-mud-lista">
-                  {MUDANCAS[n].map((k) => (
-                    <li key={k} className="win-mud">{t(k, { marca })}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="win-card-acao">{acao(n)}</div>
-            </div>
-          </Surface>
+            <span className="win-card-top">
+              <span className="type-num win-card-code">L{n}</span>
+              <span className="win-card-nome">{t(`nome.${n}` as const)}</span>
+              {atual === n && (
+                <span className="tag tag--ok ml-auto">
+                  <IconCheck width={11} height={11} aria-hidden />
+                  {t('aplicado')}
+                </span>
+              )}
+            </span>
+            <span className="win-card-alvo">{t(`alvo.${n}` as const)}</span>
+            <span className="win-card-tags">
+              {LEVEL_META[n].exigeArmamento && n !== 1 && (
+                <span className="tag tag--atencao">
+                  <IconWarn width={11} height={11} aria-hidden />
+                  {t('tag.armar')}
+                </span>
+              )}
+              {n === 1 && (
+                <span className="tag tag--atencao">
+                  <IconWarn width={11} height={11} aria-hidden />
+                  {t('tag.preflight')}
+                </span>
+              )}
+              {REINICIO.includes(n) && <span className="tag">{t('tag.reinicio')}</span>}
+              {n !== 5 && <span className="tag">{t('reversivel')}</span>}
+            </span>
+          </button>
         ))}
       </section>
 
-      <div className="win-rodape">
-        <p className="type-kicker">{t('nota.titulo')}</p>
-        <p className="win-nota">{t('nota.corpo')}</p>
-        <p className="win-nota">{t('nota.backup')}</p>
-      </div>
+      <Surface className="win-detalhe">
+        {LEVEL_META[sel].exigeArmamento && <div className="hazard-bar" aria-hidden />}
+        <div className="surface-head">
+          {t('mudancas')}
+          <span className="pill pill--value">L{sel} {t(`nome.${sel}` as const)}</span>
+          <span className="type-num ml-auto text-[11px] font-semibold tracking-[0.06em] text-ink-3">
+            {MUDANCAS[sel].length}
+          </span>
+        </div>
+        <div className="win-detalhe-corpo">
+          <ul className="win-mud-lista">
+            {MUDANCAS[sel].map((k) => (
+              <li key={k} className="win-mud">{t(k, { marca })}</li>
+            ))}
+          </ul>
+          <div className="win-detalhe-acao">
+            {acao(sel)}
+            {exigeArmar && atual !== sel && <span className="win-arme">{t('armeSegure')}</span>}
+          </div>
+        </div>
+      </Surface>
+
+      <Surface flat className="win-rodape">
+        <span className="type-kicker">{t('nota.titulo')}</span>
+        <span className="win-nota">{t('nota.corpo')}</span>
+        <span className="win-nota">{t('nota.backup')}</span>
+      </Surface>
 
       <ProgressModal
         open={progresso !== null}

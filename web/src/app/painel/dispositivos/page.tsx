@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { db } from '@/lib/db'
 import { requireUser } from '@/lib/auth'
 import { licenseDisplayState, maskHwid, type LicenseDisplayState } from '@/lib/licensing'
-import { Chamfer, Kicker, StatusTag } from '@/components/ui'
+import { Surface, Kicker, StatusTag } from '@/components/ui'
 import { REJECTED_EVENT, fmtDateTime, type Tone } from '../helpers'
 
 // estado do dispositivo = estado derivado da licença + revokedAt do próprio device
@@ -37,21 +37,21 @@ export default async function DispositivosPage() {
     <div>
       <header className="mb-6">
         <Kicker>PAINEL</Kicker>
-        <h1 className="type-display text-3xl">DISPOSITIVOS</h1>
+        <h1 className="type-display text-3xl">Dispositivos</h1>
       </header>
 
       {licenses.length === 0 && (
-        <Chamfer cut={8} flat className="p-6">
+        <Surface flat className="p-6">
           <p className="text-ink-2">Sem licença — nenhum dispositivo para exibir.</p>
-          <Link href="/planos" className="btn btn--primary chamfer mt-4">
+          <Link href="/planos" className="btn btn--primary mt-4">
             VER PLANOS
           </Link>
-        </Chamfer>
+        </Surface>
       )}
 
       <div className="space-y-6">
         {licenses.map((license) => (
-          <Chamfer key={license.id} cut={8} className="p-6">
+          <Surface key={license.id} className="p-6">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <p className="text-ink-1">{license.plan.name}</p>
               <StatusTag tone={DEVICE_TAG[license.state].tone}>
@@ -74,7 +74,7 @@ export default async function DispositivosPage() {
                     <li
                       key={device.id}
                       className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
-                      style={{ background: 'var(--color-void)', boxShadow: 'inset 0 0 0 1px var(--color-edge)' }}
+                      style={{ background: 'var(--color-void)', border: '1px solid var(--color-edge)', borderRadius: 6 }}
                     >
                       <div>
                         <p className="text-ink-1">{device.name ?? 'DISPOSITIVO SEM NOME'}</p>
@@ -90,11 +90,11 @@ export default async function DispositivosPage() {
                 })}
               </ul>
             )}
-          </Chamfer>
+          </Surface>
         ))}
       </div>
 
-      <Chamfer cut={6} flat className="mt-6 px-4 py-3">
+      <Surface flat className="mt-6 px-4 py-3">
         <p className="type-kicker mb-1">TROCA DE INSTALAÇÃO</p>
         <p className="text-sm text-ink-3">
           A troca de instalação não é automática: formatar o Windows exige nova licença. Precisa de
@@ -104,7 +104,7 @@ export default async function DispositivosPage() {
           </Link>
           .
         </p>
-      </Chamfer>
+      </Surface>
     </div>
   )
 }

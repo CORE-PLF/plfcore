@@ -12,9 +12,10 @@ import { useToastsStore } from '../../stores/toasts'
 import type { FiveMFolder, FiveMScan } from '../../types'
 import { ArmSwitch } from '../../components/ArmSwitch'
 import { Button } from '../../components/Button'
+import { ScreenTitle } from '../../components/Kicker'
 import { Surface } from '../../components/Surface'
 import { HoldButton } from '../../components/HoldButton'
-import { KTag } from '../../components/Tag'
+import { DemoTag, KTag } from '../../components/Tag'
 import { MetricRow } from '../../components/MetricRow'
 import { StatusLED } from '../../components/StatusLED'
 import { EmptyState, ErrorState } from '../../components/states'
@@ -24,32 +25,11 @@ import { dict } from './i18n'
 
 const GB = 1024 ** 3
 const MB = 1024 ** 2
-/** Blocos da barra de distribuição (8px, gap 2px — nunca lisa). */
-const BLOCOS = 40
 
 function fmtBytes(b: number): string {
   if (b >= GB) return `${(b / GB).toFixed(2)} GB`
   if (b >= MB) return `${Math.round(b / MB)} MB`
   return `${Math.round(b / 1024)} KB`
-}
-
-/**
- * Reparte BLOCOS entre as pastas na proporção do tamanho. Pasta com conteúdo
- * nunca fica sem bloco (senão some da barra), e a soma fecha exatamente em
- * BLOCOS — sobra/falta é acertada na maior fatia, que é onde menos distorce.
- */
-function repartir(bytes: number[], total: number): number[] {
-  if (bytes.length === 0 || total <= 0) return bytes.map(() => 0)
-  const blocos = bytes.map((b) => (b > 0 ? Math.max(1, Math.round((b / total) * BLOCOS)) : 0))
-  let sobra = BLOCOS - blocos.reduce((s, n) => s + n, 0)
-  while (sobra !== 0) {
-    const maior = blocos.indexOf(Math.max(...blocos))
-    const passo = sobra > 0 ? 1 : -1
-    if (blocos[maior] + passo < 1) break
-    blocos[maior] += passo
-    sobra -= passo
-  }
-  return blocos
 }
 
 export function FivemPanel() {
@@ -125,127 +105,166 @@ export function FivemPanel() {
     }
   }
 
+  const ocupadoGeral = ocupado !== null
+  const instalado = scan?.instalado === true
+
+  const header = (
+    <ScreenTitle
+      kicker={t('kicker')}
+      title={t('titulo')}
+      meta={t('meta')}
+      actions={
+        <>
+          {scan?.origin === 'demo' && <DemoTag full />}
+          {instalado && (
+            <span className="pill">
+              <StatusLED state="live" />
+              {t('fmInstalado')}
+            </span>
+          )}
+          <Button disabled={ocupadoGeral || scan === null} onClick={() => void ler()}>
+            {t('reler')}
+          </Button>
+        </>
+      }
+    />
+  )
+
   if (erro) {
-    return <ErrorState what={t('fmErroLer')} todo={t('fmErroLerAcao')} onRetry={() => void ler()} />
+    return (
+      <>
+        {header}
+        <ErrorState what={t('fmErroLer')} todo={t('fmErroLerAcao')} onRetry={() => void ler()} />
+      </>
+    )
   }
   if (scan === null) {
-    return <p className="type-mono p-6 text-center text-xs text-ink-3">{t('fmLendo')}</p>
+    return (
+      <>
+        {header}
+        <p className="type-mono p-6 text-center text-xs text-ink-3">{t('fmLendo')}</p>
+      </>
+    )
   }
   if (!scan.instalado) {
     return (
-      <div className="mt-4">
-        <EmptyState code={t('fmSemCodigo')} message={t('fmSemFiveM')} action={<Button onClick={() => void ler()}>{t('reler')}</Button>} />
-      </div>
+      <>
+        {header}
+        <EmptyState code={t('fmSemCodigo')} message={t('fmSemFiveM')} />
+      </>
     )
   }
 
   const cacheTotal = scan.caches.reduce((s, c) => s + c.bytes, 0)
   const comCache = scan.caches.filter((c) => c.bytes > 0)
-  const blocos = repartir(scan.caches.map((c) => c.bytes), cacheTotal)
   const comMod = scan.mods.filter((m) => m.arquivos > 0)
-  const ocupadoGeral = ocupado !== null
   const vazio = cacheTotal === 0
 
   return (
     <>
-      <Surface cut={12} className="fm-hero mt-4">
+      {header}
+
+      <Surface className="fm-hero">
         <div className="fm-hero-topo">
           <div className="fm-hero-num">
-            <span className="fm-hero-kicker">{t('fmHeroKicker')}</span>
-            <strong className="type-mono">{fmtBytes(cacheTotal)}</strong>
-            <span className="fm-hero-pastas type-mono">
+            <span className="type-kicker">{t('fmHeroKicker')}</span>
+            <strong className="type-num">{fmtBytes(cacheTotal)}</strong>
+            <span className="fm-hero-pastas">
               {vazio ? t('fmZerado') : t('fmPastasConteudo', { n: comCache.length, total: scan.caches.length })}
             </span>
           </div>
           <p className="fm-hero-desc">{t('fmHeroDesc')}</p>
-          <Button size="sm" disabled={ocupadoGeral} onClick={() => void ler()}>
-            {t('reler')}
-          </Button>
         </div>
 
         <div className="fm-distrib">
-          <span className="fm-distrib-rot type-mono">{t('fmCaches')}</span>
-          <div className="fm-barra" role="presentation">
-            {scan.caches.flatMap((c, i) =>
-              Array.from({ length: blocos[i] }, (_, n) => (
-                <i key={`${c.id}-${n}`} className={`fm-bloco fm-bloco--${i % 3}`} />
-              )),
-            )}
-            {Array.from({ length: vazio ? BLOCOS : 0 }, (_, n) => (
-              <i key={`off-${n}`} className="fm-bloco" />
+          <div className={`fm-barra ${vazio ? 'fm-barra--vazia' : ''}`} role="presentation">
+            {scan.caches.map((c, i) => (
+              <span
+                key={c.id}
+                className={`fm-cor-${i % 3}`}
+                style={{ width: vazio ? 0 : `${((c.bytes / cacheTotal) * 100).toFixed(2)}%` }}
+              />
             ))}
           </div>
           <ul className="fm-legenda">
             {scan.caches.map((c, i) => (
               <li key={c.id}>
-                <i className={c.bytes > 0 ? `fm-bloco fm-bloco--${i % 3}` : 'fm-bloco'} />
-                <span className="fm-legenda-nome">{c.id.toUpperCase()}</span>
-                <span className={`type-mono ${c.existe ? 'text-ink-1' : 'text-ink-4'}`}>
+                <span className="fm-legenda-nome">
+                  <i className={c.bytes > 0 ? `fm-cor-${i % 3}` : 'fm-cor-off'} />
+                  {c.id.toUpperCase()}
+                </span>
+                <span className={`type-num ${c.existe ? 'text-ink-1' : 'text-ink-4'}`}>
                   {!c.existe ? tk('naoDisponivel') : c.bytes === 0 ? t('fmVazio') : fmtBytes(c.bytes)}
                 </span>
               </li>
             ))}
           </ul>
-          <p className="cfg-explica mt-3">{t('fmCacheNota')}</p>
+          <p className="fm-explica">{t('fmCacheNota')}</p>
         </div>
       </Surface>
 
       <div className="fm-colunas">
-        <Surface cut={6} flat className="p-4">
-          <div className="cfg-head mb-2">
-            <p className="type-kicker text-ink-2">{t('fmCliente')}</p>
-            {scan.canal !== null && <StatusLED state={scan.canal === 'production' ? 'white' : 'heat'} />}
+        <Surface className="fm-card">
+          <div className="surface-head">
+            {t('fmCliente')}
+            {scan.canal !== null && <StatusLED className="ml-auto" state={scan.canal === 'production' ? 'live' : 'off'} />}
           </div>
-          <MetricRow label={t('fmVersao')} value={scan.versao} />
-          <MetricRow label={t('fmCanal')} value={scan.canal} />
-          <MetricRow label={t('fmDump')} value={scan.dumpCompleto ? t('fmDumpLigado') : t('fmDumpDesligado')} />
-          <MetricRow label={t('fmCfgCliente')} value={scan.configCliente ? t('fmPresente') : null} />
-          <MetricRow label={t('fmCfgGraficos')} value={scan.configGraficos ? t('fmPresente') : null} />
+          <div className="fm-cliente-body">
+            <MetricRow label={t('fmVersao')} value={scan.versao} />
+            <MetricRow label={t('fmCanal')} value={scan.canal} />
+            <MetricRow label={t('fmDump')} value={scan.dumpCompleto ? t('fmDumpLigado') : t('fmDumpDesligado')} />
+            <MetricRow label={t('fmCfgCliente')} value={scan.configCliente ? t('fmPresente') : null} />
+            <MetricRow label={t('fmCfgGraficos')} value={scan.configGraficos ? t('fmPresente') : null} />
+          </div>
           {scan.canal !== null && scan.canal !== 'production' && (
-            <p className="cfg-explica mt-3">{t('fmCanalAviso')}</p>
+            <p className="fm-explica fm-card-rodape">{t('fmCanalAviso')}</p>
           )}
         </Surface>
 
-        <Surface cut={6} flat className="fm-mods">
-        <div className="cfg-head">
-          <span className="game-name">{t('fmModsTitulo')}</span>
-          <KTag variant={comMod.length > 0 ? 'critical' : 'ok'}>
-            {comMod.length > 0 ? t('fmModsAchou', { n: comMod.length }) : t('fmModsLimpo')}
-          </KTag>
+        <div className="fm-coluna-dir">
+          <Surface className="fm-card fm-mods">
+            <div className="surface-head">
+              {t('fmModsTitulo')}
+              <KTag variant={comMod.length > 0 ? 'critical' : 'ok'}>
+                {comMod.length > 0 ? t('fmModsAchou', { n: comMod.length }) : t('fmModsLimpo')}
+              </KTag>
+            </div>
+            <p className="fm-explica fm-mods-explica">{t('fmPureExplica')}</p>
+
+            <div className="fm-mods-linhas">
+              {scan.mods.map((m) => (
+                <div key={m.id} className="fm-mod-linha">
+                  <span className="fm-mod-nome">{m.id.toUpperCase()}</span>
+                  {/* pasta vazia é dado medido, não ausência de fonte: NÃO DISPONÍVEL aqui seria mentira */}
+                  <span className="fm-mod-info type-num">
+                    {m.arquivos === 0 ? t('fmVazio') : t('fmModConta', { n: m.arquivos, tamanho: fmtBytes(m.bytes) })}
+                  </span>
+                  <Button size="sm" disabled={ocupadoGeral || m.arquivos === 0} onClick={() => void isolar(m.id as FiveMFolder)}>
+                    {ocupado === m.id ? t('fmIsolando') : t('fmIsolar')}
+                  </Button>
+                </div>
+              ))}
+            </div>
+
+            <p className="fm-card-rodape fm-backup">{t('fmBackupEm', { caminho: scan.backup })}</p>
+          </Surface>
+
+          <Surface className="fm-zona">
+            <div className="hazard-bar" />
+            <div className="fm-zona-corpo">
+              <div className="fm-zona-texto">
+                <span className="fm-zona-titulo">{t('fmZonaTitulo')}</span>
+                <span className="fm-explica">{t('fmZonaDesc')}</span>
+                <span className="fm-zona-hint">{t('fmArmeSegure')}</span>
+              </div>
+              <ArmSwitch armed={armado} onChange={setArmado} disabled={vazio || ocupadoGeral} />
+              <HoldButton className="fm-zona-hold" variant="danger" armed={armado} disabled={ocupadoGeral || vazio} onConfirm={() => void limpar()}>
+                {vazio ? t('fmZerado') : ocupado === 'cache' ? t('fmLimpando') : t('fmZonaAcao')}
+              </HoldButton>
+            </div>
+          </Surface>
         </div>
-        <p className="cfg-explica">{t('fmPureExplica')}</p>
-
-        {scan.mods.map((m) => (
-          <div key={m.id} className="fm-mod-linha">
-            <span className="cfg-chave">{m.id.toUpperCase()}</span>
-            {/* pasta vazia é dado medido, não ausência de fonte: NÃO DISPONÍVEL aqui seria mentira */}
-            <span className="type-mono text-xs text-ink-2">
-              {m.arquivos === 0 ? t('fmVazio') : t('fmModConta', { n: m.arquivos, tamanho: fmtBytes(m.bytes) })}
-            </span>
-            <Button size="sm" disabled={ocupadoGeral || m.arquivos === 0} onClick={() => void isolar(m.id as FiveMFolder)}>
-              {ocupado === m.id ? t('fmIsolando') : t('fmIsolar')}
-            </Button>
-          </div>
-        ))}
-
-        <p className="cfg-backup type-mono mt-3">{t('fmBackupEm', { caminho: scan.backup })}</p>
-        </Surface>
       </div>
-
-      <div className="game-zona-limpeza hazard">
-        <div className="game-zona-texto">
-          <p className="type-display text-lg">{t('fmZonaTitulo')}</p>
-          <p className="cfg-explica">{t('fmZonaDesc')}</p>
-        </div>
-        <div className="game-zona-acao">
-          <ArmSwitch armed={armado} onChange={setArmado} disabled={vazio} />
-          <HoldButton variant="danger" disabled={!armado || ocupadoGeral || vazio} onConfirm={() => void limpar()}>
-            {ocupado === 'cache' ? t('fmLimpando') : t('fmZonaAcao')}
-          </HoldButton>
-        </div>
-      </div>
-
-      <p className="game-nota mt-4">{t('fmNota')}</p>
     </>
   )
 }
