@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Download',
-  description: `Baixe a versão atual do ${BRAND.name}. Checksum publicado para verificação de integridade.`,
+  description: `Baixe a versão atual do ${BRAND.name}. Sempre pelo site oficial.`,
 }
 
 function formatBytes(bytes: number): string {
