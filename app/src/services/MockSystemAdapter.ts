@@ -520,12 +520,14 @@ export class MockSystemAdapter implements SystemAdapter {
   }
 
   private soundsDemo: SoundsScan = {
-    gtaRaiz: 'C:\\Program Files\\Rockstar Games\\Grand Theft Auto V',
-    sfx: 'C:\\Program Files\\Rockstar Games\\Grand Theft Auto V\\x64\\audio\\sfx',
-    geracao: 'enhanced',
+    gtaRaiz: 'C:\\Program Files\\Rockstar Games\\Grand Theft Auto V Legacy',
+    sfx: 'C:\\Program Files\\Rockstar Games\\Grand Theft Auto V Legacy\\x64\\audio\\sfx',
+    geracao: 'legacy',
+    alvoOrigem: 'fivem',
     jogoAberto: false,
     biblioteca: 'C:\\Users\\demo\\AppData\\Local\\PLFCore\\packs',
     temBackup: true,
+    vanillaSumiu: false,
     instaladoId: 'plf-01',
     packs: [
       { id: 'plf-01', nome: 'PLF 01', bytes: 116_666_880, temPreview: true },
@@ -534,16 +536,21 @@ export class MockSystemAdapter implements SystemAdapter {
     origin: 'demo',
   }
 
-  // Catálogo de demonstração: sem rede no mock, então prévia e capa são nulas —
-  // o card mostra SEM PRÉVIA em vez de fingir um vídeo que não existe.
-  private catalogoDemo: SoundCatalogPack[] = [
-    { slug: 'plf-01', nome: 'PLF 01', geracao: ['enhanced'], bytes: 116_666_880, arquivos: [], previewUrl: null, capaUrl: null },
-    { slug: 'plf-02', nome: 'PLF 02', geracao: ['enhanced'], bytes: 116_666_880, arquivos: [], previewUrl: null, capaUrl: null },
-    { slug: 'plf-03', nome: 'PLF 03', geracao: ['enhanced'], bytes: 116_666_880, arquivos: [], previewUrl: null, capaUrl: null },
-    { slug: 'plf-04', nome: 'PLF 04', geracao: ['enhanced'], bytes: 116_666_880, arquivos: [], previewUrl: null, capaUrl: null },
-    { slug: 'plf-05', nome: 'PLF 05', geracao: ['enhanced'], bytes: 116_666_880, arquivos: [], previewUrl: null, capaUrl: null },
-    { slug: 'plf-06', nome: 'PLF 06', geracao: ['legacy'], bytes: 116_666_880, arquivos: [], previewUrl: null, capaUrl: null },
-  ]
+  // Catálogo de demonstração no formato do publicado: 22 packs, todos Legacy.
+  // Sem rede no mock, então prévia e capa são nulas — o card mostra SEM PRÉVIA
+  // em vez de fingir um vídeo que não existe.
+  private catalogoDemo: SoundCatalogPack[] = Array.from({ length: 22 }, (_, i) => {
+    const n = String(i + 1).padStart(2, '0')
+    return {
+      slug: `plf-${n}`,
+      nome: `PLF ${n}`,
+      geracao: ['legacy'],
+      bytes: 116_666_880,
+      arquivos: [],
+      previewUrl: null,
+      capaUrl: null,
+    }
+  })
 
   async scanSounds(): Promise<SoundsScan> {
     await sleep(800)

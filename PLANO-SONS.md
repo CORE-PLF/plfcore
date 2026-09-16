@@ -115,3 +115,45 @@ Credenciais em `~/.claude/.plf-garage.env` (chmod 600, fora de qualquer repo): `
 **Achado:** o `RESIDENT.rpf` de `PLF 1` tem sha256 `85f37e31…`, o mesmo do `som-01` publicado ontem. A suspeita de sobreposição entre as duas coleções se confirma em pelo menos um pack — a detecção de duplicata da trilha B vai dizer quantos.
 
 **Domínio provisório:** o `sslip.io` é o que o Coolify gerou. Se um dia virar um domínio próprio, muda em três lugares: o alias do bucket no Garage, a CSP do `tauri.conf.json` e o `packs.json` (que é regerado pelo `3-manifest.sh`).
+
+---
+
+## Correção: era LEGACY, não Enhanced (2026-09-16)
+
+O dono avisou que os packs são pra GTA V Legacy. Estava certo, e isso expôs três bugs meus.
+
+**Como se confirma, sem depender de opinião:** o `RESIDENT.rpf` dos packs tem 112.784.384 bytes e o `WEAPONS_PLAYER.rpf`, 3.882.496 — exatamente o tamanho do vanilla do **Legacy**. O Enhanced tem 112.785.408 e 3.883.008. O header RPF é igual nas duas gerações, então ele não servia de prova; o tamanho serve.
+
+### Bug 1 — o alvo era o GTA errado
+
+`Get-Gta5Path` procura Enhanced primeiro (appid 3240220). Nesta máquina existem as duas gerações, e o FiveM aponta pro Legacy:
+
+```
+CitizenFX.ini -> IVPath=D:\SteamLibrary\steamapps\common\Grand Theft Auto V
+```
+
+Ou seja: o teste de ontem trocou os `.rpf` de um GTA que o FiveM nem abre.
+
+Agora `Get-SndAlvo` tem prioridade explícita: **IVPath do CitizenFX.ini** (o GTA que o FiveM carrega) → Legacy instalado → Enhanced. O scan devolve `alvoOrigem` (`fivem` ou `instalado`) pra tela dizer de onde veio a escolha.
+
+### Bug 2 — um backup só pras duas gerações
+
+`backup\sounds\` era único. Com o alvo corrigido, o backup do Enhanced (gravado ontem) seria usado pra restaurar o Legacy — entregando um `.rpf` que o jogo não carrega. Agora é `backup\sounds\<geracao>\`, e o backup antigo foi movido pra `backup\sounds\enhanced\`.
+
+### Bug 3 — o app gravaria um mod como se fosse o original
+
+O Legacy desta máquina **já tinha** um pack instalado à mão (`85f37e31…` = plf-01/som-01). Como não havia backup, a primeira instalação teria copiado esse mod pra `backup\` com o rótulo de "original", e o caminho de volta ao vanilla sumiria em silêncio — a pessoa só descobriria ao tentar restaurar.
+
+`Save-SndBackup` agora confere o que está no jogo contra os sha256 de todos os packs da biblioteca antes de guardar. Reconheceu um pack, recusa com `ERR_SND_NAO_VANILLA` e não escreve nada. Verificado: a instalação parou, o jogo não foi tocado, nenhum backup falso foi criado.
+
+O scan também ganhou `vanillaSumiu`: tem mod no jogo e não tem backup. A tela avisa e bloqueia a instalação até a pessoa recuperar o original pela Steam.
+
+`instaladoId` passou a ser decidido pelo **hash do arquivo que está no jogo**, não pelo que o app anotou. Pack instalado por fora aparece como instalado — o app não finge que o jogo está limpo.
+
+### Catálogo
+
+`3-manifest.sh` declara `"geracao": ["legacy"]`, `packs.json` regerado e republicado. Os 17 packs continuam os mesmos objetos no bucket; só o catálogo mudou.
+
+### O que ainda não dá pra testar aqui
+
+O ciclo instalar → restaurar **no Legacy** exige o vanilla do Legacy, e ele não existe nesta máquina: o jogo está modificado e o `mods_som\padrao\` guardado é o vanilla do **Enhanced** (112.785.408), não do Legacy. Recuperar pela Steam (Propriedades → Arquivos instalados → Verificar integridade) e então rodar o ciclo.

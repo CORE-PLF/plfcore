@@ -369,9 +369,13 @@ export interface SoundsScan {
   gtaRaiz: string | null
   sfx: string | null
   geracao: SoundGen | null
+  /** de onde veio o alvo: 'fivem' = IVPath do CitizenFX.ini; 'instalado' = GTA achado na máquina */
+  alvoOrigem: 'fivem' | 'instalado' | null
   jogoAberto: boolean
   biblioteca: string
   temBackup: boolean
+  /** tem mod de som no jogo E nenhum backup do original: instalar fica travado */
+  vanillaSumiu: boolean
   instaladoId: string | null
   packs: SoundPack[]
   origin: DataOrigin

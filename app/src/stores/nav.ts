@@ -8,6 +8,7 @@ export type ScreenId =
   | 'cleanup'
   | 'windows'
   | 'games'
+  | 'sounds'
   | 'tweaks'
   | 'runtimes'
   | 'startup'

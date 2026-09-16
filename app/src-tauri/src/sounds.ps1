@@ -23,7 +23,10 @@ $ErrorActionPreference = 'Stop'
 
 $SndRaiz = Join-Path $env:LOCALAPPDATA 'PLFCore'
 $SndBiblioteca = Join-Path $SndRaiz 'packs'
-$SndBackup = Join-Path $SndRaiz 'backup\sounds'
+# Uma pasta de backup POR GERAÇÃO. Quem tem Legacy pro FiveM e Enhanced pra
+# jogar sozinho tem dois vanilla diferentes, e restaurar o de um no outro
+# entrega um .rpf que o jogo não carrega.
+$SndBackupRaiz = Join-Path $SndRaiz 'backup\sounds'
 $SndEstadoArq = Join-Path $SndRaiz 'sounds-estado.json'
 
 # Os únicos arquivos que este script escreve. Fora desta lista, recusa.
@@ -39,21 +42,63 @@ function Test-SndFechado {
   if (Get-Process -Name 'FiveM_b*' -ErrorAction SilentlyContinue) { throw 'ERR_GAME_RUNNING' }
 }
 
-# Alvo do som. A geração vem do executável, nunca de chute: sem os dois exes
-# conhecidos a resposta é $null e toda escrita recusa.
-function Get-SndAlvo {
-  $exe = Get-Gta5Path
-  if (-not $exe) { return $null }
-  $raiz = Split-Path -Parent $exe
+# Geração pelo executável que existe na raiz, nunca por chute. Enhanced tem um
+# exe próprio; se só há GTA5.exe, é Legacy.
+function Get-SndGeracao([string]$raiz) {
+  if (Test-Path -LiteralPath (Join-Path $raiz 'GTA5_Enhanced.exe')) { return 'enhanced' }
+  if (Test-Path -LiteralPath (Join-Path $raiz 'GTA5.exe')) { return 'legacy' }
+  return $null
+}
+
+function New-SndAlvo([string]$raiz, [string]$origem) {
+  if (-not $raiz) { return $null }
   $sfx = Join-Path $raiz 'x64\audio\sfx'
   if (-not (Test-Path -LiteralPath (Join-Path $sfx 'WEAPONS_PLAYER.rpf'))) { return $null }
-  $geracao = $null
-  if (Test-Path -LiteralPath (Join-Path $raiz 'GTA5_Enhanced.exe')) {
-    $geracao = 'enhanced'
-  } elseif (Test-Path -LiteralPath (Join-Path $raiz 'GTA5.exe')) {
-    $geracao = 'legacy'
+  $geracao = Get-SndGeracao $raiz
+  if (-not $geracao) { return $null }
+  return [pscustomobject]@{ raiz = $raiz; sfx = $sfx; geracao = $geracao; origem = $origem }
+}
+
+# Alvo do som, em ordem de prioridade. Quem tem as duas gerações instaladas
+# quase sempre quer a que o FiveM carrega — e o pure mode, que é o motivo deste
+# módulo existir, só acontece lá. Por isso o IVPath do CitizenFX.ini manda:
+# é o GTA que o FiveM abre de verdade. Sem FiveM, Legacy antes de Enhanced,
+# porque os packs de pure mode são feitos pro Legacy.
+function Get-SndAlvo {
+  $ini = Join-Path $env:LOCALAPPDATA 'FiveM\FiveM.app\CitizenFX.ini'
+  if (Test-Path -LiteralPath $ini) {
+    foreach ($linha in @(Get-Content -LiteralPath $ini -ErrorAction SilentlyContinue)) {
+      $t = ([string]$linha).Trim()
+      if ($t -match '^IVPath\s*=\s*(.+)$') {
+        $alvo = New-SndAlvo ($Matches[1].Trim()) 'fivem'
+        if ($alvo) { return $alvo }
+      }
+    }
   }
-  return [pscustomobject]@{ raiz = $raiz; sfx = $sfx; geracao = $geracao }
+
+  # Sem FiveM: procura as duas gerações e prefere Legacy.
+  $achados = @()
+  foreach ($exe in @((Get-SteamAppPath '271590' 'GTA5.exe'), (Get-SteamAppPath '3240220' 'GTA5_Enhanced.exe'))) {
+    if ($exe) { $achados += (Split-Path -Parent $exe) }
+  }
+  foreach ($chave in @('HKLM:\SOFTWARE\WOW6432Node\Rockstar Games\Grand Theft Auto V', 'HKLM:\SOFTWARE\WOW6432Node\Rockstar Games\Grand Theft Auto V Enhanced')) {
+    try {
+      $base = (Get-ItemProperty -LiteralPath $chave -ErrorAction Stop).InstallFolder
+      if ($base) { $achados += [string]$base }
+    } catch {}
+  }
+
+  foreach ($preferida in @('legacy', 'enhanced')) {
+    foreach ($raiz in ($achados | Select-Object -Unique)) {
+      $alvo = New-SndAlvo $raiz 'instalado'
+      if ($alvo -and $alvo.geracao -eq $preferida) { return $alvo }
+    }
+  }
+  return $null
+}
+
+function Get-SndBackup($alvo) {
+  return Join-Path $SndBackupRaiz ([string]$alvo.geracao)
 }
 
 function Get-SndId([string]$bruto) {
@@ -120,22 +165,55 @@ function Get-SndPacks {
   return @($achados | Sort-Object -Property id)
 }
 
-function Test-SndBackupCompleto {
+function Test-SndBackupCompleto([string]$backup) {
   foreach ($arq in $SndPermitidos) {
-    if (-not (Test-Path -LiteralPath (Join-Path $SndBackup $arq) -PathType Leaf)) { return $false }
+    if (-not (Test-Path -LiteralPath (Join-Path $backup $arq) -PathType Leaf)) { return $false }
   }
   return $true
 }
 
-# Guarda o estado ATUAL da máquina. Só roda quando ainda não existe backup: se
-# rodasse de novo por cima, o "original" viraria o mod instalado antes.
-function Save-SndBackup([string]$sfx) {
-  if (Test-SndBackupCompleto) { return $false }
-  New-Item -ItemType Directory -Force -Path $SndBackup | Out-Null
+# Todo sha256 declarado pelos packs da biblioteca. Serve pra reconhecer um mod
+# que já está no jogo.
+function Get-SndHashesDePack {
+  $hashes = @{}
+  if (-not (Test-Path -LiteralPath $SndBiblioteca -PathType Container)) { return $hashes }
+  foreach ($dir in @(Get-ChildItem -LiteralPath $SndBiblioteca -Directory -ErrorAction SilentlyContinue)) {
+    $metaArq = Join-Path $dir.FullName 'pack.json'
+    if (-not (Test-Path -LiteralPath $metaArq)) { continue }
+    try {
+      $meta = Get-Content -LiteralPath $metaArq -Raw | ConvertFrom-Json
+      if ($meta.sha256) {
+        foreach ($prop in $meta.sha256.PSObject.Properties) {
+          $hashes[([string]$prop.Value).ToLowerInvariant()] = $dir.Name
+        }
+      }
+    } catch {}
+  }
+  return $hashes
+}
+
+# Guarda o estado ATUAL da máquina como "original". Só roda quando ainda não há
+# backup desta geração: rodar por cima faria o mod anterior virar o original.
+#
+# E antes de guardar, confere que o que está no jogo NÃO é um pack conhecido.
+# Quem instalou um mod de som na mão antes de usar o app tem o vanilla só na
+# Steam — gravar esse mod como "original" destruiria o caminho de volta em
+# silêncio, e a pessoa só descobriria ao tentar restaurar.
+function Save-SndBackup([string]$sfx, [string]$backup) {
+  if (Test-SndBackupCompleto $backup) { return $false }
+
+  $conhecidos = Get-SndHashesDePack
   foreach ($arq in $SndPermitidos) {
     $origem = Join-Path $sfx $arq
     if (-not (Test-Path -LiteralPath $origem -PathType Leaf)) { throw 'ERR_SND_COPIA' }
-    Copy-Item -LiteralPath $origem -Destination (Join-Path $SndBackup $arq) -Force
+    if ($conhecidos.Count -gt 0 -and $conhecidos.ContainsKey((Get-SndHash $origem))) {
+      throw 'ERR_SND_NAO_VANILLA'
+    }
+  }
+
+  New-Item -ItemType Directory -Force -Path $backup | Out-Null
+  foreach ($arq in $SndPermitidos) {
+    Copy-Item -LiteralPath (Join-Path $sfx $arq) -Destination (Join-Path $backup $arq) -Force
   }
   return $true
 }
@@ -159,16 +237,27 @@ if ($acao -eq 'scan') {
   $alvo = Get-SndAlvo
   $packs = Get-SndPacks
 
-  # Só reporta pack instalado se o arquivo que está lá AGORA é o que a gente
-  # gravou. Trocou por fora, o app não mente sobre isso.
+  # Quem manda é o arquivo que está no jogo AGORA, não o que o app anotou.
+  # O estado serve de atalho; se não bater, o hash decide. Assim um pack que a
+  # pessoa instalou na mão, antes de conhecer o app, aparece como instalado —
+  # e ela entende por que a instalação vai recusar até ter o original de volta.
   $instaladoId = $null
-  $estado = Get-SndEstado
-  if ($estado -and $estado.instaladoId -and $alvo) {
+  $vanillaSumiu = $false
+  if ($alvo) {
     $atual = Join-Path $alvo.sfx 'RESIDENT.rpf'
     if (Test-Path -LiteralPath $atual -PathType Leaf) {
       try {
-        if ((Get-SndHash $atual) -eq [string]$estado.sha256Resident) {
+        $hashAtual = Get-SndHash $atual
+        $estado = Get-SndEstado
+        if ($estado -and $estado.instaladoId -and $hashAtual -eq [string]$estado.sha256Resident) {
           $instaladoId = [string]$estado.instaladoId
+        } else {
+          $conhecidos = Get-SndHashesDePack
+          if ($conhecidos.ContainsKey($hashAtual)) { $instaladoId = [string]$conhecidos[$hashAtual] }
+        }
+        # Tem mod no jogo e nenhum backup: o original só volta pela Steam.
+        if ($instaladoId -and -not (Test-SndBackupCompleto (Get-SndBackup $alvo))) {
+          $vanillaSumiu = $true
         }
       } catch {}
     }
@@ -184,10 +273,12 @@ if ($acao -eq 'scan') {
     gtaRaiz = if ($alvo) { [string]$alvo.raiz } else { $null }
     sfx = if ($alvo) { [string]$alvo.sfx } else { $null }
     geracao = if ($alvo) { $alvo.geracao } else { $null }
+    alvoOrigem = if ($alvo) { [string]$alvo.origem } else { $null }
     jogoAberto = $aberto
     biblioteca = $SndBiblioteca
-    temBackup = Test-SndBackupCompleto
+    temBackup = if ($alvo) { Test-SndBackupCompleto (Get-SndBackup $alvo) } else { $false }
     instaladoId = $instaladoId
+    vanillaSumiu = $vanillaSumiu
     packs = @($packs)
     origin = 'measured'
   } | ConvertTo-Json -Depth 5 -Compress
@@ -228,7 +319,7 @@ if ($acao -eq 'install') {
     $origens[$arq] = $origem
   }
 
-  $backupCriado = Save-SndBackup $alvo.sfx
+  $backupCriado = Save-SndBackup $alvo.sfx (Get-SndBackup $alvo)
 
   $escritos = 0
   foreach ($arq in $SndPermitidos) {
@@ -256,11 +347,12 @@ if ($acao -eq 'restore') {
   Test-SndFechado
   $alvo = Get-SndAlvo
   if (-not $alvo) { throw 'ERR_SND_SEM_GTA' }
-  if (-not (Test-SndBackupCompleto)) { throw 'ERR_SND_SEM_BACKUP' }
+  $backup = Get-SndBackup $alvo
+  if (-not (Test-SndBackupCompleto $backup)) { throw 'ERR_SND_SEM_BACKUP' }
 
   $escritos = 0
   foreach ($arq in $SndPermitidos) {
-    Copy-SndArquivo (Join-Path $SndBackup $arq) (Join-Path $alvo.sfx $arq)
+    Copy-SndArquivo (Join-Path $backup $arq) (Join-Path $alvo.sfx $arq)
     $escritos += 1
   }
 

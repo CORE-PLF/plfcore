@@ -10,6 +10,7 @@ export const SCREENS: Record<ScreenId, React.LazyExoticComponent<React.Component
   cleanup: lazy(() => import('./cleanup/CleanupScreen')),
   windows: lazy(() => import('./windows/WindowsScreen')),
   games: lazy(() => import('./games/GamesScreen')),
+  sounds: lazy(() => import('./sounds/SoundsScreen')),
   tweaks: lazy(() => import('./tweaks/TweaksScreen')),
   runtimes: lazy(() => import('./runtimes/RuntimesScreen')),
   startup: lazy(() => import('./startup/StartupScreen')),

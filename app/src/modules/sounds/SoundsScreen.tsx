@@ -1,8 +1,7 @@
 // Catálogo de mods de som do GTA V: grade de cards com prévia em vídeo (COM som —
 // é pack de som, prévia muda não serve), download da nuvem e instalação.
-// Trocar arquivo do jogo só entra em servidor com sv_pureLevel 0 ou 1 — por isso o
-// aviso de pure mode fica sempre visível, e o caminho de volta (RESTAURAR ORIGINAL)
-// é tão visível quanto o de ida.
+// Instalar é um clique só: o que torna isso aceitável é o backup — o caminho de volta
+// (RESTAURAR ORIGINAL) fica tão visível quanto o de ida, junto do aviso de pure mode.
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useT } from '../../i18n'
@@ -10,10 +9,9 @@ import { getAdapter } from '../../services/adapter'
 import { registerRevert, useLogStore } from '../../stores/log'
 import { useToastsStore } from '../../stores/toasts'
 import type { SoundCatalogPack, SoundGen, SoundsScan } from '../../types'
-import { ArmSwitch } from '../../components/ArmSwitch'
 import { Button } from '../../components/Button'
 import { Surface } from '../../components/Surface'
-import { HoldButton } from '../../components/HoldButton'
+import { ScreenTitle } from '../../components/Kicker'
 import { ProgressBar } from '../../components/ProgressBar'
 import { DemoTag, KTag } from '../../components/Tag'
 import { MetricRow } from '../../components/MetricRow'
@@ -21,6 +19,7 @@ import { IconCheck, IconWarn } from '../../components/icons'
 import { ErrorState } from '../../components/states'
 
 import { dict } from './i18n'
+import './sounds.css'
 
 const MB = 1024 ** 2
 
@@ -36,6 +35,7 @@ const ERROS = {
   ERR_SND_GERACAO: 'sndErrGeracao',
   ERR_GAME_RUNNING: 'sndBloqJogo',
   ERR_SND_SEM_BACKUP: 'sndErrSemBackup',
+  ERR_SND_NAO_VANILLA: 'sndErrNaoVanilla',
   ERR_SND_PACK: 'sndErrPack',
   ERR_SND_HASH: 'sndErrHash',
   ERR_SND_COPIA: 'sndErrCopia',
@@ -103,7 +103,7 @@ function mesclar(catalogo: SoundCatalogPack[] | null, scan: SoundsScan): ItemPac
   return lista
 }
 
-export function SoundsPanel() {
+export default function SoundsScreen() {
   const t = useT(dict)
 
   const pushToast = useToastsStore((s) => s.push)
@@ -114,7 +114,6 @@ export function SoundsPanel() {
   const [progresso, setProgresso] = useState<Record<string, Progresso>>({})
   const [erro, setErro] = useState(false)
   const [ocupado, setOcupado] = useState<string | null>(null)
-  const [armado, setArmado] = useState(false)
   // prefers-reduced-motion, ou play() recusado pela política de autoplay do webview:
   // nos dois casos a prévia passa a depender de clique, e o card mostra o botão.
   const [semAutoplay, setSemAutoplay] = useState(
@@ -170,7 +169,7 @@ export function SoundsPanel() {
       // enquanto o estado ainda diz CONFERINDO, e pisca um frame errado.
       limpar()
       useLogStore.getState().log({
-        moduloId: 'games',
+        moduloId: 'sounds',
         acao: `som-baixar-${pack.slug}`,
         resultado: pack.nome,
         reversivel: false,
@@ -190,7 +189,7 @@ export function SoundsPanel() {
     try {
       await getAdapter().removePack(item.slug)
       useLogStore.getState().log({
-        moduloId: 'games',
+        moduloId: 'sounds',
         acao: `som-remover-${item.slug}`,
         resultado: item.nome,
         reversivel: false,
@@ -210,7 +209,7 @@ export function SoundsPanel() {
     try {
       const res = await getAdapter().installSoundPack(id)
       const logId = useLogStore.getState().log({
-        moduloId: 'games',
+        moduloId: 'sounds',
         acao: `som-instalar-${id}`,
         resultado: nome,
         reversivel: true,
@@ -221,7 +220,6 @@ export function SoundsPanel() {
         await ler()
       })
       pushToast({ tipo: 'sucesso', mensagem: t('sndInstalou', { nome, n: res.arquivos }) })
-      setArmado(false)
       await ler()
     } catch (e) {
       avisar(e)
@@ -235,14 +233,13 @@ export function SoundsPanel() {
     try {
       const res = await getAdapter().restoreSounds()
       useLogStore.getState().log({
-        moduloId: 'games',
+        moduloId: 'sounds',
         acao: 'som-restaurar',
         resultado: t('sndRestaurar'),
         reversivel: false,
         detalhes: `${res.arquivos} arquivo(s)`,
       })
       pushToast({ tipo: 'sucesso', mensagem: t('sndRestaurou', { n: res.arquivos }) })
-      setArmado(false)
       await ler()
     } catch (e) {
       avisar(e)
@@ -264,57 +261,54 @@ export function SoundsPanel() {
 
   const itens = useMemo(() => (scan === null ? [] : mesclar(catalogo, scan)), [catalogo, scan])
 
-  const head = (
-    <div className="surface-head">
-      {t('sndTitulo')}
-      {scan !== null && (
-        <KTag variant={scan.instaladoId !== null ? 'ok' : 'estimated'}>
-          {scan.instaladoId !== null ? (
-            <span className="inline-flex items-center gap-1.5">
-              <IconCheck width={11} height={11} />
-              {t('sndInstalado')}
-            </span>
-          ) : (
-            t('sndNenhum')
-          )}
-        </KTag>
-      )}
-      {catalogoLendo && <KTag variant="estimated">{t('sndLendoCatalogo')}</KTag>}
-      {!catalogoLendo && modo !== 'ok' && <KTag variant="critical">{t('sndSemCatalogo')}</KTag>}
-      <span className="ml-auto flex items-center gap-3">
-        {scan?.origin === 'demo' && <DemoTag full />}
-        <Button size="sm" disabled={ocupado !== null || scan === null} onClick={() => void ler()}>
-          {t('reler')}
-        </Button>
-      </span>
-    </div>
+  const titulo = (
+    <ScreenTitle
+      kicker={t('kicker')}
+      title={t('titulo')}
+      meta={t('meta')}
+      actions={
+        <>
+          {scan?.origin === 'demo' && <DemoTag full />}
+          {catalogoLendo && <KTag variant="estimated">{t('sndLendoCatalogo')}</KTag>}
+          {!catalogoLendo && modo !== 'ok' && <KTag variant="critical">{t('sndSemCatalogo')}</KTag>}
+          <Button disabled={ocupado !== null || scan === null} onClick={() => void ler()}>
+            {t('reler')}
+          </Button>
+        </>
+      }
+    />
   )
 
   if (erro) {
     return (
-      <Surface className="snd-card">
-        {head}
-        <div className="p-4">
+      <div className="snd-screen">
+        {titulo}
+        <Surface className="flex-1 p-6">
           <ErrorState what={t('sndErroLer')} todo={t('sndErroLerAcao')} onRetry={() => void ler()} />
-        </div>
-      </Surface>
+        </Surface>
+      </div>
     )
   }
   if (scan === null) {
     return (
-      <Surface className="snd-card">
-        {head}
-        <p className="type-mono p-6 text-center text-xs text-ink-3">{t('sndLendo')}</p>
-      </Surface>
+      <div className="snd-screen">
+        {titulo}
+        <Surface className="flex-1">
+          <p className="type-mono p-6 text-center text-xs text-ink-3">{t('sndLendo')}</p>
+        </Surface>
+      </div>
     )
   }
 
   const semGta = scan.gtaRaiz === null
   const semDestino = scan.geracao === null || scan.sfx === null
   const bloqueio = semGta ? t('sndBloqGta') : semDestino ? t('sndBloqGeracao') : scan.jogoAberto ? t('sndBloqJogo') : null
-  const travado = bloqueio !== null
+  // vanillaSumiu trava tudo: sem original guardado, instalar seria um caminho sem volta.
+  const travado = bloqueio !== null || scan.vanillaSumiu
   const baixandoAlgum = Object.keys(progresso).length > 0
   const ocupadoGeral = ocupado !== null || baixandoAlgum
+  const baixados = scan.packs.length
+  const instalados = scan.instaladoId === null ? 0 : 1
 
   function card(item: ItemPack) {
     const prog = progresso[item.slug]
@@ -323,7 +317,7 @@ export function SoundsPanel() {
     // marcar sem medir seria inventar.
     const incompativel =
       item.geracoes !== null && scan!.geracao !== null && !item.geracoes.includes(scan!.geracao)
-    const soPara = item.geracoes?.[0] === 'legacy' ? t('sndLegacy') : t('sndEnhanced')
+    const soPara = (item.geracoes ?? []).map((g) => (g === 'legacy' ? t('sndLegacy') : t('sndEnhanced'))).join(' / ')
     const estado = prog
       ? prog.fase === 'conferindo'
         ? t('sndConferindo')
@@ -409,6 +403,8 @@ export function SoundsPanel() {
             <ProgressBar className="snd-pack-barra" pct={prog.fase === 'conferindo' ? 100 : prog.pct} />
           ) : incompativel ? (
             <p className="snd-pack-nota">{t('sndSoPara', { geracao: soPara })}</p>
+          ) : scan!.vanillaSumiu && item.baixado ? (
+            <p className="snd-pack-nota">{t('sndVanillaCurto')}</p>
           ) : null}
 
           <div className="snd-pack-acoes">
@@ -423,22 +419,21 @@ export function SoundsPanel() {
               </Button>
             ) : (
               <>
-                <HoldButton
+                <Button
                   className="snd-pack-acao"
-                  variant="danger"
-                  armed={armado}
+                  size="sm"
+                  variant="primary"
                   disabled={travado || ocupadoGeral || instalado || incompativel}
-                  onConfirm={() => void instalar(item.slug, item.nome)}
+                  onClick={() => void instalar(item.slug, item.nome)}
                 >
                   {ocupado === item.slug ? t('sndInstalando') : instalado ? t('sndInstalado') : t('sndInstalar')}
-                </HoldButton>
+                </Button>
                 {item.temPreviewLocal && item.previewUrl === null && (
                   <Button size="sm" disabled={ocupadoGeral} onClick={() => void tocar(item.slug)}>
                     {t('sndPrevia')}
                   </Button>
                 )}
                 <Button
-                  className="snd-pack-remover"
                   size="sm"
                   variant="ghost"
                   disabled={instalado || ocupadoGeral}
@@ -455,35 +450,73 @@ export function SoundsPanel() {
   }
 
   return (
-    <Surface className="snd-card">
-      {head}
+    <div className="snd-screen">
+      {titulo}
 
-      <div className="snd-aviso">
+      <Surface className="snd-topo">
+        <div className="snd-contas">
+          <span className="snd-conta">
+            <b className="type-num">{modo === 'ok' && catalogo !== null ? catalogo.length : '—'}</b>
+            <span>{t('sndCatalogo')}</span>
+          </span>
+          <span className="snd-conta">
+            <b className="type-num">{baixados}</b>
+            <span>{t('sndContaBaixados')}</span>
+          </span>
+          <span className={`snd-conta ${instalados > 0 ? 'snd-conta--vivo' : ''}`}>
+            <b className="type-num">{instalados}</b>
+            <span>{t('sndContaInstalados')}</span>
+          </span>
+        </div>
+        <div className="snd-medidos">
+          <div className="snd-medidos-grade">
+            <MetricRow label={t('sndGta')} value={scan.gtaRaiz} origin={scan.origin} />
+            <MetricRow
+              label={t('sndGeracao')}
+              value={scan.geracao === null ? null : scan.geracao === 'legacy' ? t('sndLegacy') : t('sndEnhanced')}
+            />
+            <MetricRow label={t('sndSfx')} value={scan.sfx} />
+            <MetricRow label={t('sndBiblioteca')} value={scan.biblioteca} />
+          </div>
+          {scan.alvoOrigem !== null && (
+            <span className="snd-explica">{t(scan.alvoOrigem === 'fivem' ? 'sndAlvoFivem' : 'sndAlvoInstalado')}</span>
+          )}
+        </div>
+      </Surface>
+
+      {scan.vanillaSumiu && (
+        <Surface className="snd-aviso snd-aviso--parado">
+          <div className="hazard-bar" aria-hidden />
+          <div className="snd-aviso-corpo">
+            <div className="snd-aviso-texto">
+              <span className="snd-aviso-titulo">
+                <IconWarn width={14} height={14} />
+                {t('sndVanillaTitulo')}
+              </span>
+              <span className="snd-aviso-forte">{t('sndVanillaAviso')}</span>
+            </div>
+          </div>
+        </Surface>
+      )}
+
+      <Surface className="snd-aviso">
         <div className="hazard-bar" aria-hidden />
         <div className="snd-aviso-corpo">
-          <KTag variant="critical">
-            <span className="inline-flex items-center gap-1.5">
-              <IconWarn width={11} height={11} />
-              {t('sndAtencao')}
+          <div className="snd-aviso-texto">
+            <span className="snd-aviso-titulo">
+              <IconWarn width={14} height={14} />
+              {t('sndZonaTitulo')}
             </span>
-          </KTag>
-          <p>{t('sndPureAviso')}</p>
+            <span className="snd-explica">{t('sndZonaDesc')}</span>
+            <span className="snd-explica">{t('sndPureAviso')}</span>
+          </div>
+          {scan.temBackup && (
+            <Button className="snd-restaurar" disabled={travado || ocupadoGeral} onClick={() => void restaurar()}>
+              {ocupado === 'restore' ? t('sndRestaurando') : t('sndRestaurar')}
+            </Button>
+          )}
         </div>
-      </div>
-
-      <div className="snd-estado">
-        <MetricRow label={t('sndGta')} value={scan.gtaRaiz} origin={scan.origin} />
-        <MetricRow
-          label={t('sndGeracao')}
-          value={scan.geracao === null ? null : scan.geracao === 'legacy' ? t('sndLegacy') : t('sndEnhanced')}
-        />
-        <MetricRow label={t('sndSfx')} value={scan.sfx} />
-        <MetricRow label={t('sndBiblioteca')} value={t('sndPacks', { n: scan.packs.length })} accent />
-        <MetricRow
-          label={t('sndCatalogo')}
-          value={modo === 'ok' && catalogo !== null ? t('sndPacks', { n: catalogo.length }) : null}
-        />
-      </div>
+      </Surface>
 
       {bloqueio !== null && (
         <p className="snd-bloqueio">
@@ -499,29 +532,36 @@ export function SoundsPanel() {
         </p>
       )}
 
-      <div className="snd-zona">
-        <div className="snd-zona-corpo">
-          <div className="snd-zona-texto">
-            <span className="snd-zona-titulo">{t('sndZonaTitulo')}</span>
-            <span className="fm-explica">{t('sndZonaDesc')}</span>
-            <span className="snd-zona-hint">{t('fmArmeSegure')}</span>
-          </div>
-          <ArmSwitch armed={armado} onChange={setArmado} disabled={travado || ocupadoGeral} />
-          {scan.temBackup && (
-            <Button className="snd-hold" disabled={travado || ocupadoGeral} onClick={() => void restaurar()}>
-              {ocupado === 'restore' ? t('sndRestaurando') : t('sndRestaurar')}
-            </Button>
+      <Surface className="snd-catalogo">
+        <div className="surface-head">
+          {t('sndCatalogoHead')}
+          <KTag variant={scan.instaladoId !== null ? 'ok' : 'estimated'}>
+            {scan.instaladoId !== null ? (
+              <span className="inline-flex items-center gap-1.5">
+                <IconCheck width={11} height={11} />
+                {t('sndInstalado')}
+              </span>
+            ) : (
+              t('sndNenhum')
+            )}
+          </KTag>
+          {/* Sem o original guardado, a instalação está bloqueada — prometer que
+              o backup nasce na primeira instalação contradiz o aviso acima. */}
+          {!scan.vanillaSumiu && (
+            <span className="snd-rodape ml-auto border-0 p-0">
+              {scan.temBackup ? t('sndBackupSim') : t('sndBackupNao')}
+            </span>
           )}
         </div>
-      </div>
 
-      {itens.length === 0 ? (
-        <p className="snd-rodape">{catalogoLendo ? t('sndLendoCatalogo') : modo === 'ok' ? t('sndCatalogoVazio') : t('sndSemPacks')}</p>
-      ) : (
-        <div className="snd-grade">{itens.map(card)}</div>
-      )}
-
-      <p className="snd-rodape">{scan.temBackup ? t('sndBackupSim') : t('sndBackupNao')}</p>
-    </Surface>
+        {itens.length === 0 ? (
+          <p className="snd-vazio">
+            {catalogoLendo ? t('sndLendoCatalogo') : modo === 'ok' ? t('sndCatalogoVazio') : t('sndSemPacks')}
+          </p>
+        ) : (
+          <div className="snd-grade">{itens.map(card)}</div>
+        )}
+      </Surface>
+    </div>
   )
 }

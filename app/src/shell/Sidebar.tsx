@@ -19,6 +19,7 @@ const NAV_ICONS: Record<ScreenId, React.ReactNode> = {
   cleanup: <><path d="M6 2h4v4l3 7H3l3-7V2Z" /><path d="M6 9h4" /></>,
   windows: <><rect x="2.5" y="2.5" width="11" height="11" /><path d="M2.5 8h11M8 2.5v11" /></>,
   games: <><rect x="1.5" y="4.5" width="13" height="7" /><path d="M4 6.5v3M2.5 8h3M10 7.5h.01M12 9.5h.01" /></>,
+  sounds: <><path d="M2.5 6h2.5L8.5 2.5v11L5 10H2.5V6Z" /><path d="M11 6.2a3.2 3.2 0 0 1 0 3.6M13 4.4a6 6 0 0 1 0 7.2" /></>,
   runtimes: <><rect x="2.5" y="2.5" width="11" height="11" /><path d="M5.5 8.5 7.5 10.5 11 6" /></>,
   tweaks: <><path d="M2 4.5h12M2 8h12M2 11.5h12" /><path d="M5.5 3v3M10.5 6.5v3M4 10v3" /></>,
   startup: <><path d="M8 14V5" /><path d="M4.5 8.5 8 5l3.5 3.5" /><path d="M2.5 2.5h11" /></>,
@@ -29,10 +30,10 @@ const NAV_ICONS: Record<ScreenId, React.ReactNode> = {
   log: <><rect x="2.5" y="5.5" width="11" height="8" /><path d="M2.5 5.5 5 2.5h6l2.5 3M8 8.5v2.5" /></>,
 }
 
-const MAIN: ScreenId[] = ['cockpit', 'fpsboost', 'xray', 'memory', 'cleanup', 'windows', 'games', 'runtimes', 'tweaks', 'startup', 'latency', 'bottleneck']
+const MAIN: ScreenId[] = ['cockpit', 'fpsboost', 'xray', 'memory', 'cleanup', 'windows', 'games', 'sounds', 'runtimes', 'tweaks', 'startup', 'latency', 'bottleneck']
 const FOOTER: ScreenId[] = ['settings', 'log']
 /** módulos-chave: barra amarela permanente e ícone amarelo */
-const CRITICAL: ReadonlyArray<ScreenId> = ['fpsboost', 'games']
+const CRITICAL: ReadonlyArray<ScreenId> = ['fpsboost', 'games', 'sounds']
 
 function NavIcon({ id }: { id: ScreenId }) {
   return (

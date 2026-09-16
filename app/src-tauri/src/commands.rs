@@ -3008,12 +3008,23 @@ if ($errors.Count -gt 0) {
         );
         // citizen/ tem SHA-256 conferido no boot e game-storage dispara GB de
         // re-download: o som não encosta em nada do cliente FiveM.
-        for proibido in ["citizen", "game-storage", "FiveM.app", "mods"] {
+        for proibido in ["citizen\\", "game-storage", "mods"] {
             assert!(
                 !codigo.contains(proibido),
                 "o som toca area do FiveM: {proibido}"
             );
         }
+        // O FiveM.app aparece uma vez só, e de leitura: o CitizenFX.ini diz
+        // qual GTA o FiveM carrega. Escrever ali continua proibido.
+        assert_eq!(
+            codigo.matches("FiveM.app").count(),
+            1,
+            "o som passou a mexer no FiveM.app alem de ler o CitizenFX.ini"
+        );
+        assert!(
+            codigo.contains("CitizenFX.ini") && codigo.contains("IVPath"),
+            "o alvo deixou de seguir o GTA que o FiveM carrega"
+        );
         assert!(
             codigo.contains("ERR_GAME_RUNNING"),
             "o script perdeu a recusa com o jogo aberto"
@@ -3022,12 +3033,25 @@ if ($errors.Count -gt 0) {
             codigo.contains("ERR_SND_GERACAO"),
             "geração indetectável deixou de recusar"
         );
-        // O vanilla vai pro backup ANTES de qualquer escrita, senão não existe
-        // caminho de volta.
+        // Quem já tinha um mod na mão tem o vanilla só na Steam: gravar esse
+        // mod como "original" apagaria o caminho de volta em silêncio.
+        assert!(
+            codigo.contains("ERR_SND_NAO_VANILLA"),
+            "o backup voltou a aceitar um pack conhecido como original"
+        );
+        // Legacy e Enhanced têm vanilla diferentes — um backup só misturaria os
+        // dois e a restauração entregaria um .rpf que o jogo não carrega.
+        assert!(
+            codigo.contains("Join-Path $SndBackupRaiz ([string]$alvo.geracao)"),
+            "o backup deixou de ser separado por geracao"
+        );
+
         let install = codigo
             .split_once("'install'")
             .expect("ação install sumiu")
             .1;
+        // O vanilla vai pro backup ANTES de qualquer escrita, senão não existe
+        // caminho de volta.
         let backup = install.find("Save-SndBackup").expect("install sem backup");
         let copia = install.find("Copy-SndArquivo").expect("install sem copia");
         assert!(backup < copia, "o pack é escrito antes de guardar o vanilla");

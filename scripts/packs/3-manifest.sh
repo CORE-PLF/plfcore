@@ -19,8 +19,10 @@ node -e '
   const packs = bruto.packs.map((p) => ({
     slug: p.slug,
     nome: p.nome,
-    // so "enhanced" esta verificado; o app esconde pack que nao bate com a geracao detectada
-    geracao: ["enhanced"],
+    // Legacy: os .rpf batem em tamanho com o vanilla do GTA V Legacy
+    // (112784384 / 3882496) e nao com o do Enhanced (112785408 / 3883008).
+    // E o pure mode, que e o motivo destes packs existirem, roda no Legacy.
+    geracao: ["legacy"],
     bytes: p.bytes,
     arquivos: p.arquivos.map((a) => ({
       nome: a.nome,
