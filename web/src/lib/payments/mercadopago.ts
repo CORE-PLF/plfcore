@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
 import type { Order, Payment, User } from '@/generated/prisma/client'
 import { db } from '../db'
 import { env } from '../env'
+import { BRAND } from '../brand'
 import type { CheckoutStart, PaymentProvider, RefundResult, WebhookEvent } from './types'
 
 // Mercado Pago via REST (sem SDK): PIX direto e cartão via Checkout Pro.
@@ -39,7 +40,7 @@ export const mercadopagoProvider: PaymentProvider = {
         body: JSON.stringify({
           transaction_amount: order.totalCents / 100,
           payment_method_id: 'pix',
-          description: `Resync — pedido ${order.id}`,
+          description: `${BRAND.name} — pedido ${order.id}`,
           external_reference: order.id,
           payer: { email: user.email },
           notification_url: `${env.APP_URL}/api/webhooks/payments`,
@@ -74,7 +75,7 @@ export const mercadopagoProvider: PaymentProvider = {
       body: JSON.stringify({
         items: [
           {
-            title: `Resync — pedido ${order.id}`,
+            title: `${BRAND.name} — pedido ${order.id}`,
             quantity: 1,
             currency_id: order.currency,
             unit_price: order.totalCents / 100,
