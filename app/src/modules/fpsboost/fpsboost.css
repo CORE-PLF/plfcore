@@ -2,9 +2,9 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  height: 100%;
+  min-height: 100%;
   padding: 22px 24px;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 .fb-screen > header { margin-bottom: 0; }
 
@@ -126,7 +126,7 @@
 /* ===== linha final: detalhe do grupo aberto + zona de risco ===== */
 .fb-bottom {
   flex: 1;
-  min-height: 0;
+  min-height: 330px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 420px;
   gap: 14px;
@@ -265,4 +265,19 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   color: var(--color-ink-3);
+}
+
+/* ===== janela estreita (não maximizada): colunas e linhas mais enxutas ===== */
+@media (max-width: 1400px) {
+  .fb-grupo-acoes { flex-wrap: wrap; gap: 6px 10px; }
+  .fb-screen { padding: 20px 18px; }
+  .fb-hero { padding: 16px 18px; }
+  .fb-hero-top { gap: 18px; }
+  .fb-hero-num { font-size: 48px; }
+  .fb-hero-progresso { min-width: 200px; }
+  .fb-hero-ctx { flex-wrap: wrap; gap: 8px 14px; }
+  .fb-grupos { gap: 10px; }
+  .fb-bottom { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 12px; }
+  .fb-row { grid-template-columns: minmax(0, 150px) minmax(0, 1fr) 128px; gap: 12px; padding: 10px 12px; }
+  .fb-fora-grid { grid-template-columns: minmax(0, 1fr); }
 }

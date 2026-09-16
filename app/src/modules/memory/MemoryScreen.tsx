@@ -204,7 +204,7 @@ export default function MemoryScreen() {
           }}
         />
       ) : (
-        <div className="grid grid-cols-[340px_minmax(0,1fr)_340px] items-stretch gap-4">
+        <div className="mem-grid">
           <Surface className="flex flex-col overflow-hidden">
             <div className="surface-head">
               {t('usoLive')}
@@ -247,7 +247,7 @@ export default function MemoryScreen() {
                 </span>
               )}
             </div>
-            <div className="grid flex-1 grid-cols-2 content-start gap-3 p-4">
+            <div className="grid flex-1 grid-cols-2 content-start gap-3 p-4 max-[1400px]:gap-2 max-[1400px]:p-3">
               {mem
                 ? mem.sticks.map((stick) => {
                     const job = jobs.find((j) => j.id === stickJobs[stick.slot])

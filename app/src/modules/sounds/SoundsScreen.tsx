@@ -15,7 +15,8 @@ import { ScreenTitle } from '../../components/Kicker'
 import { ProgressBar } from '../../components/ProgressBar'
 import { DemoTag, KTag } from '../../components/Tag'
 import { MetricRow } from '../../components/MetricRow'
-import { IconCheck, IconWarn } from '../../components/icons'
+import { IconCheck, IconPlay, IconWarn } from '../../components/icons'
+import { Modal } from '../../components/Modal'
 import { ErrorState } from '../../components/states'
 
 import { dict } from './i18n'
@@ -35,7 +36,6 @@ const ERROS = {
   ERR_SND_GERACAO: 'sndErrGeracao',
   ERR_GAME_RUNNING: 'sndBloqJogo',
   ERR_SND_SEM_BACKUP: 'sndErrSemBackup',
-  ERR_SND_NAO_VANILLA: 'sndErrNaoVanilla',
   ERR_SND_PACK: 'sndErrPack',
   ERR_SND_HASH: 'sndErrHash',
   ERR_SND_COPIA: 'sndErrCopia',
@@ -114,11 +114,8 @@ export default function SoundsScreen() {
   const [progresso, setProgresso] = useState<Record<string, Progresso>>({})
   const [erro, setErro] = useState(false)
   const [ocupado, setOcupado] = useState<string | null>(null)
-  // prefers-reduced-motion, ou play() recusado pela política de autoplay do webview:
-  // nos dois casos a prévia passa a depender de clique, e o card mostra o botão.
-  const [semAutoplay, setSemAutoplay] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
+  // prévia em player próprio: clicar na capa abre o vídeo com controles normais
+  const [tocando, setTocando] = useState<ItemPack | null>(null)
 
   const ler = useCallback(async () => {
     setErro(false)
@@ -303,8 +300,9 @@ export default function SoundsScreen() {
   const semGta = scan.gtaRaiz === null
   const semDestino = scan.geracao === null || scan.sfx === null
   const bloqueio = semGta ? t('sndBloqGta') : semDestino ? t('sndBloqGeracao') : scan.jogoAberto ? t('sndBloqJogo') : null
-  // vanillaSumiu trava tudo: sem original guardado, instalar seria um caminho sem volta.
-  const travado = bloqueio !== null || scan.vanillaSumiu
+  // Sem original guardado a instalação segue: trocar um pack por outro não perde
+  // nada. O aviso continua na tela, porque o caminho de volta passa pela Steam.
+  const travado = bloqueio !== null
   const baixandoAlgum = Object.keys(progresso).length > 0
   const ocupadoGeral = ocupado !== null || baixandoAlgum
   const baixados = scan.packs.length
@@ -332,24 +330,14 @@ export default function SoundsScreen() {
       <div key={item.slug} className="snd-pack">
         <div className="snd-pack-capa">
           {item.previewUrl !== null ? (
-            <video
-              className="snd-pack-video"
-              src={item.previewUrl}
-              poster={item.capaUrl ?? undefined}
-              loop
-              playsInline
-              preload="none"
-              onMouseEnter={(e) => {
-                if (semAutoplay) return
-                const v = e.currentTarget
-                v.volume = 0.5
-                void v.play().catch(() => setSemAutoplay(true))
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.pause()
-                e.currentTarget.currentTime = 0
-              }}
-            />
+            <button type="button" className="snd-pack-abrir" onClick={() => setTocando(item)} aria-label={t('sndTocarDe', { nome: item.nome })}>
+              {/* metadata: o primeiro quadro serve de capa sem baixar o vídeo inteiro */}
+              <video className="snd-pack-video" src={item.previewUrl} poster={item.capaUrl ?? undefined} preload="metadata" muted playsInline />
+              <span className="snd-pack-play-alvo">
+                <IconPlay width={16} height={16} />
+                {t('sndTocar')}
+              </span>
+            </button>
           ) : (
             <span className="snd-pack-sem">{t('sndSemPrevia')}</span>
           )}
@@ -360,25 +348,6 @@ export default function SoundsScreen() {
               {t('sndInstalado')}
             </span>
           )}
-
-          {item.previewUrl !== null &&
-            (semAutoplay ? (
-              <button
-                type="button"
-                className="snd-pack-play"
-                onClick={(e) => {
-                  const v = e.currentTarget.parentElement?.querySelector('video')
-                  if (!v) return
-                  v.volume = 0.5
-                  if (v.paused) void v.play().catch(() => {})
-                  else v.pause()
-                }}
-              >
-                {t('sndTocar')}
-              </button>
-            ) : (
-              <span className="snd-pack-hint">{t('sndPassarMouse')}</span>
-            ))}
         </div>
 
         <div className="snd-pack-corpo">
@@ -485,7 +454,7 @@ export default function SoundsScreen() {
       </Surface>
 
       {scan.vanillaSumiu && (
-        <Surface className="snd-aviso snd-aviso--parado">
+        <Surface className="snd-aviso">
           <div className="hazard-bar" aria-hidden />
           <div className="snd-aviso-corpo">
             <div className="snd-aviso-texto">
@@ -562,6 +531,14 @@ export default function SoundsScreen() {
           <div className="snd-grade">{itens.map(card)}</div>
         )}
       </Surface>
+
+      {tocando !== null && tocando.previewUrl !== null && (
+        <Modal open title={tocando.nome} width={880} onClose={() => setTocando(null)}>
+          {/* autoPlay com som: é pack de som, prévia muda não serve */}
+          <video className="snd-player" src={tocando.previewUrl} controls autoPlay playsInline />
+          <p className="snd-explica mt-3">{t('sndPreviaNota')}</p>
+        </Modal>
+      )}
     </div>
   )
 }

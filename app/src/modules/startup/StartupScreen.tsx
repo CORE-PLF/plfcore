@@ -127,8 +127,8 @@ export default function StartupScreen() {
         <>
           <Surface className="overflow-hidden">
             <div className="hazard-bar" aria-hidden />
-            <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-8 p-5">
-              <div className="flex flex-col gap-1">
+            <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-8 p-5 max-[1400px]:gap-5">
+              <div className="flex max-w-[230px] flex-col gap-1">
                 <span className="type-kicker">{t('heroKicker')}</span>
                 <span className="st-hero-num">{ativos}</span>
                 <span className="text-[11px] font-semibold text-ink-3">{t('heroResumo', { n: ativos, total: entradas.length })}</span>

@@ -21,7 +21,7 @@ use tauri::{AppHandle, Emitter, Manager};
 
 const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 
-// Scripts PowerShell cifrados no build (ver build.rs): `strings resync.exe`
+// Scripts PowerShell cifrados no build (ver build.rs): `strings PLFCore.exe`
 // não revela nada; decifra em memória no primeiro uso.
 include!(concat!(env!("OUT_DIR"), "/ps_enc.rs"));
 
@@ -331,7 +331,7 @@ fn run_powershell_env(
         static SEQ: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
         let n = SEQ.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         let caminho = std::env::temp_dir().join(format!(
-            "resync-{}-{}-{n}.ps1",
+            "plfcore-{}-{}-{n}.ps1",
             std::process::id(),
             agora_ms()
         ));
@@ -2248,14 +2248,14 @@ fn mostrar_janela(app: &AppHandle) {
 /// do front: o menu é nativo e não enxerga o dicionário de i18n.
 #[tauri::command]
 pub fn hide_to_tray(app: AppHandle, abrir: String, sair: String) -> Result<(), String> {
-    if app.tray_by_id("resync").is_none() {
+    if app.tray_by_id("plfcore").is_none() {
         let item_abrir = MenuItem::with_id(&app, "abrir", &abrir, true, None::<&str>)
             .map_err(|e| e.to_string())?;
         let item_sair =
             MenuItem::with_id(&app, "sair", &sair, true, None::<&str>).map_err(|e| e.to_string())?;
         let menu =
             Menu::with_items(&app, &[&item_abrir, &item_sair]).map_err(|e| e.to_string())?;
-        let mut tray = TrayIconBuilder::with_id("resync")
+        let mut tray = TrayIconBuilder::with_id("plfcore")
             .tooltip("PLF CORE")
             .menu(&menu)
             .show_menu_on_left_click(false)
@@ -2776,7 +2776,7 @@ mod tests {
     /// O número da varredura é uma promessa: só entra o que a limpeza consegue apagar.
     #[test]
     fn varredura_nao_promete_arquivo_em_uso() {
-        let dir = std::env::temp_dir().join("resync-teste-limpeza");
+        let dir = std::env::temp_dir().join("plfcore-teste-limpeza");
         std::fs::create_dir_all(&dir).unwrap();
         let livre = dir.join("livre.bin");
         let preso = dir.join("preso.bin");
@@ -3034,9 +3034,12 @@ if ($errors.Count -gt 0) {
             "geração indetectável deixou de recusar"
         );
         // Quem já tinha um mod na mão tem o vanilla só na Steam: gravar esse
-        // mod como "original" apagaria o caminho de volta em silêncio.
+        // mod como "original" apagaria o caminho de volta em silêncio. O backup
+        // desiste (return $false) sem impedir a instalação por cima.
         assert!(
-            codigo.contains("ERR_SND_NAO_VANILLA"),
+            codigo
+                .replace('\r', "")
+                .contains("$conhecidos.ContainsKey((Get-SndHash $origem))) {\n      return $false"),
             "o backup voltou a aceitar um pack conhecido como original"
         );
         // Legacy e Enhanced têm vanilla diferentes — um backup só misturaria os

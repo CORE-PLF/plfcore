@@ -62,6 +62,11 @@ export const IconArrow = (p: SVGProps<SVGSVGElement>) => (
     <path d="M2 8h11M9 4l4 4-4 4" />
   </svg>
 )
+export const IconPlay = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}>
+    <path d="M4.5 2.5 13 8l-8.5 5.5V2.5Z" strokeLinejoin="round" />
+  </svg>
+)
 export const IconBolt = (p: SVGProps<SVGSVGElement>) => (
   <svg {...base({ strokeWidth: 1.7, ...p })}>
     <path d="M9 1.5 3.5 9H7l-.5 5.5L12.5 7H9l0-5.5Z" />

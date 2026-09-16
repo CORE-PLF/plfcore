@@ -43,7 +43,9 @@ function DataRow({ label, value }: { label: string; value: string | null }) {
   const tk = useT(kitDict)
   return (
     <div className="datarow">
-      <span className="text-[11px] font-semibold tracking-[0.06em] text-ink-3">{label}</span>
+      <span className="text-[11px] font-semibold tracking-[0.06em] text-ink-3 max-[1400px]:text-[10px] max-[1400px]:tracking-[0.02em]">
+        {label}
+      </span>
       <span className={`type-num truncate text-xs font-bold ${value === null ? 'text-ink-4' : 'text-ink-1'}`}>
         {value ?? tk('naoDisponivel')}
       </span>
@@ -54,8 +56,8 @@ function DataRow({ label, value }: { label: string; value: string | null }) {
 function Reading({ label, value, last = false }: { label: string; value: string | null; last?: boolean }) {
   const tk = useT(kitDict)
   return (
-    <div className={`flex flex-1 items-center justify-between gap-4 px-4 ${last ? '' : 'border-b border-line'}`}>
-      <span className="shrink-0 text-[11px] font-semibold tracking-[0.1em] text-ink-3">{label}</span>
+    <div className={`flex min-h-8 flex-1 items-center justify-between gap-3 px-4 ${last ? '' : 'border-b border-line'}`}>
+      <span className="min-w-0 truncate text-[11px] font-semibold tracking-[0.1em] text-ink-3">{label}</span>
       <span className={`type-num truncate text-xs font-bold ${value === null ? 'text-ink-4' : 'text-ink-1'}`} title={value ?? undefined}>
         {value ?? tk('naoDisponivel')}
       </span>
@@ -90,15 +92,17 @@ function Instrument({
         <span>{name}</span>
         <span className="type-num text-[10px] font-normal tracking-[0.18em] text-ink-3">{code}</span>
       </div>
-      <div className="flex gap-4 p-[14px]">
-        <Gauge value={value} peak={peak} label={name} sublabel={sublabel} onClick={onClick} showLabel={false} />
+      <div className="flex gap-3 p-[14px]">
+        <div className="w-[42%] min-w-[104px] max-w-[186px] shrink-0">
+          <Gauge value={value} peak={peak} label={name} sublabel={sublabel} onClick={onClick} showLabel={false} fluid />
+        </div>
         <div className="flex min-w-0 flex-1 flex-col gap-[10px]">
           <div className="min-w-0">
             <span className="block text-[11px] font-semibold tracking-[0.14em] text-ink-3">{usoAgora}</span>
             {value === null ? (
               <span className="block text-[20px] font-bold leading-[1.05] text-ink-4">{naoDisponivel}</span>
             ) : (
-              <span className="type-num block text-[40px] font-bold leading-[1.05] text-ink-1">{Math.round(value)}%</span>
+              <span className="type-num block text-[clamp(28px,2.6vw,40px)] font-bold leading-[1.05] text-ink-1">{Math.round(value)}%</span>
             )}
             <span className="type-num block truncate text-[11px] text-ink-3" title={sublabel ?? undefined}>
               {sublabel ?? naoDisponivel}
@@ -212,7 +216,7 @@ export default function CockpitScreen() {
   ]
 
   return (
-    <div className="flex h-full flex-col gap-4 overflow-hidden px-6 pb-5 pt-[22px]">
+    <div className="flex min-h-full flex-col gap-4 overflow-x-hidden px-6 pb-5 pt-[22px]">
       <ScreenTitle
         kicker={t('kicker')}
         title={t('titulo')}
@@ -356,7 +360,7 @@ export default function CockpitScreen() {
       </Surface>
 
       {/* leituras densas + processos em segundo plano */}
-      <div className="grid min-h-0 flex-1 grid-cols-2 gap-4">
+      <div className="grid min-h-[272px] flex-1 grid-cols-2 gap-4">
         <Surface className="flex flex-col overflow-hidden">
           <div className="surface-head">{t('leituras')}</div>
           <div className="flex min-h-0 flex-1 flex-col">
@@ -392,7 +396,7 @@ export default function CockpitScreen() {
             {procs?.map((p, i) => (
               <div
                 key={p.pid}
-                className={`flex flex-1 items-center gap-3 px-4 ${i === procs.length - 1 ? '' : 'border-b border-line'}`}
+                className={`flex min-h-10 flex-1 items-center gap-3 px-4 ${i === procs.length - 1 ? '' : 'border-b border-line'}`}
               >
                 <span className="type-num min-w-0 flex-1 truncate text-xs text-ink-1" title={p.nome}>
                   {p.nome}

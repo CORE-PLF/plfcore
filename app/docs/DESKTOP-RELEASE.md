@@ -92,12 +92,12 @@ Para testar a ponta a ponta: emitir uma key em `/admin/licencas` > CONCEDER LICE
 
 ## Atualizar quem já instalou
 
-O mesmo `PLFCoreSetup.exe` serve para instalação nova e para atualização — não existe instalador separado de update. Ao rodar em uma máquina que já tem o RESYNC, o instalador detecta a instalação anterior pela chave de desinstalação e abre uma página com duas opções:
+O mesmo `PLFCoreSetup.exe` serve para instalação nova e para atualização — não existe instalador separado de update. Ao rodar em uma máquina que já tem o PLF CORE, o instalador detecta a instalação anterior pela chave de desinstalação e abre uma página com duas opções:
 
 - **Desinstalar a versão antiga antes de instalar** — atualização limpa, recomendada.
 - **Não desinstalar** — instala por cima, mantendo a pasta.
 
-Nos dois casos a licença ativada continua valendo: o `deviceToken` fica no Windows Credential Manager e nenhum passo do instalador toca nele. Na atualização o instalador também não apaga dados do aplicativo — a opção "apagar dados" só aparece em uma desinstalação avulsa, nunca no meio de um update. O baseline de reversão (`%LOCALAPPDATA%\Resync\restore.json`) fica fora da pasta do aplicativo e sobrevive até a uma desinstalação completa.
+Nos dois casos a licença ativada continua valendo: o `deviceToken` fica no Windows Credential Manager e nenhum passo do instalador toca nele. Na atualização o instalador também não apaga dados do aplicativo — a opção "apagar dados" só aparece em uma desinstalação avulsa, nunca no meio de um update. O baseline de reversão (`%LOCALAPPDATA%\PLFCore\restore.json`) fica fora da pasta do aplicativo e sobrevive até a uma desinstalação completa.
 
 Publicar a atualização é o mesmo fluxo da seção anterior: nova versão em `/admin/versoes` com o número novo, novo checksum, PUBLICAR. A versão anterior deixa de ser servida assim que a nova entra no ar.
 

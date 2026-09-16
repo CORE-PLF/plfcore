@@ -54,7 +54,8 @@
 }
 .snd-medidos {
   display: flex;
-  flex: 1;
+  /* base 420px: abaixo disso os caminhos viram "C:\…" e a faixa desce de linha */
+  flex: 1 1 420px;
   flex-direction: column;
   gap: 3px;
   min-width: 0;
@@ -64,6 +65,16 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   column-gap: 22px;
   min-width: 0;
+}
+@media (max-width: 1400px) {
+  .snd-topo {
+    flex-wrap: wrap;
+    gap: 12px 16px;
+  }
+  .snd-medidos-grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+  }
 }
 
 /* ===== zona de troca de arquivo: faixa hazard + caminho de volta ===== */
@@ -99,9 +110,6 @@
 .snd-aviso-titulo svg {
   flex: none;
   color: var(--color-signal);
-}
-.snd-aviso--parado {
-  border-color: var(--color-blood);
 }
 .snd-aviso-forte {
   font-size: 12px;
@@ -207,35 +215,46 @@
   letter-spacing: 0.08em;
   color: var(--color-ink-1);
 }
-.snd-pack-hint {
+/* a capa inteira é o botão do player: alvo grande, sem caça ao ícone */
+.snd-pack-abrir {
   position: absolute;
-  right: 8px;
-  bottom: 8px;
-  padding: 3px 6px;
-  border-radius: var(--radius-sm);
-  background: var(--color-void);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--color-ink-3);
-}
-.snd-pack-play {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
-  padding: 4px 9px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-edge-2);
-  background: var(--color-void);
-  font-family: var(--font-ui);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--color-ink-1);
+  inset: 0;
+  display: block;
+  padding: 0;
+  border: none;
+  background: transparent;
   cursor: pointer;
 }
-.snd-pack-play:hover {
-  filter: brightness(1.08);
+.snd-pack-play-alvo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(16, 16, 16, 0.45);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-ink-1);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--expo);
+}
+.snd-pack-play-alvo svg {
+  color: var(--color-signal);
+}
+.snd-pack-abrir:hover .snd-pack-play-alvo,
+.snd-pack-abrir:focus-visible .snd-pack-play-alvo {
+  opacity: 1;
+}
+/* o player do modal: o vídeo manda na altura, o modal acompanha */
+.snd-player {
+  display: block;
+  width: 100%;
+  max-height: calc(100vh - 260px);
+  border-radius: var(--radius-md);
+  background: var(--color-void);
 }
 .snd-pack-corpo {
   flex: 1;

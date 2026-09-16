@@ -353,14 +353,14 @@ export default function LatencyScreen() {
                   <Skeleton className="h-64 w-full" />
                 ) : dev ? (
                   <>
-                    <div className="flex items-end gap-6">
-                      <div>
+                    <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
+                      <div className="min-w-0">
                         <p className="type-kicker">{t('latencia')}</p>
                         <p className={`type-display type-num mt-1 text-[44px] ${heroLatencia === null ? 'text-ink-4' : ''}`}>
                           {heroLatencia ?? tk('naoDisponivel')}
                         </p>
                       </div>
-                      <div className="mb-2 flex items-center gap-2">
+                      <div className="mb-2 flex flex-wrap items-center gap-2">
                         <span className="pill">
                           {t('polling')}
                           <span className="pill--value">{fmtHz(dev.taxaHz) ?? tk('naoDisponivel')}</span>

@@ -9,13 +9,13 @@ export function Kicker({ children }: { children: React.ReactNode }) {
  */
 export function ScreenTitle({ kicker, title, meta, actions }: { kicker: string; title: string; meta?: string; actions?: React.ReactNode }) {
   return (
-    <header className="mb-4 flex items-end gap-5">
-      <div className="flex flex-col gap-1">
+    <header className="mb-4 flex flex-wrap items-end gap-x-5 gap-y-2">
+      <div className="flex min-w-0 flex-col gap-1">
         <Kicker>{kicker}</Kicker>
         <h1 className="type-display text-[34px]">{title}</h1>
       </div>
-      {meta && <span className="mb-1 text-[13px] text-ink-3">{meta}</span>}
-      {actions && <div className="ml-auto flex items-center gap-3">{actions}</div>}
+      {meta && <span className="mb-1 min-w-0 text-[13px] text-ink-3">{meta}</span>}
+      {actions && <div className="ml-auto flex shrink-0 flex-wrap items-center justify-end gap-3">{actions}</div>}
     </header>
   )
 }

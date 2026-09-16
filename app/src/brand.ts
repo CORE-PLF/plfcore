@@ -2,7 +2,7 @@
 export const BRAND = {
   name: 'PLF CORE',
   shortName: 'PLF',
-  version: '1.0.0',
+  version: '1.0.1',
   revision: 'REV A',
   /// exibido na sidebar — manter em sincronia com package.json e tauri.conf.json
   get versionLine() {

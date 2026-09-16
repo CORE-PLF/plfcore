@@ -57,7 +57,7 @@ function Stat({ label, sub, value, accent }: { label: string; sub?: string; valu
     <div className="min-w-0">
       <p className="type-kicker">{label}</p>
       <p
-        className={`type-num mt-1 truncate text-[18px] font-bold leading-tight ${value === null ? 'text-ink-4' : accent ? 'text-signal' : 'text-ink-1'}`}
+        className={`type-num mt-1 truncate text-[18px] font-bold leading-tight max-[1400px]:text-[15px] ${value === null ? 'text-ink-4' : accent ? 'text-signal' : 'text-ink-1'}`}
         title={value ?? undefined}
       >
         {value ?? tk('naoDisponivel')}
@@ -72,7 +72,7 @@ function Row({ label, value, children }: { label: string; value: string | null; 
   const tk = useT(kitDict)
   return (
     <div className="datarow">
-      <span className="shrink-0 text-[11px] font-semibold tracking-[0.06em] text-ink-3 uppercase">{label}</span>
+      <span className="text-[11px] font-semibold tracking-[0.06em] text-ink-3 uppercase">{label}</span>
       <span className="flex min-w-0 items-center gap-2">
         {children}
         <span className={`type-num truncate text-xs font-bold ${value === null ? 'text-ink-4' : 'text-ink-1'}`} title={value ?? undefined}>
@@ -117,14 +117,16 @@ function Ficha({ id, num, title, selected, onHot, register, extra, children }: F
         onMouseEnter={() => onHot(id)}
         onMouseLeave={() => onHot(null)}
       >
-        <header className="surface-head" style={{ minHeight: 40, padding: '0 14px' }}>
+        <header className="surface-head gap-2 py-1.5 max-[1400px]:flex-wrap" style={{ minHeight: 40, paddingInline: 14 }}>
           <span
-            className={`type-num rounded-[3px] px-1.5 py-0.5 text-[10px] ${selected ? 'bg-signal text-void' : 'bg-surface-3 text-ink-2'}`}
+            className={`type-num shrink-0 rounded-[3px] px-1.5 py-0.5 text-[10px] ${selected ? 'bg-signal text-void' : 'bg-surface-3 text-ink-2'}`}
           >
             {num}
           </span>
-          <h2 className="text-xs font-bold tracking-[0.1em] text-ink-1">{title}</h2>
-          {extra && <div className="ml-auto flex items-center gap-2">{extra}</div>}
+          <h2 className="truncate text-xs font-bold tracking-[0.1em] text-ink-1 max-[1400px]:tracking-[0.04em]" title={title}>
+            {title}
+          </h2>
+          {extra && <div className="ml-auto flex shrink-0 items-center gap-2">{extra}</div>}
         </header>
         <div className="p-3">
           <div className="flex flex-col gap-px overflow-hidden rounded-[6px]">{children}</div>
@@ -375,10 +377,10 @@ export default function XRayScreen() {
           <span>{t('registro')}</span>
           <span className="type-num ml-auto text-[10px] font-normal tracking-[0.18em] text-ink-3">{rec.serialBios ?? ''}</span>
         </div>
-        <div className="grid grid-cols-[minmax(0,1.6fr)_repeat(4,minmax(0,1fr))] items-end gap-6 px-4 py-4">
+        <div className="grid grid-cols-[minmax(0,1.6fr)_repeat(4,minmax(0,1fr))] items-end gap-6 px-4 py-4 max-[1400px]:gap-4">
           <div className="min-w-0">
             <p className="type-kicker">{t('hostname')}</p>
-            <p className="type-num mt-1 truncate text-[32px] font-bold leading-none text-ink-1" title={rec.hostname}>
+            <p className="type-num mt-1 truncate text-[32px] font-bold leading-none text-ink-1 max-[1400px]:text-[24px]" title={rec.hostname}>
               {rec.hostname}
             </p>
           </div>
@@ -421,7 +423,7 @@ export default function XRayScreen() {
         </div>
 
         {/* inventário — grade de cards por componente */}
-        <div className="grid min-w-0 grid-cols-2 items-start gap-4">
+        <div className="grid min-w-0 grid-cols-2 items-start gap-4 max-[1400px]:gap-3">
           <Ficha id="cpu" num={numOf('cpu')} title={t('sCpu')} selected={sel === 'cpu'} onHot={onHot} register={register}>
             <Row label={t('modelo')} value={inv.cpu.nome} />
             <Row label={t('nucleosThreads')} value={`${inv.cpu.nucleos} / ${inv.cpu.threads}`} />

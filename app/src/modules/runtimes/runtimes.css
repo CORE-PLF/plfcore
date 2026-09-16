@@ -176,3 +176,11 @@
   line-height: 1.45;
   color: var(--color-ink-3);
 }
+
+/* ===== janela estreita (não maximizada) ===== */
+@media (max-width: 1400px) {
+  .rt-screen { padding: 22px 18px; }
+  .rt-hero { padding: 16px 18px; }
+  .rt-hero-main { gap: 18px; }
+  .rt-row { grid-template-columns: minmax(0, 200px) minmax(0, 1fr) 120px 110px 104px; gap: 12px; padding: 6px 12px; }
+}

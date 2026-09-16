@@ -1,10 +1,10 @@
-# Política de debloat do RESYNC
+# Política de debloat do PLF CORE
 
 ## Referências
 
 - O catálogo foi revisado contra o preset `AppxDefault` e o preset `Standard` do
   [ChrisTitusTech/winutil](https://github.com/ChrisTitusTech/winutil), licenciado em MIT.
-- A implementação do RESYNC é própria e usa os cmdlets documentados pela Microsoft:
+- A implementação do PLF CORE é própria e usa os cmdlets documentados pela Microsoft:
   `Remove-AppxPackage` para contas existentes e `Remove-AppxProvisionedPackage` para
   impedir o provisionamento em novas contas.
 

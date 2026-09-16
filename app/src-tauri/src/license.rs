@@ -79,6 +79,22 @@ struct ValidateResponse {
 }
 
 #[derive(Clone, Debug, Deserialize)]
+struct VersionResponse {
+    version: String,
+    #[serde(default)]
+    notes: String,
+}
+
+#[derive(Clone, Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateState {
+    atual: String,
+    disponivel: String,
+    tem_nova: bool,
+    notas: String,
+}
+
+#[derive(Clone, Debug, Deserialize)]
 struct ApiErrorEnvelope {
     error: ApiErrorBody,
 }
@@ -252,6 +268,20 @@ fn post<T: DeserializeOwned, B: Serialize>(path: &str, body: &B) -> Result<T, Ap
         .json(body)
         .send()
         .map_err(|_| ApiFailure::Network)?;
+    if !response.status().is_success() {
+        return match response.json::<ApiErrorEnvelope>() {
+            Ok(value) => Err(ApiFailure::Server(value.error.code)),
+            Err(_) => Err(ApiFailure::InvalidResponse),
+        };
+    }
+    response
+        .json::<T>()
+        .map_err(|_| ApiFailure::InvalidResponse)
+}
+
+fn get<T: DeserializeOwned>(path: &str) -> Result<T, ApiFailure> {
+    let url = format!("{}{}", api_base()?, path);
+    let response = client()?.get(url).send().map_err(|_| ApiFailure::Network)?;
     if !response.status().is_success() {
         return match response.json::<ApiErrorEnvelope>() {
             Ok(value) => Err(ApiFailure::Server(value.error.code)),
@@ -446,6 +476,60 @@ pub async fn license_heartbeat() -> Result<LicenseState, String> {
     result
 }
 
+/// Versão comparada por partes numéricas: em texto puro "1.9.0" venceria
+/// "1.10.0" e ninguém receberia a atualização.
+fn version_parts(value: &str) -> Vec<u32> {
+    value
+        .trim()
+        .trim_start_matches('v')
+        .split('.')
+        .map(|part| {
+            part.trim_matches(|c: char| !c.is_ascii_digit())
+                .parse()
+                .unwrap_or(0)
+        })
+        .collect()
+}
+
+fn is_newer(remote: &str, local: &str) -> bool {
+    let (remote, local) = (version_parts(remote), version_parts(local));
+    for i in 0..remote.len().max(local.len()) {
+        let (a, b) = (
+            remote.get(i).copied().unwrap_or(0),
+            local.get(i).copied().unwrap_or(0),
+        );
+        if a != b {
+            return a > b;
+        }
+    }
+    false
+}
+
+#[tauri::command]
+pub async fn check_app_update() -> Result<UpdateState, String> {
+    tauri::async_runtime::spawn_blocking(|| {
+        let atual = APP_VERSION.to_string();
+        // Sem rede ou sem versão publicada não é problema do usuário: responde
+        // "não tem nova" e a UI não mostra nada.
+        let Ok(response) = get::<VersionResponse>("/api/v1/app/version") else {
+            return UpdateState {
+                disponivel: atual.clone(),
+                tem_nova: false,
+                notas: String::new(),
+                atual,
+            };
+        };
+        UpdateState {
+            tem_nova: is_newer(&response.version, &atual),
+            disponivel: response.version,
+            notas: response.notes,
+            atual,
+        }
+    })
+    .await
+    .map_err(|_| "ERR_UPDATE_TASK".to_string())
+}
+
 #[tauri::command]
 pub async fn license_forget() -> Result<(), String> {
     tauri::async_runtime::spawn_blocking(delete_stored)
@@ -486,6 +570,30 @@ mod tests {
         assert!(gate_open(), "validação real abre o gate");
         gate_update(&LicenseState::unlicensed(Some("ERR_LICENSE_EXPIRED".into())));
         assert!(!gate_open(), "bloqueio derruba o gate na hora");
+    }
+
+    #[test]
+    fn version_compare_is_numeric() {
+        assert!(is_newer("1.10.0", "1.9.0"));
+        assert!(!is_newer("1.9.0", "1.10.0"));
+        assert!(!is_newer("1.2.3", "1.2.3"));
+        assert!(is_newer("1.2.3", "1.2"));
+        assert!(!is_newer("v1.2.0", "1.2.0"));
+        assert!(!is_newer("lixo", "1.0.0"));
+    }
+
+    /// O aviso de atualização compara a versão publicada contra CARGO_PKG_VERSION.
+    /// Se o Cargo.toml ficar para trás do número que o instalador carrega, a
+    /// pessoa nunca é avisada — ou é avisada para sempre.
+    #[test]
+    fn versao_do_cargo_bate_com_a_do_instalador() {
+        let conf = include_str!("../tauri.conf.json");
+        let conf: serde_json::Value = serde_json::from_str(conf).expect("tauri.conf.json inválido");
+        assert_eq!(
+            conf["version"].as_str(),
+            Some(APP_VERSION),
+            "tauri.conf.json e Cargo.toml com versões diferentes"
+        );
     }
 
     #[test]

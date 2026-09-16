@@ -164,13 +164,24 @@ function Restore-All {
 }
 
 $PlanoNome = 'PLF CORE - MAX PERFORMANCE'
+# Nome usado pela versão antiga do produto. Quem já rodava aquela build tem esse
+# plano na máquina: adotamos e renomeamos, em vez de empilhar um segundo.
+$PlanoNomesAntigos = @('RESYNC - MAX PERFORMANCE')
 
 function Get-PlanoPLF {
   $linhas = powercfg /list 2>$null | Out-String
-  foreach ($linha in ($linhas -split "`r?`n")) {
-    if ($linha -like "*$PlanoNome*") {
-      $achado = [regex]::Match($linha, '(?i)\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b')
-      if ($achado.Success) { return $achado.Value.ToLowerInvariant() }
+  foreach ($nome in @(@($PlanoNome) + $PlanoNomesAntigos)) {
+    foreach ($linha in ($linhas -split "`r?`n")) {
+      if ($linha -like "*$nome*") {
+        $achado = [regex]::Match($linha, '(?i)\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b')
+        if ($achado.Success) {
+          $guid = $achado.Value.ToLowerInvariant()
+          if ($nome -ne $PlanoNome) {
+            powercfg /changename $guid $PlanoNome 'Plano reversível gerenciado pelo PLF CORE' 2>$null | Out-Null
+          }
+          return $guid
+        }
+      }
     }
   }
   return $null

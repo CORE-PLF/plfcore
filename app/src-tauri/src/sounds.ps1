@@ -195,10 +195,10 @@ function Get-SndHashesDePack {
 # Guarda o estado ATUAL da máquina como "original". Só roda quando ainda não há
 # backup desta geração: rodar por cima faria o mod anterior virar o original.
 #
-# E antes de guardar, confere que o que está no jogo NÃO é um pack conhecido.
-# Quem instalou um mod de som na mão antes de usar o app tem o vanilla só na
-# Steam — gravar esse mod como "original" destruiria o caminho de volta em
-# silêncio, e a pessoa só descobriria ao tentar restaurar.
+# Se o que está no jogo já é um pack conhecido, NÃO guarda nada e devolve $false:
+# gravar um mod como "original" destruiria o caminho de volta em silêncio. A
+# instalação segue mesmo assim — trocar um pack por outro não perde nada, e o
+# vanilla dessa pessoa está na Steam de qualquer jeito.
 function Save-SndBackup([string]$sfx, [string]$backup) {
   if (Test-SndBackupCompleto $backup) { return $false }
 
@@ -207,7 +207,7 @@ function Save-SndBackup([string]$sfx, [string]$backup) {
     $origem = Join-Path $sfx $arq
     if (-not (Test-Path -LiteralPath $origem -PathType Leaf)) { throw 'ERR_SND_COPIA' }
     if ($conhecidos.Count -gt 0 -and $conhecidos.ContainsKey((Get-SndHash $origem))) {
-      throw 'ERR_SND_NAO_VANILLA'
+      return $false
     }
   }
 

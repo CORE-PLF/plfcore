@@ -126,7 +126,7 @@ function DataRow({ label, value, origin }: { label: string; value: string | null
   const tk = useT(kitDict)
   return (
     <div className="datarow">
-      <span className="shrink-0 text-[11px] font-semibold tracking-[0.06em] text-ink-3 uppercase">{label}</span>
+      <span className="text-[11px] font-semibold tracking-[0.06em] text-ink-3 uppercase">{label}</span>
       <span className="flex min-w-0 items-center gap-2">
         {value !== null && origin === 'demo' && <DemoTag />}
         <span className={`type-num truncate text-xs font-bold ${value === null ? 'text-ink-4' : 'text-ink-1'}`}>
@@ -157,15 +157,17 @@ function ChipCard({
       <div className="surface-head" style={{ minHeight: 40, padding: '0 14px' }}>
         {tag}
       </div>
-      <div className="flex gap-4 p-[14px]">
-        <Gauge value={uso} label={tag} size={150} showLabel={false} />
+      <div className="flex gap-3 p-[14px]">
+        <div className="w-[42%] min-w-[96px] max-w-[150px] shrink-0">
+          <Gauge value={uso} label={tag} showLabel={false} fluid />
+        </div>
         <div className="flex min-w-0 flex-1 flex-col gap-[10px]">
           <div className="min-w-0">
             <span className="block text-[11px] font-semibold tracking-[0.14em] text-ink-3">{t('usoAgora')}</span>
             {uso === null ? (
               <span className="block text-[20px] font-bold leading-[1.05] text-ink-4">{tk('naoDisponivel')}</span>
             ) : (
-              <span className="type-num block text-[40px] font-bold leading-[1.05] text-ink-1">{Math.round(uso)}%</span>
+              <span className="type-num block text-[clamp(28px,2.6vw,40px)] font-bold leading-[1.05] text-ink-1">{Math.round(uso)}%</span>
             )}
             {carregando ? (
               <Skeleton className="mt-1 h-3 w-3/4" />

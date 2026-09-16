@@ -45,7 +45,7 @@ export function RamStick({
 
   return (
     <div role="group" aria-label={`${t('slot')} ${stick.slot}`} className={`ram-stick ${stick.ocupado ? '' : 'ram-stick--vazio'}`}>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <span className="type-kicker truncate">
           {t('slot')} {stick.slot}
         </span>

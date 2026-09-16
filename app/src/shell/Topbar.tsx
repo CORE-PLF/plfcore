@@ -3,6 +3,7 @@ import { shellDict } from './i18n'
 import { useNav } from '../stores/nav'
 import { isTauriEnv } from '../services/adapter'
 import { LevelBadge } from './LevelBadge'
+import { UpdateBadge } from './UpdateBadge'
 import { IconMinus, IconSquare, IconTray, IconX } from '../components/icons'
 import './shell.css'
 
@@ -30,6 +31,7 @@ export function Topbar({ stagger }: { stagger: boolean }) {
         {t(`nav.${screen}`)}
       </h2>
       <div className="ml-auto flex items-center gap-2.5">
+        <UpdateBadge />
         <LevelBadge />
         <span className="pill hidden font-bold tracking-[0.06em] text-ink-2 md:inline-flex" style={{ fontVariantNumeric: 'tabular-nums' }}>
           <span className="led led--live" aria-hidden />

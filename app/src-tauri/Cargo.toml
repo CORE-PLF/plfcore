@@ -1,6 +1,6 @@
 [package]
 name = "plfcore"
-version = "1.9.0"
+version = "1.0.1"
 description = "Diagnóstico e otimização de Windows para gamers"
 authors = ["PLF"]
 edition = "2021"

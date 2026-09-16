@@ -62,6 +62,7 @@ pub fn run() {
             license::license_activate,
             license::license_heartbeat,
             license::license_forget,
+            license::check_app_update,
             license::close_license_window,
         ])
         .run(tauri::generate_context!())

@@ -270,3 +270,15 @@
   line-height: 1.45;
   color: var(--color-ink-3);
 }
+
+/* ===== janela estreita (não maximizada) ===== */
+@media (max-width: 1400px) {
+  .tw-grupos { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .tw-grupo-acoes { flex-wrap: wrap; gap: 6px 10px; }
+  .tw-screen { padding: 22px 18px; }
+  .tw-hero { padding: 16px 18px; }
+  .tw-hero-main { gap: 18px; }
+  .tw-corpo { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 12px; min-height: 344px; }
+  .tw-corpo--solo { grid-template-columns: minmax(0, 1fr); }
+  .tw-row { grid-template-columns: minmax(0, 150px) minmax(0, 1fr) 128px; gap: 12px; padding: 8px 12px; }
+}
