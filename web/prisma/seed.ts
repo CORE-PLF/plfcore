@@ -1,12 +1,13 @@
 // Seed SOMENTE de desenvolvimento — cria catálogo + contas de demonstração.
 // NUNCA rodar em produção (o README do deploy cria só o superadmin, via script próprio).
 import 'dotenv/config'
+import { pathToFileURL } from 'node:url'
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 import { PrismaClient } from '../src/generated/prisma/client'
 import { hashPassword } from '../src/lib/crypto'
 
 const url = new URL(process.env.DATABASE_URL ?? '')
-const db = new PrismaClient({
+export const db = new PrismaClient({
   adapter: new PrismaMariaDb({
     host: url.hostname,
     port: Number(url.port || 3306),
@@ -30,7 +31,7 @@ const FEATURES = [
   'Registro completo no LOG',
 ]
 
-async function main() {
+export async function seedDev() {
   if (process.env.NODE_ENV === 'production') {
     throw new Error('Seed de desenvolvimento não roda em produção.')
   }
@@ -183,4 +184,8 @@ async function main() {
   })
 }
 
-main().finally(() => db.$disconnect())
+// rodando direto (npm run db:seed) executa; importado (seed de staging), quem
+// chama decide a hora — import de módulo não pode escrever no banco sozinho.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  seedDev().finally(() => db.$disconnect())
+}

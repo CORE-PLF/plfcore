@@ -17,6 +17,15 @@ const schema = z.object({
   REDIS_URL: z.string().optional().default(''),
   // volume persistente onde o instalador fica (servido só por rota autenticada)
   INSTALLERS_DIR: z.string().default('/data/installers'),
+  // Credencial de máquina da esteira de release. Vazia = as rotas de release
+  // não existem (404). Publica versão do app e NADA mais: não enxerga licença,
+  // pedido nem usuário. Revogar = trocar esta variável. Mínimo de 32 caracteres
+  // porque quem tem este token publica um .exe que roda como administrador.
+  RELEASE_TOKEN: z
+    .string()
+    .optional()
+    .default('')
+    .refine((v) => v === '' || v.length >= 32, 'RELEASE_TOKEN precisa de >= 32 caracteres'),
   DISCORD_CLIENT_ID: z.string().optional().default(''),
   DISCORD_CLIENT_SECRET: z.string().optional().default(''),
   DISCORD_BOT_TOKEN: z.string().optional().default(''),
@@ -36,5 +45,6 @@ if (!parsed.success) {
 }
 
 export const env = parsed.data
+export const releaseApiEnabled = () => env.RELEASE_TOKEN !== ''
 export const discordConfigured = () => Boolean(env.DISCORD_CLIENT_ID && env.DISCORD_CLIENT_SECRET)
 export const smtpConfigured = () => Boolean(env.SMTP_HOST && env.SMTP_USER)

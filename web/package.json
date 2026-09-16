@@ -9,6 +9,7 @@
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:staging": "tsx scripts/seed-staging.ts",
     "worker": "tsx src/worker/index.ts",
     "test": "vitest run",
     "admin:create": "tsx scripts/create-admin.ts",

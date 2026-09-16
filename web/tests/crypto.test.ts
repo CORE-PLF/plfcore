@@ -22,9 +22,9 @@ describe('senha (scrypt)', () => {
 })
 
 describe('chave de licença', () => {
-  test('formato RESYNC-XXXX-XXXX-XXXX-XXXX sem 0/O/1/I', () => {
+  test('formato PLF-XXXX-XXXX-XXXX-XXXX sem 0/O/1/I', () => {
     const key = generateLicenseKey()
-    expect(key).toMatch(/^RESYNC(-[A-HJ-NP-Z2-9]{4}){4}$/)
+    expect(key).toMatch(/^PLF(-[A-HJ-NP-Z2-9]{4}){4}$/)
   })
 
   test('1000 chaves são todas únicas', () => {
