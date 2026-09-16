@@ -10,7 +10,10 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 # --ignore-scripts pula o postinstall (prisma generate) — o schema ainda não
 # está no contexto; a geração acontece explicitamente no stage de build.
-RUN npm ci --ignore-scripts
+# --include=dev é obrigatório, não enfeite: o Coolify injeta as variáveis da
+# aplicação no build, e com NODE_ENV=production o npm ci pula devDependencies.
+# Sem isso o next build morre em '@tailwindcss/postcss' — que é devDependency.
+RUN npm ci --include=dev --ignore-scripts
 
 # ===== build: prisma generate + next build =====
 FROM node:24-alpine AS build
