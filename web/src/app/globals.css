@@ -1,17 +1,18 @@
 @import 'tailwindcss';
 
-/* ===== PLF CORE — mesmos tokens do app (painel escuro + amarelo de ação) =====
-   Inter em tudo. Amarelo = ação. Vermelho = marca/erro. Sem gradiente, sem chanfro. */
+/* ===== PLF CORE — painel quadrado, preto real + amarelo de ação =====
+   Fonte do design: NOVO DESIGN/Redesign-A2-Cockpit-Quadrado.dc.html
+   Inter em tudo. Amarelo = ação. Vermelho = marca/erro. Canto redondo só 2px em controle. */
 
 @theme {
-  --color-void: #101010;
-  --color-carbon: #141414;
-  --color-steel: #181818;
-  --color-surface-2: #202020;
-  --color-surface-3: #282828;
-  --color-line: #222222;
-  --color-edge: #2b2b2b;
-  --color-edge-2: #3a3a3a;
+  --color-void: #0b0b0b;
+  --color-carbon: #0e0e0e;
+  --color-steel: #101010;
+  --color-surface-2: #141414;
+  --color-surface-3: #1a1a1a;
+  --color-line: #191919;
+  --color-edge: #191919;
+  --color-edge-2: #2e2e2e;
   --color-signal: #f8e800;
   --color-blood: #e5262b;
   --color-ink-1: #ffffff;
@@ -20,13 +21,13 @@
   --color-ink-4: #5a5a5a;
   /* aliases das telas fora do redesign (admin/afiliado/revenda) */
   --color-heat: #f8e800;
-  --color-rust: #3a3a3a;
+  --color-rust: #2e2e2e;
 
   --font-ui: var(--font-inter), 'Segoe UI', sans-serif;
   --font-mono: var(--font-inter), 'Segoe UI', sans-serif;
 
-  --radius-card: 10px;
-  --radius-ctl: 6px;
+  --radius-card: 0px;
+  --radius-ctl: 2px;
 }
 
 :root {
@@ -65,10 +66,10 @@ body {
   font-variant-numeric: tabular-nums;
 }
 .type-kicker {
-  font-weight: 600;
-  font-size: 11px;
+  font-weight: 800;
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.22em;
   color: var(--color-ink-3);
 }
 
@@ -76,27 +77,26 @@ body {
 .surface,
 .chamfer {
   position: relative;
-  background: var(--color-steel);
-  border: 1px solid var(--color-edge);
+  background: var(--color-carbon);
+  border: 1px solid var(--color-line);
   border-radius: var(--radius-card);
 }
 .surface--flat,
 .chamfer--flat {
-  background: var(--color-carbon);
+  background: var(--color-void);
   border-color: var(--color-line);
 }
 .surface-head {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 40px;
-  padding: 0 14px;
-  background: var(--color-surface-2);
-  border-bottom: 1px solid var(--color-edge);
-  border-radius: var(--radius-card) var(--radius-card) 0 0;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  min-height: 44px;
+  padding: 0 16px;
+  background: var(--color-steel);
+  border-bottom: 1px solid var(--color-line);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-ink-1);
 }
@@ -114,9 +114,8 @@ body {
   justify-content: space-between;
   gap: 12px;
   min-height: 32px;
-  padding: 0 10px;
+  padding: 0 12px;
   background: var(--color-surface-2);
-  border-radius: var(--radius-ctl);
   font-size: 12px;
 }
 .datarow + .datarow {
@@ -124,10 +123,10 @@ body {
 }
 .datarow > dt,
 .datarow > .k {
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-weight: 800;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--color-ink-3);
 }
 .datarow > dd,
@@ -144,21 +143,22 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 40px;
-  padding: 0 18px;
+  min-height: 44px;
+  padding: 0 20px;
   border-radius: var(--radius-ctl);
   border: 1px solid transparent;
   font-family: var(--font-ui);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
   transition:
     filter var(--t-fast) var(--expo),
-    transform var(--t-fast) var(--expo);
+    transform var(--t-fast) var(--expo),
+    background var(--t-fast) var(--expo);
 }
 .btn:hover:not(:disabled) {
   filter: brightness(1.08);
@@ -177,9 +177,15 @@ body {
   color: var(--color-void);
 }
 .btn--ghost {
-  background: var(--color-surface-2);
+  background: transparent;
   border-color: var(--color-edge-2);
   color: var(--color-ink-1);
+}
+/* botão dentro do plano em destaque (card amarelo) */
+.btn--inverse {
+  background: var(--color-void);
+  border-color: var(--color-void);
+  color: var(--color-signal);
 }
 .btn--danger {
   background: rgba(229, 38, 43, 0.1);
@@ -187,14 +193,14 @@ body {
   color: var(--color-blood);
 }
 .btn--sm {
-  min-height: 32px;
-  padding: 0 12px;
+  min-height: 36px;
+  padding: 0 20px;
   font-size: 11px;
 }
 .btn--lg {
-  min-height: 46px;
-  padding: 0 24px;
-  font-size: 14px;
+  min-height: 52px;
+  padding: 0 30px;
+  font-size: 13.5px;
 }
 
 /* ===== inputs ===== */
@@ -229,19 +235,19 @@ input[type='radio'] {
   accent-color: var(--color-signal);
 }
 
-/* ===== pílulas ===== */
+/* ===== pílulas (quadradas) ===== */
 .pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   height: 22px;
   padding: 0 9px;
-  border-radius: 999px;
+  border-radius: var(--radius-ctl);
   background: var(--color-surface-3);
-  border: 1px solid var(--color-edge);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  border: 1px solid var(--color-edge-2);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-ink-3);
   font-variant-numeric: tabular-nums;
@@ -266,37 +272,87 @@ input[type='radio'] {
   color: var(--color-void);
 }
 
-/* LED vivo — único ponto com glow além do CTA */
+/* LED quadrado, pisca devagar. Sem glow. */
+@keyframes plfLed {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
 .led {
   display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
+  width: 6px;
+  height: 6px;
   background: var(--color-signal);
-  box-shadow: 0 0 7px rgba(248, 232, 0, 0.8);
+  animation: plfLed 2.4s ease-in-out infinite;
+}
+
+/* linha de varredura de 1px no topo de um bloco (cockpit) */
+@keyframes plfSweep {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+.sweep {
+  position: relative;
+  overflow: hidden;
+}
+.sweep::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-signal), transparent);
+  animation: plfSweep 4.4s linear infinite;
+}
+
+/* reveal ao rolar, sem JS: só onde o navegador suporta scroll-driven animation */
+@keyframes plfReveal {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: plfReveal 0.8s var(--expo) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 18%;
+    }
+  }
 }
 
 /* ===== progresso — barra lisa amarela ===== */
 .progress {
   height: 8px;
-  border-radius: 999px;
   background: var(--color-surface-3);
   overflow: hidden;
 }
 .progress > i {
   display: block;
   height: 100%;
-  border-radius: 999px;
   background: var(--color-signal);
 }
 .progress--hot > i {
   background: var(--color-blood);
 }
 
-/* faixa de zona destrutiva: 6px amarelo/preto no topo do card */
+/* faixa de zona destrutiva / destaque: 5px amarelo-preto no topo do card */
 .hazard-bar {
-  height: 6px;
-  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  height: 5px;
   background: repeating-linear-gradient(-45deg, var(--color-signal) 0 8px, var(--color-void) 8px 16px);
 }
 .hazard {
@@ -315,14 +371,15 @@ input[type='radio'] {
   gap: 6px;
   height: 22px;
   padding: 0 9px;
-  border-radius: 999px;
+  border-radius: var(--radius-ctl);
   background: rgba(248, 232, 0, 0.07);
   border: 1px solid rgba(248, 232, 0, 0.4);
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-signal);
+  white-space: nowrap;
 }
 
 :focus-visible {
@@ -345,7 +402,6 @@ input[type='radio'] {
 ::-webkit-scrollbar-thumb {
   background: var(--color-edge-2);
   border: 2px solid var(--color-void);
-  border-radius: 999px;
 }
 
 @media (prefers-reduced-motion: reduce) {
