@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  body { margin:0; background:#0b0b0b; color:#c9c9c9; font-family:Inter,'Segoe UI',sans-serif; font-size:15px; -webkit-font-smoothing:antialiased; }
+  a { color:#ffffff; text-decoration:none; }
+  a:hover { color:#f8e800; }
+  ::selection { background:rgba(248,232,0,.3); color:#fff; }
+  @keyframes plfCaret { 0%,49% { opacity:1 } 50%,100% { opacity:0 } }
+  @keyframes plfLed { 0%,100% { opacity:1 } 50% { opacity:.3 } }
+  [data-wipe] { transition:clip-path 1s cubic-bezier(.16,1,.3,1); }
+  [data-up] { transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .85s cubic-bezier(.16,1,.3,1); }
+</style>
+</helmet>
+<div style="background:#0b0b0b;min-height:100vh">
+
+  <header style="position:sticky;top:0;z-index:60;background:rgba(11,11,11,.9);backdrop-filter:blur(10px);border-bottom:1px solid #191919">
+    <div style="margin:0 auto;display:flex;height:60px;width:100%;max-width:1240px;align-items:center;gap:16px;padding:0 28px;box-sizing:border-box">
+      <img src="assets/logo-header.png" alt="Pro League" style="height:20px;width:auto;display:block" />
+      <span style="font-size:10px;font-weight:700;letter-spacing:.24em;color:#8a8a8a">CORE</span>
+      <span style="margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.18em;color:#5a5a5a" data-clock="">SISTEMA // PRONTO</span>
+      <a href="#planos" style="display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 18px;border-radius:2px;background:#f8e800;color:#0b0b0b;font-size:11px;font-weight:800;letter-spacing:.14em">COMPRAR</a>
+    </div>
+  </header>
+
+  <section style="position:relative;border-bottom:1px solid #191919;overflow:hidden">
+    <div style="position:relative;margin:0 auto;width:100%;max-width:1240px;padding:64px 28px 0;box-sizing:border-box">
+      <div style="border:1px solid #1d1d1d;background:#0e0e0e;border-radius:2px;padding:14px 16px;font-size:12.5px;line-height:1.85;letter-spacing:.02em;color:#6e6e6e;font-variant-numeric:tabular-nums;min-height:132px">
+        <div data-boot=""></div>
+        <span data-caret="" style="display:inline-block;width:8px;height:14px;background:#f8e800;vertical-align:-2px;animation:plfCaret 1s step-end infinite"></span>
+      </div>
+
+      <h1 style="margin:48px 0 0;font-size:clamp(2.8rem,8vw,6.5rem);font-weight:900;line-height:1.02;letter-spacing:-.05em;color:#fff">
+        <span data-wipe="" style="display:block">OTIMIZAÇÃO</span>
+        <span data-wipe="" style="display:block">COM PROVA</span>
+        <span data-wipe="" style="display:block;color:#f8e800">NA TELA.</span>
+      </h1>
+
+      <div style="margin-top:40px;display:grid;gap:36px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:end;padding-bottom:56px">
+        <p data-up="" style="margin:0;max-width:520px;font-size:17px;line-height:1.6;color:#c9c9c9">
+          O PLF CORE lê CPU, GPU, RAM e discos do seu Windows, declara a fonte de cada número e guarda o estado anterior de tudo que altera. Nada de barra de progresso fingindo trabalho.
+        </p>
+        <div data-up="" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-start">
+          <a href="#planos" style="display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 32px;border-radius:2px;background:#f8e800;color:#0b0b0b;font-size:14px;font-weight:900;letter-spacing:.12em">COMPRAR LICENÇA</a>
+          <a href="#modulos" style="display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 26px;border-radius:2px;border:1px solid #2e2e2e;color:#fff;font-size:14px;font-weight:700;letter-spacing:.12em">VER MÓDULOS</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="modulos">
+    <div style="margin:0 auto;width:100%;max-width:1240px;padding:0 28px;box-sizing:border-box">
+      <div data-status="" style="display:flex;align-items:center;gap:14px;padding:18px 0;border-bottom:1px solid #191919">
+        <span style="width:7px;height:7px;border-radius:50%;background:#f8e800;box-shadow:0 0 8px rgba(248,232,0,.9);animation:plfLed 2.2s ease-in-out infinite"></span>
+        <span style="font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#8a8a8a" data-scramble="MÓDULOS DO APP — 06 INSTRUMENTOS">MÓDULOS DO APP — 06 INSTRUMENTOS</span>
+      </div>
+
+      <h2 data-up="" style="margin:56px 0 0;font-size:clamp(1.8rem,4.4vw,3.2rem);font-weight:900;letter-spacing:-.04em;line-height:1;color:#fff">O que o app faz</h2>
+      <p data-up="" style="margin:16px 0 0;max-width:560px;font-size:16px;color:#8a8a8a">Cada instrumento diz de onde vem o dado, o que pretende mudar e mede de novo depois da sua confirmação.</p>
+
+      <div style="margin-top:44px;border-top:1px solid #191919">
+        <sc-for list="{{ modulos }}" as="m" hint-placeholder-count="6">
+          <div data-up="" data-row="" style="display:grid;gap:8px 28px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));align-items:baseline;padding:26px 8px;border-bottom:1px solid #191919;transition:background .3s,padding-left .3s" style-hover="background:#0f0f0f;padding-left:18px">
+            <div style="display:flex;align-items:baseline;gap:16px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.2em;color:#f8e800;font-variant-numeric:tabular-nums">{{ m.codigo }}</span>
+              <h3 style="margin:0;font-size:clamp(1.25rem,2.6vw,1.8rem);font-weight:800;letter-spacing:-.02em;color:#fff">{{ m.nome }}</h3>
+            </div>
+            <p style="margin:0;font-size:14.5px;line-height:1.55;color:#8a8a8a;grid-column:span 2">{{ m.desc }}</p>
+          </div>
+        </sc-for>
+      </div>
+
+      <div data-up="" style="margin-top:56px;position:relative;border:1px solid #1d1d1d;border-radius:2px;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#101010;border-bottom:1px solid #1d1d1d;font-size:10px;font-weight:700;letter-spacing:.2em;color:#6e6e6e">
+          <span>PLF CORE — COCKPIT</span>
+          <span style="margin-left:auto">TELA REAL DO APP</span>
+        </div>
+        <img src="assets/app-cockpit.png" alt="Tela Cockpit do PLF CORE" style="display:block;width:100%;height:auto" />
+      </div>
+    </div>
+  </section>
+
+  <section id="planos">
+    <div style="margin:0 auto;width:100%;max-width:1240px;padding:0 28px 96px;box-sizing:border-box">
+      <div data-status="" style="margin-top:88px;display:flex;align-items:center;gap:14px;padding:18px 0;border-top:1px solid #191919;border-bottom:1px solid #191919">
+        <span style="width:7px;height:7px;border-radius:50%;background:#f8e800;box-shadow:0 0 8px rgba(248,232,0,.9);animation:plfLed 2.2s ease-in-out infinite"></span>
+        <span style="font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#8a8a8a" data-scramble="LICENÇA — EMISSÃO IMEDIATA NO PAINEL">LICENÇA — EMISSÃO IMEDIATA NO PAINEL</span>
+      </div>
+
+      <h2 data-up="" style="margin:56px 0 0;font-size:clamp(1.8rem,4.4vw,3.2rem);font-weight:900;letter-spacing:-.04em;color:#fff">Planos</h2>
+      <p data-up="" style="margin:14px 0 0;max-width:560px;font-size:16px;color:#8a8a8a">Mesmo app em todos. Muda a duração. Uma licença = uma instalação do Windows.</p>
+
+      <div style="margin-top:40px;display:grid;gap:2px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));background:#191919;border:1px solid #191919">
+        <sc-for list="{{ planos }}" as="p" hint-placeholder-count="3">
+          <div data-up="" data-plan="" style="position:relative;display:flex;flex-direction:column;background:{{ p.fundo }};padding:32px 26px;transition:background .3s" style-hover="background:{{ p.hover }}">
+            <sc-if value="{{ p.destaque }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:0;left:0;right:0;height:5px;background:repeating-linear-gradient(-45deg,#f8e800 0 8px,#0b0b0b 8px 16px)"></div>
+            </sc-if>
+            <p style="margin:0;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:{{ p.corNome }}">{{ p.nome }}</p>
+            <p style="margin:20px 0 0;display:flex;align-items:flex-end;gap:5px;color:{{ p.corPreco }}">
+              <span style="font-size:14px;font-weight:700;opacity:.6">R$</span>
+              <span data-count="{{ p.valor }}" style="font-size:3.4rem;font-weight:900;letter-spacing:-.05em;line-height:.85;font-variant-numeric:tabular-nums">0</span>
+            </p>
+            <p style="margin:12px 0 0;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:{{ p.corMeta }}">{{ p.duracao }} · 1 instalação</p>
+            <ul style="margin:26px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;color:{{ p.corItem }}">
+              <li style="display:flex;gap:10px"><span style="opacity:.55">→</span>Dados reais do sistema</li>
+              <li style="display:flex;gap:10px"><span style="opacity:.55">→</span>Alterações explicadas e reversíveis</li>
+              <li style="display:flex;gap:10px"><span style="opacity:.55">→</span>Antes e depois medido</li>
+              <li style="display:flex;gap:10px"><span style="opacity:.55">→</span>LOG completo com estado anterior</li>
+            </ul>
+            <a href="#" style="margin-top:auto;margin-top:30px;display:inline-flex;align-items:center;justify-content:center;min-height:50px;border-radius:2px;background:{{ p.btnFundo }};border:1px solid {{ p.btnBorda }};color:{{ p.btnTexto }};font-size:13px;font-weight:900;letter-spacing:.14em">COMPRAR</a>
+          </div>
+        </sc-for>
+      </div>
+
+      <div data-up="" style="margin-top:22px;display:flex;flex-wrap:wrap;gap:10px 28px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#5a5a5a">
+        <span>PIX · cartão · boleto</span>
+        <span>Chave no painel após confirmação</span>
+        <span>7 dias para reembolso</span>
+        <span>Windows 10 e 11</span>
+      </div>
+      <p data-up="" style="margin:18px 0 0;max-width:640px;font-size:13px;line-height:1.65;color:#8a8a8a">Formatar, trocar de PC ou reinstalar o Windows exige nova licença — renovar mantém a instalação atual. A regra aparece de novo, com confirmação, antes do pagamento.</p>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid #191919">
+    <div style="margin:0 auto;display:flex;width:100%;max-width:1240px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:24px 28px;box-sizing:border-box">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="assets/logo-header.png" alt="Pro League" style="height:16px;width:auto;display:block" />
+        <span style="font-size:10px;font-weight:700;letter-spacing:.24em;color:#8a8a8a">CORE</span>
+      </div>
+      <p style="margin:0;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#8a8a8a">© 2026 PLF CORE · App oficial do servidor Pro League</p>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      modulos: [
+        { codigo: 'INST-01', nome: 'COCKPIT', desc: 'CPU, GPU e RAM ao vivo, telemetria de 60 s e a fonte de cada leitura declarada na tela.' },
+        { codigo: 'INST-02', nome: 'FPS BOOSTER', desc: 'Pacotes de aceleração com estado real lido da máquina. Tudo reversível pelo mesmo interruptor.' },
+        { codigo: 'INST-03', nome: 'LIMPEZA', desc: 'Temporários conhecidos, mostrados antes de remover. Downloads, documentos e saves ficam fora.' },
+        { codigo: 'INST-04', nome: 'RAIO-X', desc: 'Inventário de CPU, placa-mãe, memória, discos e GPU. Sem fonte, o campo diz NÃO DISPONÍVEL.' },
+        { codigo: 'INST-05', nome: 'WINDOWS', desc: 'Energia, Game Mode, efeitos visuais e apps em segundo plano — cada item espera confirmação.' },
+        { codigo: 'INST-06', nome: 'FIVEM', desc: 'Cache do FiveM limpo com as pastas de conta protegidas. Preparado para o servidor Pro League.' },
+      ],
+      planos: [
+        { nome: '15 dias', valor: 24.99, duracao: '15 dias', destaque: false, fundo: '#0e0e0e', hover: '#141414', corNome: '#8a8a8a', corPreco: '#ffffff', corMeta: '#5a5a5a', corItem: '#8a8a8a', btnFundo: 'transparent', btnBorda: '#2e2e2e', btnTexto: '#ffffff' },
+        { nome: '30 dias · recomendado', valor: 39.99, duracao: '30 dias', destaque: true, fundo: '#f8e800', hover: '#ffef2e', corNome: 'rgba(11,11,11,.7)', corPreco: '#0b0b0b', corMeta: 'rgba(11,11,11,.65)', corItem: '#1a1a00', btnFundo: '#0b0b0b', btnBorda: '#0b0b0b', btnTexto: '#f8e800' },
+        { nome: 'Vitalício', valor: 799.99, duracao: 'Sem expiração', destaque: false, fundo: '#0e0e0e', hover: '#141414', corNome: '#8a8a8a', corPreco: '#ffffff', corMeta: '#5a5a5a', corItem: '#8a8a8a', btnFundo: 'transparent', btnBorda: '#2e2e2e', btnTexto: '#ffffff' },
+      ],
+    };
+  }
+
+  componentDidMount() {
+    this.reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.runBoot();
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        el.setAttribute('data-shown', '1');
+        if (el.hasAttribute('data-wipe')) el.style.clipPath = 'inset(0 0 0 0)';
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        io.unobserve(el);
+        if (el.hasAttribute('data-plan')) this.countUp(el);
+        if (el.hasAttribute('data-status')) this.scramble(el.querySelector('[data-scramble]'));
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -6% 0px' });
+
+    document.querySelectorAll('[data-up],[data-wipe],[data-status]').forEach((el, i) => {
+      if (this.reduce) { if (el.hasAttribute('data-plan')) this.countUp(el); return; }
+      if (el.getAttribute('data-shown')) { el.style.opacity = '1'; el.style.transform = 'none'; if (el.hasAttribute('data-wipe')) el.style.clipPath = 'inset(0 0 0 0)'; return; }
+      if (el.hasAttribute('data-wipe')) {
+        el.style.clipPath = 'inset(0 100% 0 0)';
+      } else {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(26px)';
+      }
+      el.style.transitionDelay = ((i % 4) * 90) + 'ms';
+      io.observe(el);
+    });
+    this._io = io;
+    this._sweep = setInterval(() => {
+      const pend = document.querySelectorAll('[data-up]:not([data-shown]),[data-wipe]:not([data-shown]),[data-status]:not([data-shown])');
+      if (!pend.length) { clearInterval(this._sweep); return; }
+      pend.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.top > window.innerHeight * 0.95) return;
+        el.setAttribute('data-shown', '1');
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        if (el.hasAttribute('data-wipe')) el.style.clipPath = 'inset(0 0 0 0)';
+        if (el.hasAttribute('data-plan')) this.countUp(el);
+        if (el.hasAttribute('data-status')) this.scramble(el.querySelector('[data-scramble]'));
+      });
+    }, 320);
+  }
+
+  runBoot() {
+    const host = document.querySelector('[data-boot]');
+    if (!host) return;
+    const lines = [
+      '> plfcore --scan',
+      '  WMI ............ CPU, clocks, núcleos ....... OK',
+      '  NVIDIA-SMI ..... GPU, VRAM, temperatura ..... OK',
+      '  WMI ............ RAM, discos, inventário .... OK',
+      '  sensores ....... temperatura .......... QUANDO EXPOSTA',
+      '> nenhum número inventado. fonte declarada em cada leitura.',
+    ];
+    if (this.reduce) {
+      host.innerHTML = lines.map((l) => '<div>' + l + '</div>').join('');
+      return;
+    }
+    let li = 0, ci = 0, cur = null;
+    const type = () => {
+      if (li >= lines.length) return;
+      if (!cur) {
+        cur = document.createElement('div');
+        cur.style.whiteSpace = 'pre-wrap';
+        cur.style.color = li === 0 || li === lines.length - 1 ? '#f8e800' : '#6e6e6e';
+        host.appendChild(cur);
+      }
+      const line = lines[li];
+      ci += 2;
+      cur.textContent = line.slice(0, ci);
+      if (ci >= line.length) {
+        if (line.endsWith('OK')) {
+          cur.innerHTML = line.slice(0, -2) + '<span style="color:#f8e800;font-weight:700">OK</span>';
+        }
+        li += 1; ci = 0; cur = null;
+        this._bootT = setTimeout(type, 240);
+      } else {
+        this._bootT = setTimeout(type, 14);
+      }
+    };
+    this._bootT = setTimeout(type, 320);
+  }
+
+  scramble(el) {
+    if (!el || this.reduce) return;
+    const final = el.getAttribute('data-scramble') || el.textContent;
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/·—';
+    let frame = 0;
+    const run = () => {
+      frame += 1;
+      const shown = Math.floor(frame / 2);
+      el.textContent = final.split('').map((c, i) => (i < shown || c === ' ' ? c : chars[Math.floor(Math.random() * chars.length)])).join('');
+      if (shown <= final.length) this._scrT = requestAnimationFrame(run);
+      else el.textContent = final;
+    };
+    run();
+  }
+
+  countUp(planEl) {
+    const el = planEl.querySelector('[data-count]');
+    if (!el) return;
+    const target = parseFloat(el.getAttribute('data-count')) || 0;
+    const fmt = (v) => v.toFixed(2).replace('.', ',');
+    el.textContent = fmt(target);
+    if (el.dataset.done) return;
+    el.dataset.done = '1';
+    const t0 = Date.now();
+    const int = setInterval(() => {
+      const k = Math.min(1, (Date.now() - t0) / 900);
+      if (k >= 1) { el.textContent = fmt(target); clearInterval(int); return; }
+      el.textContent = fmt(target * (1 - Math.pow(1 - k, 3)));
+    }, 50);
+    setTimeout(() => { clearInterval(int); el.textContent = fmt(target); }, 2400);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this._bootT);
+    clearInterval(this._sweep);
+    cancelAnimationFrame(this._scrT);
+    if (this._io) this._io.disconnect();
+  }
+}
+</script>
+</body>
+</html>

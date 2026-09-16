@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="display:flex;align-items:center;gap:16px">
+  <svg viewBox="0 0 200 138" style="display:block;width:132px;flex-shrink:0" aria-hidden="true">
+    <path d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#2a2a2a" stroke-width="7"></path>
+    <path d="M 28.58 126 A 76 76 0 1 1 171.42 126" fill="none" stroke="#3d3d3d" stroke-width="6" stroke-dasharray="1.2 13.4"></path>
+    <path d="M 176.74 65.84 A 84 84 0 0 1 178.93 128.73" fill="none" stroke="#e5262b" stroke-width="7"></path>
+    <line x1="24.82" y1="127.36" x2="35.16" y2="123.6" stroke="#7a7a7a" stroke-width="2"></line>
+    <line x1="34.46" y1="54.11" x2="43.48" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+    <line x1="100" y1="20" x2="100" y2="31" stroke="#7a7a7a" stroke-width="2"></line>
+    <line x1="165.54" y1="54.11" x2="156.52" y2="60.42" stroke="#7a7a7a" stroke-width="2"></line>
+    <line x1="175.18" y1="127.36" x2="164.84" y2="123.6" stroke="#e5262b" stroke-width="2"></line>
+    <text x="45.5" y="122.84" text-anchor="middle" font-size="9" font-weight="700" fill="#7d7d7d">0</text>
+    <text x="100" y="45" text-anchor="middle" font-size="9" font-weight="700" fill="#7d7d7d">50</text>
+    <text x="154.5" y="122.84" text-anchor="middle" font-size="9" font-weight="700" fill="#e5262b">100</text>
+    <g transform="rotate(-135 100 100)">
+      <polygon points="98.4,100 101.6,100 100.6,26 99.4,26" fill="#ffffff"></polygon>
+      <rect x="97.8" y="100" width="4.4" height="11" fill="rgba(255,255,255,.5)"></rect>
+    </g>
+    <circle cx="100" cy="100" r="8" fill="#181818" stroke="rgba(255,255,255,.26)" stroke-width="1.5"></circle>
+    <circle cx="100" cy="100" r="2.6" fill="#f8e800"></circle>
+  </svg>
+  <div style="min-width:0">
+    <p style="margin:0;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#8a8a8a">{{ label }}</p>
+    <p style="margin:0;font-size:1.875rem;font-weight:700;line-height:1;color:#fff;font-variant-numeric:tabular-nums">—<span style="margin-left:4px;font-size:14px;color:#8a8a8a">{{ unit }}</span></p>
+    <p style="margin:4px 0 0;font-size:11px;color:#8a8a8a">AGUARDANDO LEITURA</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:420,&quot;height&quot;:110},&quot;label&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;CPU · USO AGORA&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;unit&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;%&quot;,&quot;tsType&quot;:&quot;string&quot;}}"></script>
+</body>
+</html>

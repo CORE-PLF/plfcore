@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  body { margin:0; background:#101010; color:#c9c9c9; font-family:Inter,'Segoe UI',sans-serif; font-size:15px; -webkit-font-smoothing:antialiased; }
+  a { color:#ffffff; text-decoration:none; }
+  a:hover { color:#f8e800; }
+  ::selection { background:rgba(248,232,0,.3); color:#fff; }
+  @keyframes plfLed { 0%,100% { opacity:1 } 50% { opacity:.35 } }
+  @keyframes plfSweep { 0% { transform:translateX(-120%) } 100% { transform:translateX(220%) } }
+  [data-reveal] { transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .85s cubic-bezier(.16,1,.3,1); }
+</style>
+</helmet>
+<div style="background:#101010;min-height:100vh">
+
+  <header style="position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:rgba(16,16,16,.82);border-bottom:1px solid #1d1d1d">
+    <div style="margin:0 auto;display:flex;height:66px;width:100%;max-width:1200px;align-items:center;gap:20px;padding:0 24px;box-sizing:border-box">
+      <a href="#" style="display:flex;align-items:center;gap:10px">
+        <img src="assets/logo-header.png" alt="Pro League" style="height:22px;width:auto;display:block" />
+        <span style="font-size:10px;font-weight:700;letter-spacing:.22em;color:#8a8a8a">CORE</span>
+      </a>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:18px">
+        <span style="display:none;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.14em;color:#8a8a8a" data-wide="1">
+          <span style="width:6px;height:6px;border-radius:50%;background:#f8e800;box-shadow:0 0 8px rgba(248,232,0,.9);animation:plfLed 2.4s ease-in-out infinite"></span>
+          WINDOWS 10 · 11
+        </span>
+        <a href="#planos" style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">PLANOS</a>
+        <a href="#planos" style="display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 20px;border-radius:6px;background:#f8e800;color:#101010;font-size:12px;font-weight:800;letter-spacing:.1em">COMPRAR</a>
+      </div>
+    </div>
+  </header>
+
+  <section style="position:relative;overflow:hidden;border-bottom:1px solid #1d1d1d">
+    <div style="position:absolute;inset:0;background:radial-gradient(900px 420px at 78% 12%,rgba(248,232,0,.07),transparent 70%);pointer-events:none"></div>
+    <div style="position:relative;margin:0 auto;display:grid;width:100%;max-width:1200px;gap:56px;padding:76px 24px 84px;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));align-items:center;box-sizing:border-box">
+      <div data-reveal="" style="min-width:0">
+        <p style="margin:0;display:inline-flex;align-items:center;gap:9px;height:26px;padding:0 12px;border:1px solid #2b2b2b;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#8a8a8a">
+          <span style="width:6px;height:6px;border-radius:50%;background:#f8e800;box-shadow:0 0 8px rgba(248,232,0,.9);animation:plfLed 2.4s ease-in-out infinite"></span>
+          App oficial · Pro League
+        </p>
+        <h1 style="margin:22px 0 0;font-size:clamp(2.6rem,6.2vw,4.5rem);font-weight:800;line-height:.95;letter-spacing:-.035em;color:#fff;text-wrap:balance">
+          Seu PC,<br />medido —<br /><span style="color:#f8e800">não prometido.</span>
+        </h1>
+        <p style="margin:24px 0 0;max-width:460px;font-size:17px;line-height:1.55;color:#c9c9c9">
+          O PLF CORE lê CPU, GPU, RAM e discos do seu Windows, mostra a fonte de cada número e registra toda alteração. Você confirma, o app mede de novo.
+        </p>
+        <div style="margin-top:34px;display:flex;flex-wrap:wrap;gap:12px">
+          <a href="#planos" style="display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 30px;border-radius:6px;background:#f8e800;color:#101010;font-size:14px;font-weight:800;letter-spacing:.1em">COMPRAR LICENÇA</a>
+          <a href="#modulos" style="display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 26px;border-radius:6px;border:1px solid #3a3a3a;background:#181818;color:#fff;font-size:14px;font-weight:700;letter-spacing:.1em">O QUE FAZ</a>
+        </div>
+        <div style="margin-top:26px;display:flex;flex-wrap:wrap;gap:8px 22px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#5a5a5a">
+          <span>Licença no painel em minutos</span>
+          <span>7 dias para reembolso</span>
+          <span>PIX · cartão · boleto</span>
+        </div>
+      </div>
+
+      <div data-reveal="" style="min-width:0;position:relative;background:#181818;border:1px solid #2b2b2b;border-radius:12px;overflow:hidden;box-shadow:0 30px 80px -40px rgba(0,0,0,.9)">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;overflow:hidden">
+          <div style="width:34%;height:100%;background:linear-gradient(90deg,transparent,#f8e800,transparent);animation:plfSweep 4.2s linear infinite"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;background:#202020;border-bottom:1px solid #2b2b2b;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff">
+          COCKPIT
+          <span style="margin-left:auto;font-size:10px;letter-spacing:.2em;color:#8a8a8a">LEITURA AO VIVO</span>
+        </div>
+        <div style="display:grid;gap:1px;background:#222;grid-template-columns:repeat(auto-fit,minmax(min(100%,125px),1fr))">
+          <dc-import name="GaugeVivo" gkey="cpu" label="CPU" sub="AMD Ryzen 7 5800X" unit="%" hint-size="100%,190px"></dc-import>
+          <dc-import name="GaugeVivo" gkey="gpu" label="GPU" sub="GeForce RTX 3080" unit="%" hint-size="100%,190px"></dc-import>
+          <dc-import name="GaugeVivo" gkey="ram" label="RAM" sub="32 GB · DDR4" unit="%" hint-size="100%,190px"></dc-import>
+        </div>
+        <div style="padding:16px;border-top:1px solid #222">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8a8a8a">
+            <span>Telemetria — últimos 60 s</span>
+            <span style="display:flex;gap:14px"><span style="color:#f8e800">— CPU</span><span>-- GPU</span></span>
+          </div>
+          <svg viewBox="0 0 600 120" preserveAspectRatio="none" style="margin-top:10px;display:block;width:100%;height:96px">
+            <g stroke="#1e1e1e" stroke-width="1">
+              <line x1="0" y1="30" x2="600" y2="30"></line>
+              <line x1="0" y1="60" x2="600" y2="60"></line>
+              <line x1="0" y1="90" x2="600" y2="90"></line>
+            </g>
+            <path data-spark="gpu" fill="none" stroke="#6e6e6e" stroke-width="2" stroke-dasharray="5 6"></path>
+            <path data-spark="cpu" fill="none" stroke="#f8e800" stroke-width="2.4"></path>
+          </svg>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #2b2b2b;background:#141414;padding:11px 16px">
+          <span style="display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:rgba(248,232,0,.07);border:1px solid rgba(248,232,0,.4);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#f8e800">ILUSTRAÇÃO DA INTERFACE</span>
+            <span style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#c9c9c9">SISTEMA // PRONTO</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="modulos" style="border-bottom:1px solid #1d1d1d">
+    <div style="margin:0 auto;width:100%;max-width:1200px;padding:88px 24px;box-sizing:border-box">
+      <div data-reveal="" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px">
+        <div>
+          <p style="margin:0;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8a8a8a">O que faz</p>
+          <h2 style="margin:10px 0 0;font-size:clamp(1.9rem,3.6vw,2.7rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;color:#fff">Seis módulos. Zero achismo.</h2>
+        </div>
+        <p style="margin:0;max-width:400px;font-size:15px;color:#8a8a8a">Cada módulo mostra a origem do dado, o que vai mudar e o resultado medido depois da ação.</p>
+      </div>
+
+      <div style="margin-top:40px;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))">
+        <sc-for list="{{ modulos }}" as="m" hint-placeholder-count="6">
+          <div data-reveal="" data-card="" style="position:relative;background:#141414;border:1px solid #232323;border-radius:10px;padding:22px;transition:transform .32s cubic-bezier(.16,1,.3,1),border-color .32s,background .32s" style-hover="transform:translateY(-4px);border-color:#3f3f3f;background:#181818">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:10px;font-weight:700;letter-spacing:.2em;color:#f8e800">{{ m.codigo }}</span>
+              <span style="flex:1;height:1px;background:#242424"></span>
+            </div>
+            <h3 style="margin:14px 0 0;font-size:17px;font-weight:800;letter-spacing:.01em;color:#fff">{{ m.nome }}</h3>
+            <p style="margin:8px 0 0;font-size:14px;line-height:1.5;color:#8a8a8a">{{ m.desc }}</p>
+          </div>
+        </sc-for>
+      </div>
+
+      <div data-reveal="" style="margin-top:20px;position:relative;border:1px solid #232323;border-radius:12px;overflow:hidden;background:#0d0d0d">
+        <div style="display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid #1e1e1e;background:#141414">
+          <span style="width:10px;height:10px;border-radius:50%;background:#2e2e2e"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#2e2e2e"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#2e2e2e"></span>
+          <span style="margin-left:10px;font-size:11px;font-weight:700;letter-spacing:.14em;color:#8a8a8a">PLF CORE v1.0.0 — FPS BOOSTER</span>
+        </div>
+        <img data-parallax="" src="assets/app-fps.png" alt="Tela FPS Booster do PLF CORE" style="display:block;width:100%;height:auto;transition:transform .6s cubic-bezier(.16,1,.3,1)" />
+      </div>
+    </div>
+  </section>
+
+  <section id="planos">
+    <div style="margin:0 auto;width:100%;max-width:1200px;padding:88px 24px 40px;box-sizing:border-box">
+      <div data-reveal="" style="text-align:center">
+        <p style="margin:0;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8a8a8a">Licença</p>
+        <h2 style="margin:10px 0 0;font-size:clamp(1.9rem,3.6vw,2.7rem);font-weight:800;letter-spacing:-.03em;color:#fff">Escolha e ative hoje.</h2>
+        <p style="margin:12px auto 0;max-width:520px;font-size:15px;color:#8a8a8a">O app é o mesmo em todos os planos — muda a duração. Cada licença vale para 1 instalação do Windows.</p>
+      </div>
+
+      <div style="margin-top:44px;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));align-items:start">
+        <sc-for list="{{ planos }}" as="p" hint-placeholder-count="3">
+          <div data-reveal="" data-plan="" style="position:relative;display:flex;flex-direction:column;background:{{ p.fundo }};border:1px solid {{ p.borda }};border-radius:12px;padding:26px;box-shadow:{{ p.sombra }};transition:transform .32s cubic-bezier(.16,1,.3,1)" style-hover="transform:translateY(-6px)">
+            <sc-if value="{{ p.destaque }}" hint-placeholder-val="{{ false }}">
+              <span style="position:absolute;top:-11px;left:26px;display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:999px;background:#f8e800;color:#101010;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase">Mais escolhido</span>
+            </sc-if>
+            <p style="margin:0;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8a8a8a">{{ p.nome }}</p>
+            <p style="margin:14px 0 0;display:flex;align-items:flex-end;gap:6px;color:#fff">
+              <span style="font-size:15px;font-weight:700;color:#8a8a8a">R$</span>
+              <span data-count="{{ p.valor }}" style="font-size:3.1rem;font-weight:800;letter-spacing:-.04em;line-height:.9;font-variant-numeric:tabular-nums">0</span>
+            </p>
+            <p style="margin:8px 0 0;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#5a5a5a">{{ p.duracao }} · 1 instalação</p>
+            <ul style="margin:22px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;font-size:14px;color:#c9c9c9">
+              <li style="display:flex;gap:10px"><span style="color:#f8e800">✓</span>Diagnóstico com dados reais</li>
+              <li style="display:flex;gap:10px"><span style="color:#f8e800">✓</span>Otimizações explicadas e reversíveis</li>
+              <li style="display:flex;gap:10px"><span style="color:#f8e800">✓</span>Antes e depois medido</li>
+              <li style="display:flex;gap:10px"><span style="color:#f8e800">✓</span>Registro completo no LOG</li>
+            </ul>
+            <a href="#" style="margin-top:26px;display:inline-flex;align-items:center;justify-content:center;min-height:48px;border-radius:6px;background:{{ p.btnFundo }};border:1px solid {{ p.btnBorda }};color:{{ p.btnTexto }};font-size:13px;font-weight:800;letter-spacing:.1em">COMPRAR</a>
+          </div>
+        </sc-for>
+      </div>
+
+      <p data-reveal="" style="margin:26px auto 0;max-width:640px;text-align:center;font-size:13px;line-height:1.6;color:#5a5a5a">
+        Formatar, trocar de PC ou reinstalar o Windows exige uma nova licença — renovar mantém a instalação atual. A regra aparece de novo, com confirmação, antes do pagamento.
+      </p>
+    </div>
+
+    <div style="margin:0 auto;width:100%;max-width:1200px;padding:0 24px 88px;box-sizing:border-box">
+      <div data-reveal="" style="position:relative;overflow:hidden;border:1px solid #2b2b2b;border-radius:12px;background:#141414;padding:40px;display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));align-items:center">
+        <div style="position:absolute;inset:0;background:radial-gradient(600px 240px at 90% 20%,rgba(248,232,0,.08),transparent 70%);pointer-events:none"></div>
+        <div style="position:relative">
+          <h2 style="margin:0;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-.03em;color:#fff">Pague, receba a chave, ative.</h2>
+          <p style="margin:10px 0 0;max-width:420px;font-size:15px;color:#8a8a8a">Licença liberada no painel assim que o pagamento é confirmado. Instalador sempre com checksum publicado.</p>
+        </div>
+        <div style="position:relative;display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end">
+          <a href="#planos" style="display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 30px;border-radius:6px;background:#f8e800;color:#101010;font-size:14px;font-weight:800;letter-spacing:.1em">COMPRAR LICENÇA</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid #1d1d1d;background:#0d0d0d">
+    <div style="margin:0 auto;display:flex;width:100%;max-width:1200px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:26px 24px;box-sizing:border-box">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="assets/logo-header.png" alt="Pro League" style="height:18px;width:auto;display:block" />
+        <span style="font-size:10px;font-weight:700;letter-spacing:.22em;color:#5a5a5a">CORE</span>
+      </div>
+      <p style="margin:0;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#5a5a5a">© 2026 PLF CORE · Sem dados simulados</p>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      modulos: [
+        { codigo: 'INST-01', nome: 'Cockpit', desc: 'CPU, GPU e RAM ao vivo com a fonte de cada leitura na tela.' },
+        { codigo: 'INST-02', nome: 'FPS Booster', desc: 'Processos em segundo plano listados — você escolhe o que encerrar.' },
+        { codigo: 'INST-03', nome: 'Limpeza', desc: 'Temporários mostrados antes de remover. Seus arquivos ficam fora.' },
+        { codigo: 'INST-04', nome: 'Raio-X', desc: 'Inventário completo da máquina. Sem fonte, o campo diz NÃO DISPONÍVEL.' },
+        { codigo: 'INST-05', nome: 'Windows', desc: 'Energia, Game Mode e efeitos visuais — cada item espera sua confirmação.' },
+        { codigo: 'INST-06', nome: 'FiveM', desc: 'Cache limpo com as pastas de conta protegidas. Pronto para o Pro League.' },
+      ],
+      planos: [
+        { nome: '15 dias', valor: 24.99, duracao: '15 dias', destaque: false, fundo: '#141414', borda: '#232323', sombra: 'none', btnFundo: '#202020', btnBorda: '#3a3a3a', btnTexto: '#ffffff' },
+        { nome: '30 dias', valor: 39.99, duracao: '30 dias', destaque: true, fundo: '#181818', borda: '#f8e800', sombra: '0 24px 70px -40px rgba(248,232,0,.5)', btnFundo: '#f8e800', btnBorda: '#f8e800', btnTexto: '#101010' },
+        { nome: 'Vitalício', valor: 799.99, duracao: 'Sem expiração', destaque: false, fundo: '#141414', borda: '#232323', sombra: 'none', btnFundo: '#202020', btnBorda: '#3a3a3a', btnTexto: '#ffffff' },
+      ],
+    };
+  }
+
+  componentDidMount() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('[data-wide]').forEach((el) => {
+      if (window.innerWidth > 720) el.style.display = 'flex';
+    });
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        el.setAttribute('data-shown', '1');
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        io.unobserve(el);
+        if (el.hasAttribute('data-plan')) this.countUp(el);
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('[data-reveal]').forEach((el, i) => {
+      if (reduce) { if (el.hasAttribute('data-plan')) this.countUp(el); return; }
+      if (el.getAttribute('data-shown')) { el.style.opacity = '1'; el.style.transform = 'none'; return; }
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(22px)';
+      el.style.transitionDelay = ((i % 4) * 80) + 'ms';
+      io.observe(el);
+    });
+    this._io = io;
+    this._sweep = setInterval(() => {
+      const pend = document.querySelectorAll('[data-reveal]:not([data-shown])');
+      if (!pend.length) { clearInterval(this._sweep); return; }
+      pend.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.top > window.innerHeight * 0.95 || r.bottom < 0) return;
+        el.setAttribute('data-shown', '1');
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        if (el.hasAttribute('data-plan')) this.countUp(el);
+      });
+    }, 320);
+
+    const img = document.querySelector('[data-parallax]');
+    if (img && !reduce) {
+      const pio = new IntersectionObserver((es) => {
+        es.forEach((e) => { img.style.transform = e.isIntersecting ? 'scale(1)' : 'scale(1.06)'; });
+      }, { threshold: 0.25 });
+      img.style.transform = 'scale(1.06)';
+      pio.observe(img);
+      this._pio = pio;
+    }
+
+    if (!reduce) this.startSpark();
+    this.startGauges(reduce);
+  }
+
+  startGauges(reduce) {
+    const bases = { cpu: 21, gpu: 37, ram: 41 };
+    const total = 395.8;
+    const live = [];
+    let tries = 0;
+    const paint = (g) => {
+      g.needle.setAttribute('transform', 'rotate(' + (-135 + g.cur * 2.7).toFixed(2) + ' 100 100)');
+      if (g.valEl) g.valEl.textContent = Math.round(g.cur);
+      if (g.arc) g.arc.setAttribute('stroke-dasharray', (total * g.cur / 100).toFixed(1) + ' 999');
+    };
+    const wire = () => {
+      Object.keys(bases).forEach((key) => {
+        if (live.some((g) => g.key === key)) return;
+        const root = document.querySelector('[data-gauge="' + key + '"]');
+        const needle = root && root.querySelector('[data-needle]');
+        if (!needle) return;
+        const g = { key, needle, valEl: root.querySelector('[data-val]'), arc: root.querySelector('[data-arc]'), cur: bases[key], target: bases[key] };
+        live.push(g);
+        paint(g);
+      });
+      if (live.length === 3 || ++tries > 40) clearInterval(this._gaugeBoot);
+    };
+    this._gaugeBoot = setInterval(wire, 100);
+    wire();
+    if (reduce) return;
+    let t = 0;
+    this._gaugeI = setInterval(() => {
+      t += 1;
+      live.forEach((g) => {
+        if (t % 24 === 0) g.target = Math.max(8, Math.min(88, bases[g.key] + (Math.random() - 0.4) * 22));
+        g.cur += (g.target - g.cur) * 0.12;
+        paint(g);
+      });
+    }, 60);
+  }
+
+  countUp(planEl) {
+    const el = planEl.querySelector('[data-count]');
+    if (!el) return;
+    const target = parseFloat(el.getAttribute('data-count')) || 0;
+    const fmt = (v) => v.toFixed(2).replace('.', ',');
+    el.textContent = fmt(target);
+    if (el.dataset.done) return;
+    el.dataset.done = '1';
+    const t0 = Date.now();
+    const int = setInterval(() => {
+      const k = Math.min(1, (Date.now() - t0) / 900);
+      if (k >= 1) { el.textContent = fmt(target); clearInterval(int); return; }
+      el.textContent = fmt(target * (1 - Math.pow(1 - k, 3)));
+    }, 50);
+    setTimeout(() => { clearInterval(int); el.textContent = fmt(target); }, 2400);
+  }
+
+  startSpark() {
+    const paths = { cpu: document.querySelector('[data-spark="cpu"]'), gpu: document.querySelector('[data-spark="gpu"]') };
+    if (!paths.cpu) return;
+    const n = 60;
+    const series = { cpu: Array.from({ length: n }, () => 22 + Math.random() * 8), gpu: Array.from({ length: n }, () => 36 + Math.random() * 8) };
+    const build = (arr) => arr.map((v, i) => (i ? 'L' : 'M') + (i * (600 / (n - 1))).toFixed(1) + ' ' + (110 - v * 0.9).toFixed(1)).join(' ');
+    const step = () => {
+      ['cpu', 'gpu'].forEach((k) => {
+        const base = k === 'cpu' ? 24 : 38;
+        const last = series[k][n - 1];
+        const next = Math.max(8, Math.min(92, last + (Math.random() - 0.5) * 9 + (base - last) * 0.12));
+        series[k].push(next);
+        series[k].shift();
+        if (paths[k]) paths[k].setAttribute('d', build(series[k]));
+      });
+      this._sparkT = setTimeout(step, 420);
+    };
+    step();
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this._sparkT);
+    clearInterval(this._sweep);
+    clearInterval(this._gaugeI);
+    clearInterval(this._gaugeBoot);
+    if (this._io) this._io.disconnect();
+    if (this._pio) this._pio.disconnect();
+  }
+}
+</script>
+</body>
+</html>

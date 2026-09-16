@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  body { margin:0; background:#0e0e0e; color:#c9c9c9; font-family:Inter,'Segoe UI',sans-serif; font-size:15px; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  a { color:#ffffff; text-decoration:none; }
+  a:hover { color:#f8e800; }
+  ::selection { background:rgba(248,232,0,.3); color:#fff; }
+  @keyframes plfScan { 0% { transform:translateY(-100%) } 100% { transform:translateY(1400%) } }
+  @keyframes plfLed { 0%,100% { opacity:1 } 50% { opacity:.3 } }
+  [data-fold] { opacity:0; transform:perspective(1200px) rotateX(16deg) translateY(50px) scale(.96); transform-origin:50% 100%; transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+  [data-fold].in { opacity:1; transform:perspective(1200px) rotateX(0) translateY(0) scale(1); }
+</style>
+</helmet>
+<div style="position:relative;background:#0e0e0e;min-height:100vh;overflow:hidden">
+
+  <div data-grid="" style="position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:64px 64px;transition:transform .35s cubic-bezier(.16,1,.3,1)"></div>
+  <div data-glow="" style="position:fixed;top:0;left:0;z-index:0;width:620px;height:620px;margin:-310px 0 0 -310px;pointer-events:none;background:radial-gradient(circle,rgba(248,232,0,.10),transparent 62%);transition:transform .25s ease-out"></div>
+  <div style="position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden">
+    <div style="width:100%;height:120px;background:linear-gradient(180deg,transparent,rgba(248,232,0,.045),transparent);animation:plfScan 9s linear infinite"></div>
+  </div>
+
+  <div style="position:relative;z-index:1">
+    <header style="position:sticky;top:0;z-index:60;background:rgba(14,14,14,.78);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)">
+      <div style="margin:0 auto;display:flex;height:68px;width:100%;max-width:1180px;align-items:center;gap:18px;padding:0 26px;box-sizing:border-box">
+        <img src="assets/logo-header.png" alt="Pro League" style="height:21px;width:auto;display:block" />
+        <span style="font-size:10px;font-weight:700;letter-spacing:.22em;color:#8a8a8a">CORE</span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:16px">
+          <a href="#modulos" style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">O QUE FAZ</a>
+          <a href="#planos" style="font-size:12px;font-weight:700;letter-spacing:.1em;color:#8a8a8a">PLANOS</a>
+          <a href="#planos" style="display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 22px;border-radius:999px;background:#f8e800;color:#0e0e0e;font-size:12px;font-weight:800;letter-spacing:.1em">COMPRAR</a>
+        </div>
+      </div>
+    </header>
+
+    <section style="position:relative">
+      <div style="margin:0 auto;width:100%;max-width:1180px;padding:92px 26px 0;box-sizing:border-box;text-align:center">
+        <p data-fold="" style="margin:0;display:inline-flex;align-items:center;gap:9px;height:28px;padding:0 14px;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:rgba(255,255,255,.02);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8a8a8a">
+          <span style="width:6px;height:6px;border-radius:50%;background:#f8e800;box-shadow:0 0 8px rgba(248,232,0,.9);animation:plfLed 2.4s ease-in-out infinite"></span>
+          App oficial do servidor Pro League
+        </p>
+        <h1 data-fold="" style="margin:26px auto 0;max-width:900px;font-size:clamp(2.5rem,6.6vw,5rem);font-weight:900;line-height:.95;letter-spacing:-.045em;color:#fff;text-wrap:balance">
+          Diagnóstico e otimização do Windows <span style="color:#f8e800">com dados reais</span>
+        </h1>
+        <p data-fold="" style="margin:22px auto 0;max-width:600px;font-size:17px;line-height:1.55;color:#a5a5a5">
+          Seis instrumentos leem a sua máquina, mostram a fonte de cada número e registram toda alteração — com reversão pelo mesmo interruptor.
+        </p>
+        <div data-fold="" style="margin:34px 0 0;display:flex;flex-wrap:wrap;gap:12px;justify-content:center">
+          <a href="#planos" style="display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 32px;border-radius:999px;background:#f8e800;color:#0e0e0e;font-size:14px;font-weight:800;letter-spacing:.1em;box-shadow:0 18px 50px -24px rgba(248,232,0,.8)">COMPRAR LICENÇA</a>
+          <a href="#modulos" style="display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 28px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);color:#fff;font-size:14px;font-weight:700;letter-spacing:.1em">VER O QUE FAZ</a>
+        </div>
+        <p data-fold="" style="margin:20px 0 0;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5a5a5a">A partir de R$ 24,99 · PIX, cartão ou boleto · 7 dias para reembolso</p>
+      </div>
+
+      <div style="margin:56px auto 0;width:100%;max-width:1180px;padding:0 26px 96px;box-sizing:border-box;perspective:1400px">
+        <div data-tilt="" style="position:relative;border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden;background:#111;box-shadow:0 60px 120px -60px rgba(0,0,0,1);transform-style:preserve-3d;transition:transform .3s cubic-bezier(.16,1,.3,1)">
+          <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#161616;border-bottom:1px solid rgba(255,255,255,.07);font-size:10px;font-weight:700;letter-spacing:.2em;color:#8a8a8a">
+            <span style="width:9px;height:9px;border-radius:50%;background:#2e2e2e"></span>
+            <span style="width:9px;height:9px;border-radius:50%;background:#2e2e2e"></span>
+            <span style="width:9px;height:9px;border-radius:50%;background:#2e2e2e"></span>
+            <span style="margin-left:8px">PLF CORE v1.0.0 — COCKPIT</span>
+            <span style="margin-left:auto;color:#f8e800">TELA REAL</span>
+          </div>
+          <img src="assets/app-cockpit.png" alt="Tela Cockpit do PLF CORE" style="display:block;width:100%;height:auto" />
+        </div>
+      </div>
+    </section>
+
+    <section id="modulos" style="border-top:1px solid rgba(255,255,255,.06)">
+      <div style="margin:0 auto;width:100%;max-width:1180px;padding:88px 26px;box-sizing:border-box">
+        <div style="text-align:center">
+          <p data-fold="" style="margin:0;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#8a8a8a">O que faz</p>
+          <h2 data-fold="" style="margin:12px 0 0;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;letter-spacing:-.035em;color:#fff">Seis instrumentos</h2>
+        </div>
+
+        <div style="margin-top:46px;display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));perspective:1200px">
+          <sc-for list="{{ modulos }}" as="m" hint-placeholder-count="6">
+            <div data-fold="" data-card="" style="position:relative;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:26px;overflow:hidden" style-hover="border-color:rgba(248,232,0,.5)">
+              <span style="display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:999px;background:rgba(248,232,0,.1);border:1px solid rgba(248,232,0,.3);font-size:10px;font-weight:800;letter-spacing:.16em;color:#f8e800">{{ m.codigo }}</span>
+              <h3 style="margin:16px 0 0;font-size:19px;font-weight:800;letter-spacing:-.01em;color:#fff">{{ m.nome }}</h3>
+              <p style="margin:9px 0 0;font-size:14px;line-height:1.55;color:#9a9a9a">{{ m.desc }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="planos" style="border-top:1px solid rgba(255,255,255,.06)">
+      <div style="margin:0 auto;width:100%;max-width:1180px;padding:88px 26px 100px;box-sizing:border-box">
+        <div style="text-align:center">
+          <p data-fold="" style="margin:0;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#8a8a8a">Licença</p>
+          <h2 data-fold="" style="margin:12px 0 0;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;letter-spacing:-.035em;color:#fff">Ative em minutos</h2>
+          <p data-fold="" style="margin:14px auto 0;max-width:520px;font-size:15px;color:#9a9a9a">Mesmo app em todos os planos — muda a duração. Cada licença vale para 1 instalação do Windows.</p>
+        </div>
+
+        <div style="margin-top:46px;display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));align-items:center;perspective:1400px">
+          <sc-for list="{{ planos }}" as="p" hint-placeholder-count="3">
+            <div data-fold="" data-plan="" style="position:relative;display:flex;flex-direction:column;background:{{ p.fundo }};border:1px solid {{ p.borda }};border-radius:16px;padding:{{ p.padding }};box-shadow:{{ p.sombra }};transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s" style-hover="transform:translateY(-8px) scale(1.01)">
+              <sc-if value="{{ p.destaque }}" hint-placeholder-val="{{ false }}">
+                <span style="position:absolute;top:18px;right:18px;display:inline-flex;align-items:center;height:24px;padding:0 12px;border-radius:999px;background:#f8e800;color:#0e0e0e;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase">Recomendado</span>
+              </sc-if>
+              <p style="margin:0;font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#8a8a8a">{{ p.nome }}</p>
+              <p style="margin:18px 0 0;display:flex;align-items:flex-end;gap:6px;color:#fff">
+                <span style="font-size:15px;font-weight:700;color:#8a8a8a">R$</span>
+                <span data-count="{{ p.valor }}" style="font-size:{{ p.tamanho }};font-weight:900;letter-spacing:-.045em;line-height:.88;font-variant-numeric:tabular-nums">0</span>
+              </p>
+              <p style="margin:10px 0 0;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5a5a5a">{{ p.duracao }} · 1 instalação</p>
+              <ul style="margin:24px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;color:#c9c9c9">
+                <li style="display:flex;gap:10px"><span style="color:#f8e800">✓</span>Dados reais do sistema</li>
+                <li style="display:flex;gap:10px"><span style="color:#f8e800">✓</span>Alterações explicadas e reversíveis</li>
+                <li style="display:flex;gap:10px"><span style="color:#f8e800">✓</span>Antes e depois medido</li>
+                <li style="display:flex;gap:10px"><span style="color:#f8e800">✓</span>LOG com estado anterior</li>
+              </ul>
+              <a href="#" style="margin-top:28px;display:inline-flex;align-items:center;justify-content:center;min-height:50px;border-radius:999px;background:{{ p.btnFundo }};border:1px solid {{ p.btnBorda }};color:{{ p.btnTexto }};font-size:13px;font-weight:800;letter-spacing:.1em">COMPRAR</a>
+            </div>
+          </sc-for>
+        </div>
+
+        <p data-fold="" style="margin:26px auto 0;max-width:620px;text-align:center;font-size:13px;line-height:1.6;color:#5a5a5a">Formatar, trocar de PC ou reinstalar o Windows exige nova licença — renovar mantém a instalação atual. A regra aparece de novo, com confirmação, antes do pagamento.</p>
+      </div>
+    </section>
+
+    <footer style="border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.4)">
+      <div style="margin:0 auto;display:flex;width:100%;max-width:1180px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:26px;box-sizing:border-box">
+        <div style="display:flex;align-items:center;gap:10px">
+          <img src="assets/logo-header.png" alt="Pro League" style="height:17px;width:auto;display:block" />
+          <span style="font-size:10px;font-weight:700;letter-spacing:.22em;color:#5a5a5a">CORE</span>
+        </div>
+        <p style="margin:0;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#5a5a5a">© 2026 PLF CORE · Sem dados simulados</p>
+      </div>
+    </footer>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      modulos: [
+        { codigo: 'INST-01', nome: 'Cockpit', desc: 'CPU, GPU e RAM ao vivo com telemetria de 60 s e a fonte de cada leitura na tela.' },
+        { codigo: 'INST-02', nome: 'FPS Booster', desc: 'Pacotes de aceleração com o estado real lido da máquina — tudo reversível.' },
+        { codigo: 'INST-03', nome: 'Limpeza', desc: 'Temporários mostrados antes de remover. Documentos, fotos e saves ficam fora.' },
+        { codigo: 'INST-04', nome: 'Raio-X', desc: 'Inventário completo do hardware. Sem fonte, o campo diz NÃO DISPONÍVEL.' },
+        { codigo: 'INST-05', nome: 'Windows', desc: 'Energia, Game Mode e efeitos visuais — cada item espera sua confirmação.' },
+        { codigo: 'INST-06', nome: 'FiveM', desc: 'Cache limpo com pastas de conta protegidas. Pronto para o servidor Pro League.' },
+      ],
+      planos: [
+        { nome: '15 dias', valor: 24.99, duracao: '15 dias', destaque: false, fundo: 'rgba(255,255,255,.02)', borda: 'rgba(255,255,255,.09)', sombra: 'none', padding: '26px', tamanho: '2.7rem', btnFundo: 'rgba(255,255,255,.04)', btnBorda: 'rgba(255,255,255,.16)', btnTexto: '#ffffff' },
+        { nome: '30 dias', valor: 39.99, duracao: '30 dias', destaque: true, fundo: 'linear-gradient(180deg,rgba(248,232,0,.09),rgba(248,232,0,.02))', borda: 'rgba(248,232,0,.55)', sombra: '0 40px 90px -50px rgba(248,232,0,.7)', padding: '34px 26px', tamanho: '3.4rem', btnFundo: '#f8e800', btnBorda: '#f8e800', btnTexto: '#0e0e0e' },
+        { nome: 'Vitalício', valor: 799.99, duracao: 'Sem expiração', destaque: false, fundo: 'rgba(255,255,255,.02)', borda: 'rgba(255,255,255,.09)', sombra: 'none', padding: '26px', tamanho: '2.7rem', btnFundo: 'rgba(255,255,255,.04)', btnBorda: 'rgba(255,255,255,.16)', btnTexto: '#ffffff' },
+      ],
+    };
+  }
+
+  componentDidMount() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        el.classList.add('in');
+        io.unobserve(el);
+        if (el.hasAttribute('data-plan')) this.countUp(el);
+      });
+    }, { threshold: 0.18, rootMargin: '0px 0px -5% 0px' });
+
+    document.querySelectorAll('[data-fold]').forEach((el, i) => {
+      if (reduce) { el.style.opacity = '1'; el.style.transform = 'none'; if (el.hasAttribute('data-plan')) this.countUp(el); return; }
+      if (el.classList.contains('in')) return;
+      el.style.transitionDelay = ((i % 5) * 80) + 'ms';
+      io.observe(el);
+    });
+    this._io = io;
+    this._sweep = setInterval(() => {
+      const pend = document.querySelectorAll('[data-fold]:not(.in)');
+      if (!pend.length) { clearInterval(this._sweep); return; }
+      pend.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.top > window.innerHeight * 0.95) return;
+        el.classList.add('in');
+        if (el.hasAttribute('data-plan')) this.countUp(el);
+      });
+    }, 320);
+
+    if (reduce) return;
+    const grid = document.querySelector('[data-grid]');
+    const glow = document.querySelector('[data-glow]');
+    const tilt = document.querySelector('[data-tilt]');
+    this._move = (ev) => {
+      const w = window.innerWidth, h = window.innerHeight;
+      const nx = (ev.clientX / w - 0.5), ny = (ev.clientY / h - 0.5);
+      if (grid) grid.style.transform = 'translate3d(' + (-nx * 26).toFixed(1) + 'px,' + (-ny * 26).toFixed(1) + 'px,0)';
+      if (glow) glow.style.transform = 'translate3d(' + ev.clientX + 'px,' + ev.clientY + 'px,0)';
+      if (tilt) tilt.style.transform = 'rotateY(' + (nx * 5).toFixed(2) + 'deg) rotateX(' + (-ny * 3.4).toFixed(2) + 'deg)';
+    };
+    window.addEventListener('mousemove', this._move, { passive: true });
+  }
+
+  countUp(planEl) {
+    const el = planEl.querySelector('[data-count]');
+    if (!el) return;
+    const target = parseFloat(el.getAttribute('data-count')) || 0;
+    const fmt = (v) => v.toFixed(2).replace('.', ',');
+    el.textContent = fmt(target);
+    if (el.dataset.done) return;
+    el.dataset.done = '1';
+    const t0 = Date.now();
+    const int = setInterval(() => {
+      const k = Math.min(1, (Date.now() - t0) / 900);
+      if (k >= 1) { el.textContent = fmt(target); clearInterval(int); return; }
+      el.textContent = fmt(target * (1 - Math.pow(1 - k, 3)));
+    }, 50);
+    setTimeout(() => { clearInterval(int); el.textContent = fmt(target); }, 2400);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._sweep);
+    if (this._io) this._io.disconnect();
+    if (this._move) window.removeEventListener('mousemove', this._move);
+  }
+}
+</script>
+</body>
+</html>

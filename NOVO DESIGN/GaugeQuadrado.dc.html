@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div data-gauge="{{ gkey }}" style="background:#0e0e0e;padding:22px 18px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:10px">
+  <svg viewBox="0 0 200 138" style="display:block;width:100%;max-width:152px">
+    <path d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#242424" stroke-width="7"></path>
+    <path d="M 28.58 126 A 76 76 0 1 1 171.42 126" fill="none" stroke="#333333" stroke-width="6" stroke-dasharray="1.2 13.4"></path>
+    <path d="M 176.74 65.84 A 84 84 0 0 1 178.93 128.73" fill="none" stroke="#e5262b" stroke-width="7"></path>
+    <path data-arc="1" d="M 21.07 128.73 A 84 84 0 1 1 178.93 128.73" fill="none" stroke="#f8e800" stroke-width="7" stroke-dasharray="0 999"></path>
+    <line x1="100" y1="20" x2="100" y2="31" stroke="#6e6e6e" stroke-width="2"></line>
+    <text x="45.5" y="122.84" text-anchor="middle" font-size="9" font-weight="700" fill="#6e6e6e">0</text>
+    <text x="100" y="45" text-anchor="middle" font-size="9" font-weight="700" fill="#6e6e6e">50</text>
+    <text x="154.5" y="122.84" text-anchor="middle" font-size="9" font-weight="700" fill="#e5262b">100</text>
+    <g data-needle="1" transform="rotate(-135 100 100)">
+      <polygon points="98.4,100 101.6,100 100.6,26 99.4,26" fill="#ffffff"></polygon>
+      <rect x="97.8" y="100" width="4.4" height="11" fill="rgba(255,255,255,.5)"></rect>
+    </g>
+    <circle cx="100" cy="100" r="8" fill="#0b0b0b" stroke="rgba(255,255,255,.22)" stroke-width="1.5"></circle>
+    <circle cx="100" cy="100" r="2.6" fill="#f8e800"></circle>
+  </svg>
+  <div style="text-align:center">
+    <p style="margin:0;font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#8a8a8a">{{ label }}</p>
+    <p style="margin:5px 0 0;font-size:2.1rem;font-weight:900;line-height:1;letter-spacing:-.03em;color:#fff;font-variant-numeric:tabular-nums"><span data-val="1">0</span><span style="font-size:15px;font-weight:700;color:#8a8a8a">{{ unit }}</span></p>
+    <p style="margin:6px 0 0;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8a8a8a">{{ sub }}</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:220,&quot;height&quot;:230},&quot;gkey&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;cpu&quot;,&quot;gpu&quot;,&quot;ram&quot;],&quot;default&quot;:&quot;cpu&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;label&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;CPU&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;sub&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;AMD Ryzen 7 5800X&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;unit&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;%&quot;,&quot;tsType&quot;:&quot;string&quot;}}"></script>
+</body>
+</html>

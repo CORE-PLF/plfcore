@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  body { margin:0; background:#101010; color:#c9c9c9; font-family:Inter,'Segoe UI',sans-serif; font-size:15px; -webkit-font-smoothing:antialiased; }
+  a { color:#ffffff; text-decoration:none; }
+  a:hover { color:#f8e800; }
+  ::selection { background:rgba(248,232,0,.3); color:#fff; }
+</style>
+</helmet>
+<div style="background:#101010;min-height:100vh;display:flex;flex-direction:column">
+
+  <header style="position:sticky;top:0;z-index:50;border-bottom:1px solid #2b2b2b;background:#141414">
+    <div style="margin:0 auto;display:flex;height:64px;width:100%;max-width:1152px;align-items:center;gap:24px;padding:0 16px">
+      <a href="#" style="display:flex;align-items:center;gap:10px">
+        <img src="assets/logo-header.png" alt="Pro League" style="height:24px;width:auto;display:block" />
+        <span style="font-size:10px;letter-spacing:.12em;color:#8a8a8a;font-variant-numeric:tabular-nums">CORE</span>
+      </a>
+      <nav style="display:flex;align-items:center;gap:4px">
+        <a href="#produto" style="padding:8px 12px;font-size:12px;font-weight:600;letter-spacing:.04em;color:#8a8a8a">O QUE FAZ</a>
+        <a href="#como-funciona" style="padding:8px 12px;font-size:12px;font-weight:600;letter-spacing:.04em;color:#8a8a8a">COMO FUNCIONA</a>
+        <a href="#transparencia" style="padding:8px 12px;font-size:12px;font-weight:600;letter-spacing:.04em;color:#8a8a8a">TRANSPARÊNCIA</a>
+        <a href="#planos" style="padding:8px 12px;font-size:12px;font-weight:600;letter-spacing:.04em;color:#8a8a8a">PLANOS</a>
+      </nav>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+        <a href="#" style="display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:0 12px;border-radius:6px;border:1px solid #3a3a3a;background:#202020;color:#fff;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase">PAINEL</a>
+        <a href="#" style="display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:0 12px;border-radius:6px;border:1px solid #f8e800;background:#f8e800;color:#101010;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase">BAIXAR</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="flex:1">
+    <section style="border-bottom:1px solid #2b2b2b">
+      <div style="margin:0 auto;display:grid;width:100%;max-width:1152px;align-items:center;gap:48px;padding:56px 16px 64px;grid-template-columns:1.1fr 1fr">
+        <div>
+          <p style="font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#8a8a8a;margin:0">App oficial do servidor Pro League</p>
+          <img src="assets/logo-grande.png" alt="Pro League" style="margin-top:20px;height:auto;width:320px;max-width:100%;display:block" />
+          <h1 style="font-weight:700;letter-spacing:-.02em;line-height:1.05;color:#fff;font-size:3.4rem;margin:24px 0 0;text-wrap:balance">PLF CORE. Otimização do Windows com dados reais.</h1>
+          <p style="margin:20px 0 0;max-width:576px;font-size:16px;color:#c9c9c9">Lê CPU, GPU, RAM e discos do seu Windows, mostra a fonte de cada leitura e registra toda alteração — com reversão quando o sistema permite. Nada simulado, nada escondido atrás de uma barra de progresso.</p>
+          <div style="margin-top:28px;display:flex;flex-wrap:wrap;align-items:center;gap:12px">
+            <a href="#" style="display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 24px;border-radius:6px;border:1px solid #f8e800;background:#f8e800;color:#101010;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase">BAIXAR</a>
+            <a href="#planos" style="display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 24px;border-radius:6px;border:1px solid #3a3a3a;background:#202020;color:#fff;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase">VER PLANOS</a>
+          </div>
+          <p style="margin:20px 0 0;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:#5a5a5a">Windows 10 e 11 · Dados ficam na sua máquina · 7 dias para reembolso</p>
+        </div>
+
+        <div style="position:relative;background:#181818;border:1px solid #2b2b2b;border-radius:10px;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:10px;min-height:40px;padding:0 14px;background:#202020;border-bottom:1px solid #2b2b2b;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff">
+            <span>Cockpit</span>
+            <span style="margin-left:auto;font-size:10px;letter-spacing:.18em;color:#8a8a8a;font-variant-numeric:tabular-nums">INST-01 · 02 · 03</span>
+          </div>
+          <div style="padding:16px;display:flex;flex-direction:column;gap:8px">
+            <dc-import name="GaugeAtual" label="CPU · USO AGORA" unit="%" hint-size="100%,96px"></dc-import>
+            <div style="height:1px;background:#222222"></div>
+            <dc-import name="GaugeAtual" label="GPU · USO AGORA" unit="%" hint-size="100%,96px"></dc-import>
+            <div style="height:1px;background:#222222"></div>
+            <dc-import name="GaugeAtual" label="RAM · EM USO" unit="GB" hint-size="100%,96px"></dc-import>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #2b2b2b;background:#202020;padding:10px 16px">
+            <span style="display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:999px;background:rgba(248,232,0,.07);border:1px solid rgba(248,232,0,.4);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#f8e800">ILUSTRAÇÃO — SEM DADOS MEDIDOS</span>
+            <span style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.06em;color:#c9c9c9;font-variant-numeric:tabular-nums">
+              <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#f8e800;box-shadow:0 0 7px rgba(248,232,0,.8)"></span>
+              SISTEMA // PRONTO
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="produto" style="border-bottom:1px solid #2b2b2b">
+      <div style="margin:0 auto;width:100%;max-width:1152px;padding:96px 16px">
+        <p style="font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#8a8a8a;margin:0">Módulos</p>
+        <h2 style="font-weight:700;letter-spacing:-.02em;line-height:1.05;color:#fff;font-size:2.25rem;margin:8px 0 0">O que faz</h2>
+        <p style="margin:16px 0 0;max-width:672px;color:#c9c9c9">Clicar em um preset e ver uma barra chegar a 100% não prova que algo melhorou. Cada módulo mostra a origem dos dados, o que pretende alterar e o resultado medido depois.</p>
+
+        <div style="margin-top:40px;display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr))">
+          <sc-for list="{{ modulos }}" as="m" hint-placeholder-count="6">
+            <div style="background:#181818;border:1px solid #2b2b2b;border-radius:10px">
+              <div style="display:flex;align-items:center;gap:10px;min-height:40px;margin:-1px -1px 0;padding:0 14px;background:#202020;border-bottom:1px solid #2b2b2b;border-radius:10px 10px 0 0;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff">
+                <span>{{ m.nome }}</span>
+                <span style="margin-left:auto;font-size:10px;letter-spacing:.18em;color:#8a8a8a;font-variant-numeric:tabular-nums">{{ m.codigo }}</span>
+              </div>
+              <p style="padding:16px;font-size:14px;color:#c9c9c9;margin:0">{{ m.desc }}</p>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top:24px;display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))">
+          <div style="background:#141414;border:1px solid #222222;border-radius:10px;padding:20px">
+            <p style="font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#8a8a8a;margin:0">O jeito genérico</p>
+            <ul style="margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#8a8a8a">
+              <li>Perfil ou preset sem explicação.</li>
+              <li>Número sem fonte.</li>
+              <li>Alteração escondida atrás de uma barra de progresso.</li>
+              <li>Resultado prometido, nunca medido.</li>
+            </ul>
+          </div>
+          <div style="background:#181818;border:1px solid #f8e800;border-radius:10px;padding:20px">
+            <p style="font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#f8e800;margin:0">O jeito PLF CORE</p>
+            <ul style="margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#fff">
+              <li>Leitura real, com a fonte declarada na tela.</li>
+              <li>Confirmação antes de qualquer mudança.</li>
+              <li>Registro de tudo no LOG, com estado anterior.</li>
+              <li>Nova medição depois, para comparar.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="como-funciona" style="border-bottom:1px solid #2b2b2b">
+      <div style="margin:0 auto;width:100%;max-width:1152px;padding:96px 16px">
+        <p style="font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#8a8a8a;margin:0">Fluxo</p>
+        <h2 style="font-weight:700;letter-spacing:-.02em;line-height:1.05;color:#fff;font-size:2.25rem;margin:8px 0 0">Como funciona</h2>
+        <ol style="margin:40px 0 0;padding:0;list-style:none;display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr))">
+          <sc-for list="{{ fases }}" as="f" hint-placeholder-count="3">
+            <li style="height:100%">
+              <div style="height:100%;background:#181818;border:1px solid #2b2b2b;border-radius:10px;padding:20px;box-sizing:border-box">
+                <span style="font-size:11px;font-weight:700;letter-spacing:.18em;color:#f8e800;font-variant-numeric:tabular-nums">{{ f.n }}</span>
+                <h3 style="margin:8px 0 0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#fff">{{ f.t }}</h3>
+                <p style="margin:8px 0 0;font-size:14px;color:#c9c9c9">{{ f.d }}</p>
+              </div>
+            </li>
+          </sc-for>
+        </ol>
+        <div style="margin-top:24px;background:#141414;border:1px solid #222222;border-radius:10px;padding:20px">
+          <p style="font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#8a8a8a;margin:0">Da compra ao app</p>
+          <p style="margin:8px 0 0;font-size:14px;color:#c9c9c9;font-variant-numeric:tabular-nums">Escolha o plano <span style="color:#f8e800">→</span> entre ou crie sua conta <span style="color:#f8e800">→</span> pague <span style="color:#f8e800">→</span> receba a licença no painel <span style="color:#f8e800">→</span> baixe e ative.</p>
+          <p style="margin:8px 0 0;font-size:14px;color:#8a8a8a">Discord é opcional. Sua licença sempre fica disponível no painel.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="transparencia" style="border-bottom:1px solid #2b2b2b">
+      <div style="margin:0 auto;width:100%;max-width:1152px;padding:96px 16px">
+        <p style="font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#8a8a8a;margin:0">Transparência</p>
+        <h2 style="font-weight:700;letter-spacing:-.02em;line-height:1.05;color:#fff;font-size:2.25rem;margin:8px 0 0">Se está na tela, tem fonte.</h2>
+        <div style="margin-top:40px;display:grid;gap:16px;grid-template-columns:1.2fr 1fr">
+          <div style="background:#181818;border:1px solid #2b2b2b;border-radius:10px">
+            <div style="display:flex;align-items:center;min-height:40px;margin:-1px -1px 0;padding:0 14px;background:#202020;border-bottom:1px solid #2b2b2b;border-radius:10px 10px 0 0;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff">Leituras e fontes</div>
+            <dl style="padding:12px;margin:0">
+              <sc-for list="{{ fontes }}" as="row" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:32px;padding:0 10px;background:#202020;border-radius:6px;margin-top:1px">
+                  <dt style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:11px;color:#8a8a8a">{{ row.k }}</dt>
+                  <dd style="margin:0;font-size:12px;font-weight:600;color:#c9c9c9;text-align:right">{{ row.v }}</dd>
+                </div>
+              </sc-for>
+            </dl>
+            <div style="border-top:1px solid #222222;padding:16px">
+              <p style="margin:0;font-size:14px;font-weight:700;color:#fff">Limitações, sem esconder</p>
+              <ul style="margin:8px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:14px;color:#8a8a8a">
+                <li>Nem todo hardware expõe temperatura.</li>
+                <li>Leituras instantâneas podem refletir picos.</li>
+                <li>GPUs não NVIDIA podem ter dados mais limitados.</li>
+                <li>Algumas funções exigem privilégio de administrador.</li>
+              </ul>
+              <p style="margin:12px 0 0;font-size:14px;color:#8a8a8a">Benchmarks só serão publicados quando existirem medições reais seguindo a metodologia declarada. Hoje não há benchmarks publicados.</p>
+            </div>
+          </div>
+          <div style="display:grid;gap:16px;align-content:start">
+            <div style="background:#181818;border:1px solid #2b2b2b;border-radius:10px">
+              <div style="display:flex;align-items:center;min-height:40px;margin:-1px -1px 0;padding:0 14px;background:#202020;border-bottom:1px solid #2b2b2b;border-radius:10px 10px 0 0;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff">O que não coletamos</div>
+              <ul style="margin:0;padding:16px;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:14px;color:#c9c9c9">
+                <li>Arquivos pessoais.</li>
+                <li>Histórico de navegação.</li>
+                <li>Senhas ou teclas digitadas.</li>
+                <li>Capturas da sua atividade.</li>
+              </ul>
+            </div>
+            <div style="background:#181818;border:1px solid #2b2b2b;border-radius:10px">
+              <div style="display:flex;align-items:center;min-height:40px;margin:-1px -1px 0;padding:0 14px;background:#202020;border-bottom:1px solid #2b2b2b;border-radius:10px 10px 0 0;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff">O que vai ao servidor</div>
+              <div style="padding:16px;font-size:14px">
+                <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;color:#c9c9c9">
+                  <li>Dados de conta, compra e validação da licença.</li>
+                  <li>Chave, identificador da instalação e versão do app.</li>
+                </ul>
+                <p style="margin:12px 0 0;color:#8a8a8a">As leituras do seu hardware ficam na sua máquina. <a href="#" style="color:#fff;text-decoration:underline;text-underline-offset:4px">Política de privacidade completa</a>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="planos" style="border-bottom:1px solid #2b2b2b">
+      <div style="margin:0 auto;width:100%;max-width:1152px;padding:96px 16px">
+        <p style="font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#8a8a8a;margin:0">Licença</p>
+        <h2 style="font-weight:700;letter-spacing:-.02em;line-height:1.05;color:#fff;font-size:2.25rem;margin:8px 0 0">Planos</h2>
+        <p style="margin:12px 0 0;max-width:672px;font-size:14px;color:#c9c9c9">O app é o mesmo em todos os planos — muda a duração e o limite de instalações.</p>
+        <div style="margin-top:32px;display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr))">
+          <sc-for list="{{ planos }}" as="p" hint-placeholder-count="3">
+            <div style="display:flex;flex-direction:column;background:#181818;border:1px solid {{ p.borda }};border-radius:10px">
+              <div style="display:flex;align-items:center;gap:10px;min-height:40px;margin:-1px -1px 0;padding:0 14px;background:#202020;border-bottom:1px solid #2b2b2b;border-radius:10px 10px 0 0;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff">
+                <span>{{ p.nome }}</span>
+                <sc-if value="{{ p.destaque }}" hint-placeholder-val="{{ false }}">
+                  <span style="margin-left:auto;display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:#f8e800;border:1px solid #f8e800;color:#101010;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase">Recomendado</span>
+                </sc-if>
+              </div>
+              <div style="display:flex;flex:1;flex-direction:column;padding:20px">
+                <p style="margin:0;font-size:2.25rem;font-weight:700;line-height:1;color:#fff;font-variant-numeric:tabular-nums">{{ p.preco }}</p>
+                <dl style="margin:16px 0 0">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:32px;padding:0 10px;background:#202020;border-radius:6px">
+                    <dt style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:11px;color:#8a8a8a">Duração</dt>
+                    <dd style="margin:0;font-weight:700;color:#fff;font-variant-numeric:tabular-nums">{{ p.duracao }}</dd>
+                  </div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:32px;padding:0 10px;background:#202020;border-radius:6px;margin-top:1px">
+                    <dt style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:11px;color:#8a8a8a">Instalações</dt>
+                    <dd style="margin:0;font-weight:700;color:#fff;font-variant-numeric:tabular-nums">1</dd>
+                  </div>
+                </dl>
+                <ul style="margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:14px;color:#c9c9c9">
+                  <li style="display:flex;gap:8px"><span style="color:#fff">✓</span>Diagnóstico com dados reais do sistema</li>
+                  <li style="display:flex;gap:8px"><span style="color:#fff">✓</span>Otimizações explicadas e reversíveis</li>
+                  <li style="display:flex;gap:8px"><span style="color:#fff">✓</span>Antes e depois medido</li>
+                  <li style="display:flex;gap:8px"><span style="color:#fff">✓</span>Registro completo no LOG</li>
+                </ul>
+                <a href="#" style="margin-top:24px;display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 18px;border-radius:6px;border:1px solid {{ p.btnBorda }};background:{{ p.btnFundo }};color:{{ p.btnTexto }};font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase">COMPRAR</a>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top:24px;background:#141414;border:1px solid #f8e800;border-radius:10px;padding:12px 16px">
+          <div style="display:flex;gap:12px">
+            <span style="margin-top:2px;display:flex;height:20px;width:20px;flex-shrink:0;align-items:center;justify-content:center;border-radius:50%;font-size:11px;font-weight:700;color:#f8e800;border:1px solid #f8e800">!</span>
+            <div style="min-width:0;font-size:14px;color:#c9c9c9">
+              <p style="font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#f8e800;margin:0 0 4px">Licença por instalação</p>
+              <p style="margin:0;color:#fff">Cada licença vale para 1 instalação do Windows. Formatar, trocar de PC ou reinstalar o sistema exige uma nova licença.</p>
+              <p style="margin:4px 0 0;color:#8a8a8a">Renovar mantém a instalação atual. A regra completa aparece de novo, com confirmação, antes do pagamento.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="download">
+      <div style="margin:0 auto;width:100%;max-width:1152px;padding:96px 16px">
+        <div style="display:grid;gap:24px;background:#181818;border:1px solid #2b2b2b;border-radius:10px;padding:32px;grid-template-columns:1fr auto;align-items:center">
+          <div>
+            <p style="font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#8a8a8a;margin:0">Instalador</p>
+            <h2 style="font-weight:700;letter-spacing:-.02em;line-height:1.05;color:#fff;font-size:1.875rem;margin:8px 0 0">Baixe só daqui.</h2>
+            <p style="margin:12px 0 0;max-width:576px;font-size:14px;color:#c9c9c9">Sempre a versão atual, com checksum SHA-256 publicado. Não distribuímos o instalador por outros canais. A licença é ativada dentro do app.</p>
+          </div>
+          <a href="#" style="display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 24px;border-radius:6px;border:1px solid #f8e800;background:#f8e800;color:#101010;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase">BAIXAR</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer style="margin-top:auto;border-top:1px solid #2b2b2b;background:#141414">
+    <div style="margin:0 auto;display:flex;width:100%;max-width:1152px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;padding:24px 16px">
+      <a href="#" style="display:flex;align-items:center;gap:10px">
+        <img src="assets/logo-header.png" alt="Pro League" style="height:20px;width:auto;display:block" />
+        <span style="font-size:10px;letter-spacing:.12em;color:#8a8a8a">CORE</span>
+      </a>
+      <nav>
+        <ul style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;margin:0;padding:0;list-style:none">
+          <li><a href="#" style="font-size:13px;color:#8a8a8a">Download</a></li>
+          <li><a href="#" style="font-size:13px;color:#8a8a8a">Changelog</a></li>
+          <li><a href="#" style="font-size:13px;color:#8a8a8a">Status</a></li>
+          <li><a href="#" style="font-size:13px;color:#8a8a8a">Termos de uso</a></li>
+          <li><a href="#" style="font-size:13px;color:#8a8a8a">Privacidade</a></li>
+          <li><a href="#" style="font-size:13px;color:#8a8a8a">Reembolso</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div style="border-top:1px solid #222222">
+      <div style="margin:0 auto;display:flex;width:100%;max-width:1152px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:16px">
+        <p style="margin:0;font-size:11px;color:#5a5a5a;font-variant-numeric:tabular-nums">© 2026 PLF CORE. Todos os direitos reservados.</p>
+        <p style="margin:0;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#5a5a5a">App oficial do servidor Pro League · Sem dados simulados</p>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      modulos: [
+        { nome: 'COCKPIT', codigo: 'INST-01', desc: 'CPU, GPU e RAM ao vivo, com a fonte de cada leitura declarada na tela. Telemetria de 60 segundos.' },
+        { nome: 'FPS BOOSTER', codigo: 'INST-02', desc: 'Lista os processos em segundo plano que pesam na máquina. Você vê a lista e escolhe o que encerrar.' },
+        { nome: 'LIMPEZA', codigo: 'INST-03', desc: 'Caminhos temporários conhecidos, mostrados antes de remover. Downloads, documentos, fotos e saves ficam fora.' },
+        { nome: 'RAIO-X', codigo: 'INST-04', desc: 'Inventário de processador, placa-mãe, memória, discos e GPU. Sem fonte para um dado, o campo diz NÃO DISPONÍVEL.' },
+        { nome: 'WINDOWS', codigo: 'INST-05', desc: 'Plano de energia, Game Mode, efeitos visuais e apps em segundo plano. Cada item lista o que muda e espera a sua confirmação.' },
+        { nome: 'FIVEM', codigo: 'INST-06', desc: 'Cache do FiveM limpo com as pastas de conta protegidas. Preparado para o servidor Pro League.' },
+      ],
+      fases: [
+        { n: '01', t: 'MEDIR', d: 'O PLF CORE lê os dados disponíveis e informa a fonte. Se não conseguir medir, não preenche o espaço com um número inventado.' },
+        { n: '02', t: 'ENTENDER E ESCOLHER', d: 'Cada recomendação explica o que muda, o efeito esperado e o risco. Você decide o que executar.' },
+        { n: '03', t: 'REGISTRAR E COMPARAR', d: 'O estado anterior fica salvo no LOG. Depois da ação, o app mede de novo para mostrar o que realmente mudou.' },
+      ],
+      fontes: [
+        { k: 'CPU, clocks e núcleos', v: 'WMI / contadores do Windows' },
+        { k: 'GPU NVIDIA, VRAM e temperatura', v: 'NVIDIA-SMI' },
+        { k: 'RAM, discos e inventário', v: 'WMI' },
+        { k: 'Temperaturas', v: 'sensores do hardware, quando expostos' },
+      ],
+      planos: [
+        { nome: '15 DIAS', preco: 'R$ 24,99', duracao: '15 DIAS', destaque: false, borda: '#2b2b2b', btnFundo: '#202020', btnBorda: '#3a3a3a', btnTexto: '#ffffff' },
+        { nome: '30 DIAS', preco: 'R$ 39,99', duracao: '30 DIAS', destaque: true, borda: '#f8e800', btnFundo: '#f8e800', btnBorda: '#f8e800', btnTexto: '#101010' },
+        { nome: 'VITALÍCIO', preco: 'R$ 799,99', duracao: 'SEM EXPIRAÇÃO', destaque: false, borda: '#2b2b2b', btnFundo: '#202020', btnBorda: '#3a3a3a', btnTexto: '#ffffff' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

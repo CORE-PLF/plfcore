@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  body { margin:0; background:#0b0b0b; color:#c9c9c9; font-family:Inter,'Segoe UI',sans-serif; font-size:15px; -webkit-font-smoothing:antialiased; }
+  a { color:#ffffff; text-decoration:none; }
+  a:hover { color:#f8e800; }
+  ::selection { background:rgba(248,232,0,.3); color:#fff; }
+  @keyframes plfLed { 0%,100% { opacity:1 } 50% { opacity:.3 } }
+  @keyframes plfSweep { 0% { transform:translateX(-120%) } 100% { transform:translateX(220%) } }
+  [data-reveal] { transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+</style>
+</helmet>
+<div style="background:#0b0b0b;min-height:100vh">
+
+  <header style="position:sticky;top:0;z-index:60;background:rgba(11,11,11,.92);backdrop-filter:blur(10px);border-bottom:1px solid #191919">
+    <div style="margin:0 auto;display:flex;height:60px;width:100%;max-width:1240px;align-items:center;gap:16px;padding:0 28px;box-sizing:border-box">
+      <a href="#" style="display:flex;align-items:center;gap:10px">
+        <img src="assets/logo-header.png" alt="Pro League" style="height:20px;width:auto;display:block" />
+        <span style="font-size:10px;font-weight:700;letter-spacing:.24em;color:#8a8a8a">CORE</span>
+      </a>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:18px">
+        <a href="#modulos" style="font-size:11px;font-weight:700;letter-spacing:.16em;color:#8a8a8a">O QUE FAZ</a>
+        <a href="#planos" style="font-size:11px;font-weight:700;letter-spacing:.16em;color:#8a8a8a">PLANOS</a>
+        <a href="#planos" style="display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 20px;border-radius:2px;background:#f8e800;color:#0b0b0b;font-size:11px;font-weight:900;letter-spacing:.14em">COMPRAR</a>
+      </div>
+    </div>
+  </header>
+
+  <section style="border-bottom:1px solid #191919">
+    <div style="margin:0 auto;display:grid;width:100%;max-width:1240px;gap:0;padding:0;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));box-sizing:border-box">
+      <div data-reveal="" style="min-width:0;padding:72px 28px 76px;border-right:1px solid #191919;box-sizing:border-box">
+        <p style="margin:0;display:flex;align-items:center;gap:10px;font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#8a8a8a">
+          <span style="width:6px;height:6px;background:#f8e800;animation:plfLed 2.4s ease-in-out infinite"></span>
+          APP OFICIAL · SERVIDOR PRO LEAGUE
+        </p>
+        <h1 style="margin:26px 0 0;font-size:clamp(2.6rem,6.6vw,4.8rem);font-weight:900;line-height:1.02;letter-spacing:-.05em;color:#fff;text-transform:uppercase">
+          SEU PC<br />MEDIDO —<br /><span style="color:#f8e800">NÃO PROMETIDO.</span>
+        </h1>
+        <p style="margin:26px 0 0;max-width:470px;font-size:16.5px;line-height:1.6;color:#a5a5a5">
+          O PLF CORE lê CPU, GPU, RAM e discos do seu Windows, declara a fonte de cada número e guarda o estado anterior de tudo que altera. Você confirma, o app mede de novo.
+        </p>
+        <div style="margin-top:34px;display:flex;flex-wrap:wrap;gap:10px">
+          <a href="#planos" style="display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 30px;border-radius:2px;background:#f8e800;color:#0b0b0b;font-size:13.5px;font-weight:900;letter-spacing:.14em">COMPRAR LICENÇA</a>
+          <a href="#modulos" style="display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:2px;border:1px solid #2e2e2e;color:#fff;font-size:13.5px;font-weight:700;letter-spacing:.14em">O QUE FAZ</a>
+        </div>
+        <div style="margin-top:30px;display:grid;gap:1px;background:#191919;border:1px solid #191919">
+          <sc-for list="{{ selos }}" as="s" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:#0e0e0e;padding:11px 14px;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">
+              <span style="color:#6e6e6e">{{ s.k }}</span>
+              <span style="color:#fff">{{ s.v }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div data-reveal="" style="min-width:0;margin-bottom:76px;background:#0e0e0e;display:flex;flex-direction:column">
+        <div style="position:relative;border-bottom:1px solid #191919;overflow:hidden">
+          <div style="position:absolute;top:0;left:0;right:0;height:1px;overflow:hidden">
+            <div style="width:34%;height:100%;background:linear-gradient(90deg,transparent,#f8e800,transparent);animation:plfSweep 4.4s linear infinite"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;background:#101010;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#fff">
+            COCKPIT
+            <span style="margin-left:auto;font-size:10px;letter-spacing:.2em;color:#6e6e6e">LEITURA AO VIVO</span>
+          </div>
+        </div>
+        <div style="display:grid;gap:1px;background:#191919;grid-template-columns:repeat(auto-fit,minmax(min(100%,125px),1fr));border-bottom:1px solid #191919">
+          <dc-import name="GaugeQuadrado" gkey="cpu" label="CPU" sub="Ryzen 7 5800X" unit="%" hint-size="100%,200px"></dc-import>
+          <dc-import name="GaugeQuadrado" gkey="gpu" label="GPU" sub="RTX 3080" unit="%" hint-size="100%,200px"></dc-import>
+          <dc-import name="GaugeQuadrado" gkey="ram" label="RAM" sub="32 GB DDR4" unit="%" hint-size="100%,200px"></dc-import>
+        </div>
+        <div style="padding:16px 16px 18px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#6e6e6e">
+            <span>TELEMETRIA — ÚLTIMOS 60 S</span>
+            <span style="display:flex;gap:14px"><span style="color:#f8e800">— CPU</span><span>-- GPU</span></span>
+          </div>
+          <svg viewBox="0 0 600 120" preserveAspectRatio="none" style="margin-top:12px;display:block;width:100%;height:124px">
+            <g stroke="#171717" stroke-width="1">
+              <line x1="0" y1="30" x2="600" y2="30"></line>
+              <line x1="0" y1="60" x2="600" y2="60"></line>
+              <line x1="0" y1="90" x2="600" y2="90"></line>
+            </g>
+            <path data-spark="gpu" fill="none" stroke="#5a5a5a" stroke-width="2" stroke-dasharray="5 6"></path>
+            <path data-spark="cpu" fill="none" stroke="#f8e800" stroke-width="2.4"></path>
+          </svg>
+        </div>
+        <div style="flex:1;display:grid;grid-auto-rows:1fr;gap:1px;background:#191919;border-top:1px solid #191919;min-height:150px">
+          <sc-for list="{{ leituras }}" as="l" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:#0e0e0e;padding:0 16px">
+              <span style="font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#6e6e6e">{{ l.k }}</span>
+              <span style="font-size:11.5px;font-weight:700;letter-spacing:.06em;color:#fff;font-variant-numeric:tabular-nums">{{ l.v }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #191919;background:#101010;padding:11px 16px">
+          <span style="display:flex;align-items:center;gap:8px;font-size:10px;font-weight:800;letter-spacing:.16em;color:#8a8a8a">
+            <span style="width:6px;height:6px;background:#f8e800;animation:plfLed 2.4s ease-in-out infinite"></span>
+            PLF CORE v1.0.0
+          </span>
+          <span style="font-size:10px;font-weight:800;letter-spacing:.16em;color:#8a8a8a">SISTEMA // PRONTO</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="modulos">
+    <div style="margin:0 auto;width:100%;max-width:1240px;padding:0 28px;box-sizing:border-box">
+      <div data-reveal="" style="display:flex;align-items:center;gap:14px;padding:18px 0;border-bottom:1px solid #191919">
+        <span style="width:6px;height:6px;background:#f8e800;animation:plfLed 2.2s ease-in-out infinite"></span>
+        <span style="font-size:10.5px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#8a8a8a">MÓDULOS DO APP — 06 INSTRUMENTOS</span>
+      </div>
+
+      <div style="display:grid;gap:28px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:end;padding:56px 0 40px">
+        <h2 data-reveal="" style="margin:0;font-size:clamp(1.8rem,4.2vw,3rem);font-weight:900;letter-spacing:-.04em;line-height:1;color:#fff;text-transform:uppercase">O que o app faz</h2>
+        <p data-reveal="" style="margin:0;max-width:440px;font-size:15px;line-height:1.6;color:#8a8a8a">Cada instrumento diz de onde vem o dado, o que pretende mudar e mede de novo depois da sua confirmação.</p>
+      </div>
+
+      <div style="display:grid;gap:1px;background:#191919;border:1px solid #191919;grid-template-columns:repeat(auto-fit,minmax(min(100%,345px),1fr))">
+        <sc-for list="{{ modulos }}" as="m" hint-placeholder-count="6">
+          <div data-reveal="" style="background:#0e0e0e;padding:24px 22px 26px;transition:background .25s" style-hover="background:#141414">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:10px;font-weight:800;letter-spacing:.2em;color:#f8e800">{{ m.codigo }}</span>
+              <span style="flex:1;height:1px;background:#1e1e1e"></span>
+            </div>
+            <h3 style="margin:16px 0 0;font-size:17px;font-weight:900;letter-spacing:.02em;text-transform:uppercase;color:#fff">{{ m.nome }}</h3>
+            <p style="margin:9px 0 0;font-size:14px;line-height:1.55;color:#8a8a8a">{{ m.desc }}</p>
+          </div>
+        </sc-for>
+      </div>
+
+      <div data-reveal="" style="margin-top:28px;border:1px solid #191919">
+        <div style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:#101010;border-bottom:1px solid #191919;font-size:9.5px;font-weight:800;letter-spacing:.2em;color:#6e6e6e">
+          <span>PLF CORE v1.0.0 — FPS BOOSTER</span>
+          <span style="margin-left:auto;color:#f8e800">TELA REAL DO APP</span>
+        </div>
+        <img src="assets/app-fps.png" alt="Tela FPS Booster do PLF CORE" style="display:block;width:100%;height:auto" />
+      </div>
+    </div>
+  </section>
+
+  <section id="planos">
+    <div style="margin:0 auto;width:100%;max-width:1240px;padding:0 28px 96px;box-sizing:border-box">
+      <div data-reveal="" style="margin-top:88px;display:flex;align-items:center;gap:14px;padding:18px 0;border-top:1px solid #191919;border-bottom:1px solid #191919">
+        <span style="width:6px;height:6px;background:#f8e800;animation:plfLed 2.2s ease-in-out infinite"></span>
+        <span style="font-size:10.5px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#8a8a8a">LICENÇA — EMISSÃO IMEDIATA NO PAINEL</span>
+      </div>
+
+      <div style="display:grid;gap:28px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:end;padding:56px 0 40px">
+        <h2 data-reveal="" style="margin:0;font-size:clamp(1.8rem,4.2vw,3rem);font-weight:900;letter-spacing:-.04em;color:#fff;text-transform:uppercase">Planos</h2>
+        <p data-reveal="" style="margin:0;max-width:440px;font-size:15px;line-height:1.6;color:#8a8a8a">Mesmo app em todos. Muda a duração. Uma licença vale para 1 instalação do Windows.</p>
+      </div>
+
+      <div style="display:grid;gap:1px;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));background:#191919;border:1px solid #191919">
+        <sc-for list="{{ planos }}" as="p" hint-placeholder-count="3">
+          <div data-reveal="" data-plan="" style="position:relative;display:flex;flex-direction:column;background:{{ p.fundo }};padding:34px 26px 30px;transition:background .25s" style-hover="background:{{ p.hover }}">
+            <sc-if value="{{ p.destaque }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:0;left:0;right:0;height:5px;background:repeating-linear-gradient(-45deg,#f8e800 0 8px,#0b0b0b 8px 16px)"></div>
+            </sc-if>
+            <p style="margin:0;font-size:10.5px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:{{ p.corNome }}">{{ p.nome }}</p>
+            <p style="margin:22px 0 0;display:flex;align-items:flex-end;gap:5px;color:{{ p.corPreco }}">
+              <span style="font-size:14px;font-weight:700;opacity:.55">R$</span>
+              <span data-count="{{ p.valor }}" style="font-size:3.3rem;font-weight:900;letter-spacing:-.05em;line-height:.85;font-variant-numeric:tabular-nums">0</span>
+            </p>
+            <p style="margin:12px 0 0;font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:{{ p.corMeta }}">{{ p.duracao }} · 1 INSTALAÇÃO</p>
+            <a href="#" style="margin-top:28px;display:inline-flex;align-items:center;justify-content:center;min-height:50px;border-radius:2px;background:{{ p.btnFundo }};border:1px solid {{ p.btnBorda }};color:{{ p.btnTexto }};font-size:12.5px;font-weight:900;letter-spacing:.16em">COMPRAR</a>
+          </div>
+        </sc-for>
+      </div>
+
+      <div data-reveal="" style="margin-top:22px;display:flex;flex-wrap:wrap;gap:10px 28px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#5a5a5a">
+        <span>PIX · CARTÃO</span>
+        <span>CHAVE NO PAINEL APÓS O PAGAMENTO</span>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid #191919">
+    <div style="margin:0 auto;display:flex;width:100%;max-width:1240px;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:24px 28px;box-sizing:border-box">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="assets/logo-header.png" alt="Pro League" style="height:16px;width:auto;display:block" />
+        <span style="font-size:10px;font-weight:700;letter-spacing:.24em;color:#4f4f4f">CORE</span>
+      </div>
+      <p style="margin:0;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#4f4f4f">© 2026 PLF CORE · SEM DADOS SIMULADOS</p>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      selos: [
+        { k: 'SISTEMA', v: 'WINDOWS 10 E 11' },
+        { k: 'LEITURAS', v: 'FICAM NA SUA MÁQUINA' },
+        { k: 'LICENÇA', v: '1 INSTALAÇÃO' },
+      ],
+      leituras: [
+        { k: 'SISTEMA', v: 'WINDOWS 11 PRO 23H2' },
+        { k: 'PLANO DE ENERGIA', v: 'EQUILIBRADO' },
+        { k: 'DISCO PRINCIPAL', v: '610 / 1000 GB' },
+        { k: 'MONITOR', v: '1920×1080 @ 165 HZ' },
+        { k: 'FONTE DAS LEITURAS', v: 'WMI · NVIDIA-SMI' },
+      ],
+      modulos: [
+        { codigo: 'INST-01', nome: 'Cockpit', desc: 'CPU, GPU e RAM ao vivo, telemetria de 60 s e a fonte de cada leitura na tela.' },
+        { codigo: 'INST-02', nome: 'FPS Booster', desc: 'Pacotes de aceleração com o estado real lido da máquina — reversíveis pelo mesmo interruptor.' },
+        { codigo: 'INST-03', nome: 'Limpeza', desc: 'Temporários conhecidos mostrados antes de remover. Documentos, fotos e saves ficam fora.' },
+        { codigo: 'INST-04', nome: 'Raio-X', desc: 'Inventário de CPU, placa-mãe, memória, discos e GPU. Sem fonte, o campo diz NÃO DISPONÍVEL.' },
+        { codigo: 'INST-05', nome: 'Windows', desc: 'Energia, Game Mode e efeitos visuais — cada item espera a sua confirmação.' },
+        { codigo: 'INST-06', nome: 'FiveM', desc: 'Cache limpo com as pastas de conta protegidas. Preparado para o servidor Pro League.' },
+      ],
+      planos: [
+        { nome: '15 dias', valor: 24.99, duracao: '15 dias', destaque: false, fundo: '#0e0e0e', hover: '#141414', corNome: '#8a8a8a', corPreco: '#ffffff', corMeta: '#8a8a8a', corItem: '#8a8a8a', btnFundo: 'transparent', btnBorda: '#2e2e2e', btnTexto: '#ffffff' },
+        { nome: '30 dias · recomendado', valor: 39.99, duracao: '30 dias', destaque: true, fundo: '#f8e800', hover: '#ffef2e', corNome: 'rgba(11,11,11,.72)', corPreco: '#0b0b0b', corMeta: 'rgba(11,11,11,.68)', corItem: '#1a1a00', btnFundo: '#0b0b0b', btnBorda: '#0b0b0b', btnTexto: '#f8e800' },
+        { nome: 'Vitalício', valor: 799.99, duracao: 'Sem expiração', destaque: false, fundo: '#0e0e0e', hover: '#141414', corNome: '#8a8a8a', corPreco: '#ffffff', corMeta: '#8a8a8a', corItem: '#8a8a8a', btnFundo: 'transparent', btnBorda: '#2e2e2e', btnTexto: '#ffffff' },
+      ],
+    };
+  }
+
+  componentDidMount() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const show = (el) => {
+      el.setAttribute('data-shown', '1');
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      if (el.hasAttribute('data-plan')) this.countUp(el);
+    };
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+    }, { threshold: 0.14, rootMargin: '0px 0px -6% 0px' });
+
+    document.querySelectorAll('[data-reveal]').forEach((el, i) => {
+      if (reduce) { if (el.hasAttribute('data-plan')) this.countUp(el); return; }
+      if (el.getAttribute('data-shown')) { show(el); return; }
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(22px)';
+      el.style.transitionDelay = ((i % 4) * 80) + 'ms';
+      io.observe(el);
+    });
+    this._io = io;
+
+    this._sweep = setInterval(() => {
+      const pend = document.querySelectorAll('[data-reveal]:not([data-shown])');
+      if (!pend.length) { clearInterval(this._sweep); return; }
+      pend.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.top > window.innerHeight * 0.95) return;
+        show(el);
+      });
+    }, 320);
+
+    if (!reduce) this.startSpark();
+    this.startGauges(reduce);
+  }
+
+  startGauges(reduce) {
+    const bases = { cpu: 21, gpu: 37, ram: 41 };
+    const total = 395.8;
+    const live = [];
+    let tries = 0;
+    const wire = () => {
+      Object.keys(bases).forEach((key) => {
+        if (live.some((g) => g.key === key)) return;
+        const root = document.querySelector('[data-gauge="' + key + '"]');
+        const needle = root && root.querySelector('[data-needle]');
+        if (!needle) return;
+        const g = { key, needle, valEl: root.querySelector('[data-val]'), arc: root.querySelector('[data-arc]'), cur: bases[key], target: bases[key] };
+        live.push(g);
+        this.paintGauge(g, total);
+      });
+      if (live.length === 3 || ++tries > 40) clearInterval(this._gaugeBoot);
+    };
+    this._gaugeBoot = setInterval(wire, 100);
+    wire();
+    if (reduce) return;
+    let t = 0;
+    this._gaugeI = setInterval(() => {
+      t += 1;
+      live.forEach((g) => {
+        if (t % 24 === 0) g.target = Math.max(8, Math.min(88, bases[g.key] + (Math.random() - 0.4) * 22));
+        g.cur += (g.target - g.cur) * 0.12;
+        this.paintGauge(g, total);
+      });
+    }, 60);
+  }
+
+  paintGauge(g, total) {
+    g.needle.setAttribute('transform', 'rotate(' + (-135 + g.cur * 2.7).toFixed(2) + ' 100 100)');
+    if (g.valEl) g.valEl.textContent = Math.round(g.cur);
+    if (g.arc) g.arc.setAttribute('stroke-dasharray', (total * g.cur / 100).toFixed(1) + ' 999');
+  }
+
+  countUp(planEl) {
+    const el = planEl.querySelector('[data-count]');
+    if (!el) return;
+    const target = parseFloat(el.getAttribute('data-count')) || 0;
+    const fmt = (v) => v.toFixed(2).replace('.', ',');
+    el.textContent = fmt(target);
+    if (el.dataset.done) return;
+    el.dataset.done = '1';
+    const t0 = Date.now();
+    const int = setInterval(() => {
+      const k = Math.min(1, (Date.now() - t0) / 900);
+      if (k >= 1) { el.textContent = fmt(target); clearInterval(int); return; }
+      el.textContent = fmt(target * (1 - Math.pow(1 - k, 3)));
+    }, 50);
+    setTimeout(() => { clearInterval(int); el.textContent = fmt(target); }, 2400);
+  }
+
+  startSpark() {
+    const paths = { cpu: document.querySelector('[data-spark="cpu"]'), gpu: document.querySelector('[data-spark="gpu"]') };
+    if (!paths.cpu) return;
+    const n = 60;
+    const series = { cpu: Array.from({ length: n }, () => 22 + Math.random() * 8), gpu: Array.from({ length: n }, () => 36 + Math.random() * 8) };
+    const build = (arr) => arr.map((v, i) => (i ? 'L' : 'M') + (i * (600 / (n - 1))).toFixed(1) + ' ' + (110 - v * 0.9).toFixed(1)).join(' ');
+    const step = () => {
+      ['cpu', 'gpu'].forEach((k) => {
+        const base = k === 'cpu' ? 24 : 38;
+        const last = series[k][n - 1];
+        const next = Math.max(8, Math.min(92, last + (Math.random() - 0.5) * 9 + (base - last) * 0.12));
+        series[k].push(next);
+        series[k].shift();
+        if (paths[k]) paths[k].setAttribute('d', build(series[k]));
+      });
+    };
+    step();
+    this._sparkI = setInterval(step, 420);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._sparkI);
+    clearInterval(this._sweep);
+    clearInterval(this._gaugeI);
+    clearInterval(this._gaugeBoot);
+    if (this._io) this._io.disconnect();
+  }
+}
+</script>
+</body>
+</html>
