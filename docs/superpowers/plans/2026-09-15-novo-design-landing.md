@@ -433,7 +433,7 @@ input[type='radio'] {
     .reveal {
       animation: plfReveal 0.8s var(--expo) both;
       animation-timeline: view();
-      animation-range: entry 0% entry 18%;
+      animation-range: entry 0% cover 30%;
     }
   }
 }

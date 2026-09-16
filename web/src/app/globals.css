@@ -314,7 +314,9 @@ input[type='radio'] {
   animation: plfSweep 4.4s linear infinite;
 }
 
-/* reveal ao rolar, sem JS: só onde o navegador suporta scroll-driven animation */
+/* reveal ao rolar, sem JS: só onde o navegador suporta scroll-driven animation.
+   O range termina em `cover 30%` e não em `entry N%`: com entry curto o Chrome
+   segura o elemento no frame inicial e o conteúdo nunca aparece. */
 @keyframes plfReveal {
   from {
     opacity: 0;
@@ -330,7 +332,7 @@ input[type='radio'] {
     .reveal {
       animation: plfReveal 0.8s var(--expo) both;
       animation-timeline: view();
-      animation-range: entry 0% entry 18%;
+      animation-range: entry 0% cover 30%;
     }
   }
 }
