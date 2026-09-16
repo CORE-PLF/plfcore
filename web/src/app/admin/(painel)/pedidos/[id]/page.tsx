@@ -4,9 +4,9 @@ import type { ReactNode } from 'react'
 import { hasStaffRole, requireStaff } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { formatCents } from '@/lib/money'
-import { refundOrderAction, reprocessPaymentEventAction } from '@/lib/actions/admin'
+import { cancelOrderAction, refundOrderAction, reprocessPaymentEventAction } from '@/lib/actions/admin'
 import { Chamfer, StatusTag } from '@/components/ui'
-import { DangerZone, Flash, ReasonInput, Table, Td, fmtDate, toneFor, type SP } from '../../../_ui'
+import { DangerZone, Flash, ReasonInput, Table, Td, fmtDate, spStr, toneFor, type SP } from '../../../_ui'
 
 export default async function AdminOrderDetailPage({
   params,
@@ -35,6 +35,8 @@ export default async function AdminOrderDetailPage({
   if (!order) notFound()
   const isAdmin = hasStaffRole(staff, 'ADMIN')
   const backPath = `/admin/pedidos/${order.id}`
+  // pedido ainda sem dinheiro no caixa: cancelar encerra a cobrança (pago = reembolso)
+  const cancelavel = order.status === 'PENDING' || order.status === 'AWAITING_PAYMENT'
 
   const info: [string, ReactNode][] = [
     ['PEDIDO', order.id],
@@ -145,6 +147,23 @@ export default async function AdminOrderDetailPage({
             </Chamfer>
           )}
 
+          {isAdmin && cancelavel ? (
+            <DangerZone summary="CANCELAR PEDIDO" open={spStr(sp, 'acao') === 'cancelar'}>
+              <p className="text-[13px] text-ink-2">
+                Encerra a cobrança em aberto: o pedido vira CANCELADO e o cliente é avisado no
+                painel. Nenhum valor foi cobrado, nada é devolvido. O QR do PIX (ou boleto já
+                emitido) segue válido até expirar no provedor — se o cliente pagar mesmo assim, o
+                pedido é honrado e a licença sai normalmente. Ação registrada na auditoria.
+              </p>
+              <form action={cancelOrderAction} className="space-y-2">
+                <input type="hidden" name="id" value={order.id} />
+                <ReasonInput placeholder="Motivo do cancelamento (obrigatório)" />
+                <button type="submit" className="btn btn--danger chamfer w-full">
+                  CONFIRMAR CANCELAMENTO
+                </button>
+              </form>
+            </DangerZone>
+          ) : null}
           {isAdmin && (order.status === 'PAID' || order.status === 'REFUND_FAILED') ? (
             <DangerZone summary={order.status === 'REFUND_FAILED' ? 'TENTAR REEMBOLSO DE NOVO' : 'REEMBOLSAR PEDIDO'}>
               <p className="text-[13px] text-ink-2">

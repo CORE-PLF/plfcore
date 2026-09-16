@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, test } from 'vitest'
-import { createOrder, quoteOrder } from '@/lib/checkout'
+import { cancelOrder, createOrder, quoteOrder } from '@/lib/checkout'
 import { db } from '@/lib/db'
 import { applyPercentBps } from '@/lib/money'
 import { createUser, mensalPlan, uniq } from './helpers'
@@ -93,5 +93,45 @@ describe('createOrder', () => {
     const user = await createUser('checkout-err')
     const coupon = await makeCoupon({ endsAt: new Date(Date.now() - 1000) })
     await expect(createOrder(user.id, 'mensal', coupon.code)).rejects.toThrow(/expirado/i)
+  })
+})
+
+describe('cancelOrder', () => {
+  test('pedido aguardando pagamento: CANCELLED, pagamento pendente encerrado, cliente avisado', async () => {
+    const user = await createUser('cancel-ok')
+    const staff = await createUser('cancel-staff')
+    const order = await createOrder(user.id, 'mensal')
+    const payment = await db.payment.create({
+      data: {
+        orderId: order.id,
+        provider: 'sandbox',
+        providerPaymentId: uniq('pp'),
+        method: 'SANDBOX',
+        status: 'PENDING',
+        amountCents: order.totalCents,
+      },
+    })
+
+    expect(await cancelOrder(order.id, staff.id, 'cliente desistiu')).toEqual({ ok: true })
+    expect((await db.order.findUniqueOrThrow({ where: { id: order.id } })).status).toBe('CANCELLED')
+    expect((await db.payment.findUniqueOrThrow({ where: { id: payment.id } })).status).toBe('CANCELLED')
+    expect(
+      await db.notification.count({ where: { userId: user.id, type: 'order_cancelled' } }),
+    ).toBe(1)
+    expect(
+      await db.auditLog.count({ where: { entity: 'order', entityId: order.id, action: 'order.cancel' } }),
+    ).toBe(1)
+  })
+
+  test('pedido PAGO não cancela — pago se reembolsa', async () => {
+    const user = await createUser('cancel-pago')
+    const staff = await createUser('cancel-staff2')
+    const order = await createOrder(user.id, 'mensal')
+    await db.order.update({ where: { id: order.id }, data: { status: 'PAID', paidAt: new Date() } })
+
+    const res = await cancelOrder(order.id, staff.id, 'tentativa indevida')
+    expect(res.ok).toBe(false)
+    expect(res.error).toMatch(/aguardando pagamento/i)
+    expect((await db.order.findUniqueOrThrow({ where: { id: order.id } })).status).toBe('PAID')
   })
 })

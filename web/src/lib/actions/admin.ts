@@ -11,6 +11,7 @@ import { TOTP_COOKIE, TOTP_HOURS, totpCookieValue } from '@/app/admin/totp-cooki
 import { randomBytes } from 'node:crypto'
 import { stat } from 'node:fs/promises'
 import { audit } from '@/lib/audit'
+import { cancelOrder } from '@/lib/checkout'
 import { requireStaff } from '@/lib/auth'
 import { BRAND } from '@/lib/brand'
 import {
@@ -163,6 +164,18 @@ export async function refundOrderAction(formData: FormData): Promise<void> {
   if (result.status === 'REFUND_PENDING')
     back(path, { ok: 'Reembolso solicitado ao provedor. O webhook confirma a conclusão — acompanhe o status do pedido.' })
   back(path, { erro: `Reembolso falhou: ${result.error ?? 'erro no provedor'}. Corrija e tente de novo.` })
+}
+
+// Cancelar pedido AINDA NÃO PAGO (nenhum dinheiro envolvido): ADMIN + motivo,
+// sem TOTP — nada sai do caixa. Pedido pago se reembolsa, não se cancela.
+export async function cancelOrderAction(formData: FormData): Promise<void> {
+  const staff = await requireStaff('ADMIN')
+  const id = str(formData, 'id')
+  const path = `/admin/pedidos/${id}`
+  const reason = reasonOrBack(formData, path)
+  const result = await cancelOrder(id, staff.id, reason, await clientIp())
+  if (!result.ok) back(path, { erro: result.error ?? 'Não foi possível cancelar o pedido.' })
+  back(path, { ok: 'Pedido cancelado. Cobrança encerrada e cliente avisado.' })
 }
 
 export async function reprocessPaymentEventAction(formData: FormData): Promise<void> {

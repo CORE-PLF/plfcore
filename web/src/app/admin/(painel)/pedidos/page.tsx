@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { OrderStatus, Prisma } from '@/generated/prisma/client'
-import { requireStaff } from '@/lib/auth'
+import { hasStaffRole, requireStaff } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { formatCents } from '@/lib/money'
 import { StatusTag } from '@/components/ui'
@@ -19,7 +19,8 @@ const STATUSES: OrderStatus[] = [
 ]
 
 export default async function AdminOrdersPage({ searchParams }: { searchParams: Promise<SP> }) {
-  await requireStaff('SUPPORT')
+  const staff = await requireStaff('SUPPORT')
+  const isAdmin = hasStaffRole(staff, 'ADMIN')
   const sp = await searchParams
   const q = spStr(sp, 'q')
   const status = spStr(sp, 'status')
@@ -57,7 +58,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
       {rows.length === 0 ? (
         <p className="type-mono text-[12px] text-ink-3">Nenhum pedido encontrado.</p>
       ) : (
-        <Table head={['PEDIDO', 'CLIENTE', 'PLANO', 'TOTAL', 'STATUS', 'CRIADO', 'PAGO']}>
+        <Table head={['PEDIDO', 'CLIENTE', 'PLANO', 'TOTAL', 'STATUS', 'CRIADO', 'PAGO', '']}>
           {rows.map((o) => (
             <tr key={o.id}>
               <Td>
@@ -73,6 +74,13 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
               </Td>
               <Td>{fmtDate(o.createdAt)}</Td>
               <Td>{fmtDate(o.paidAt)}</Td>
+              <Td>
+                {isAdmin && (o.status === 'PENDING' || o.status === 'AWAITING_PAYMENT') ? (
+                  <Link href={`/admin/pedidos/${o.id}?acao=cancelar`} className="btn btn--ghost btn--sm chamfer">
+                    CANCELAR
+                  </Link>
+                ) : null}
+              </Td>
             </tr>
           ))}
         </Table>

@@ -186,9 +186,17 @@ export function ReasonInput({ placeholder = 'Motivo (obrigatório)' }: { placeho
 }
 
 // Zona destrutiva: etapa de confirmação explícita (abrir + motivo + botão), com hazard.
-export function DangerZone({ summary, children }: { summary: string; children: ReactNode }) {
+export function DangerZone({
+  summary,
+  children,
+  open = false,
+}: {
+  summary: string
+  children: ReactNode
+  open?: boolean
+}) {
   return (
-    <details className="hazard" style={{ boxShadow: 'inset 0 0 0 1px var(--color-rust)' }}>
+    <details open={open} className="hazard" style={{ boxShadow: 'inset 0 0 0 1px var(--color-rust)' }}>
       <summary className="type-kicker cursor-pointer px-3 py-2 text-signal">{summary}</summary>
       <div className="space-y-2 px-3 pb-3">{children}</div>
     </details>

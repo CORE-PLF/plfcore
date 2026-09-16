@@ -1,5 +1,6 @@
 import type { Coupon } from '@/generated/prisma/client'
 import { db } from './db'
+import { audit } from './audit'
 import { applyPercentBps } from './money'
 import { resolveAffiliateForOrder } from './affiliates'
 
@@ -102,4 +103,51 @@ export async function createOrder(
       licenseIntent: intent,
     },
   })
+}
+
+// Cancelamento de pedido NÃO PAGO: encerra a cobrança aberta do nosso lado.
+// Pedido PAGO se reembolsa (lib/refunds), nunca se cancela. A cobrança no
+// provedor (QR do PIX, boleto já emitido) segue válida até expirar — se o
+// cliente pagar mesmo assim, o webhook de aprovação honra o pedido e emite a
+// licença: dinheiro recebido sem entrega seria pior que o cancelamento perdido.
+export async function cancelOrder(
+  orderId: string,
+  actorUserId: string,
+  reason: string,
+  ip: string | null = null,
+): Promise<{ ok: boolean; error?: string }> {
+  const order = await db.order.findUnique({ where: { id: orderId } })
+  if (!order) return { ok: false, error: 'Pedido não encontrado.' }
+  if (order.status !== 'PENDING' && order.status !== 'AWAITING_PAYMENT')
+    return {
+      ok: false,
+      error: `Pedido ${order.status} não pode ser cancelado — só pedido aguardando pagamento.`,
+    }
+
+  await db.$transaction(async (tx) => {
+    await tx.order.update({ where: { id: orderId }, data: { status: 'CANCELLED' } })
+    await tx.payment.updateMany({ where: { orderId, status: 'PENDING' }, data: { status: 'CANCELLED' } })
+    await tx.notification.create({
+      data: {
+        userId: order.userId,
+        type: 'order_cancelled',
+        title: 'PEDIDO CANCELADO',
+        body: 'O pedido foi cancelado e a cobrança encerrada. Nenhum valor foi cobrado — refaça o pedido quando quiser.',
+      },
+    })
+    await audit(
+      {
+        actorUserId,
+        action: 'order.cancel',
+        entity: 'order',
+        entityId: orderId,
+        before: { status: order.status },
+        after: { status: 'CANCELLED' },
+        reason,
+        ip,
+      },
+      tx,
+    )
+  })
+  return { ok: true }
 }
