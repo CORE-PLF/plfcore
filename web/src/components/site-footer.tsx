@@ -15,7 +15,7 @@ export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-line">
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-6">
-        <Logo className="h-4" />
+        <Logo className="h-5" />
         <nav aria-label="Rodapé">
           <ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {LINKS.map((l) => (

@@ -9,7 +9,7 @@ import { Button } from '../../components/Button'
 import { ProgressBar } from '../../components/ProgressBar'
 import { Kicker } from '../../components/Kicker'
 import { IconCheck, IconMinus, IconWarn, IconX } from '../../components/icons'
-import logo from '../../assets/logo-grande.png'
+import logo from '../../assets/simbolo.png'
 import { licenseDict } from './i18n'
 import './license.css'
 

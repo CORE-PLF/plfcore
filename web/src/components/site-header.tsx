@@ -11,11 +11,11 @@ const NAV = [
   { href: '/#planos', label: 'PLANOS' },
 ] as const
 
-export function Logo({ className = 'h-5' }: { className?: string }) {
+export function Logo({ className = 'h-6' }: { className?: string }) {
   return (
     <Link href="/" className="flex items-center gap-2.5" aria-label={`${BRAND.name} — início`}>
-      <Image src="/brand/logo-header.png" alt="Pro League" width={317} height={106} priority className={`${className} w-auto`} />
-      <span className="text-[10px] font-bold tracking-[0.24em] text-ink-3">CORE</span>
+      <Image src="/brand/simbolo.png" alt="" width={512} height={443} priority className={`${className} w-auto`} />
+      <span className="text-[13px] font-black tracking-[0.18em] text-ink-1">{BRAND.name}</span>
     </Link>
   )
 }

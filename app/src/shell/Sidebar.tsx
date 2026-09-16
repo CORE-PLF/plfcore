@@ -7,7 +7,7 @@ import { isTauriEnv } from '../services/adapter'
 import { BRAND } from '../brand'
 import { sfx } from '../services/sfx'
 import { IconChevron } from '../components/icons'
-import logo from '../assets/logo-header.png'
+import logo from '../assets/simbolo.png'
 import './shell.css'
 
 // Ícones geométricos no grid do sistema, 16×16, traço 1.5.
@@ -68,8 +68,10 @@ export function Sidebar({ collapsed, onToggle, stagger }: { collapsed: boolean; 
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${stagger ? 'hud-in' : ''}`} style={{ animationDelay: '0ms' }}>
       <div className="sidebar-brand">
-        <img src={logo} alt={BRAND.name} draggable={false} />
-        {!collapsed && <span className="ml-auto text-[10px] tracking-[0.12em] text-ink-3">CORE</span>}
+        <img src={logo} alt="" draggable={false} />
+        {!collapsed && (
+          <span className="text-[13px] font-black tracking-[0.18em] text-ink-1">{BRAND.name}</span>
+        )}
       </div>
       <nav aria-label="principal">
         {!collapsed && <span className="sidebar-section">{t('nav.secao')}</span>}

@@ -5,7 +5,7 @@ import { BRAND } from '../brand'
 import { sfx } from '../services/sfx'
 import { getInventoryCached } from '../services/inventoryCache'
 import { firstRunPending } from './FirstRun'
-import logo from '../assets/logo-grande.png'
+import logo from '../assets/simbolo.png'
 import './shell.css'
 
 /**
@@ -42,7 +42,8 @@ export function Ignition({ onDone }: { onDone: () => void }) {
 
   return (
     <div className={`ignition ${lifting ? 'lifting' : ''}`} role="presentation">
-      <img className="ign-logo" src={logo} alt={BRAND.name} draggable={false} />
+      <img className="ign-logo" src={logo} alt="" draggable={false} />
+      <p className="ign-name">{BRAND.name}</p>
       <div className="ign-bar" aria-hidden>
         <i />
       </div>
