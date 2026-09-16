@@ -95,6 +95,18 @@ export default async function PainelLayout({ children }: { children: ReactNode }
         <PainelNav unread={unread} />
         <main className="min-w-0 flex-1">{children}</main>
       </div>
+
+      <footer className="mt-auto border-t border-line">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-6">
+          <div className="min-w-0">
+            <p className="text-[10px] font-extrabold uppercase tracking-[0.22em] text-ink-3">Aplicativo</p>
+            <p className="mt-1 text-sm text-ink-3">Versão atual para Windows 10 e 11.</p>
+          </div>
+          <Link href="/download" className="btn btn--primary">
+            BAIXAR APP
+          </Link>
+        </div>
+      </footer>
     </div>
   )
 }
