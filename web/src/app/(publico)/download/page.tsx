@@ -95,7 +95,7 @@ export default async function DownloadPage() {
                       O download do instalador é liberado depois da compra. Escolha um plano e a
                       chave aparece no seu painel na hora da confirmação.
                     </p>
-                    <Link href="/#planos" className="btn btn--primary mt-4">
+                    <Link href="/painel/planos" className="btn btn--primary mt-4">
                       VER PLANOS
                     </Link>
                   </Notice>

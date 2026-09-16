@@ -43,7 +43,7 @@ export default async function DispositivosPage() {
       {licenses.length === 0 && (
         <Surface flat className="p-6">
           <p className="text-ink-2">Sem licença — nenhum dispositivo para exibir.</p>
-          <Link href="/planos" className="btn btn--primary mt-4">
+          <Link href="/painel/planos" className="btn btn--primary mt-4">
             VER PLANOS
           </Link>
         </Surface>

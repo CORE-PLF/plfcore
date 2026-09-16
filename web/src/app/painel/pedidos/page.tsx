@@ -27,7 +27,7 @@ export default async function PedidosPage() {
       {orders.length === 0 ? (
         <Surface flat className="p-6">
           <p className="text-ink-2">Nenhum pedido até agora.</p>
-          <Link href="/planos" className="btn btn--primary mt-4">
+          <Link href="/painel/planos" className="btn btn--primary mt-4">
             VER PLANOS
           </Link>
         </Surface>

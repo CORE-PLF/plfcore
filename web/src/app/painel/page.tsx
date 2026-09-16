@@ -79,7 +79,7 @@ export default async function PainelPage() {
         diasRestantes === 0
           ? 'Sua licença vence hoje. Renove para não perder o acesso.'
           : `Sua licença vence em ${diasRestantes} dia${diasRestantes === 1 ? '' : 's'}. Renove para não perder o acesso.`,
-      cta: { href: '/planos', label: 'RENOVAR' },
+      cta: { href: '/painel/planos', label: 'RENOVAR' },
     })
   if (pendingOrder)
     alertas.push({
@@ -184,14 +184,14 @@ export default async function PainelPage() {
 
           <div className="mt-6 flex flex-wrap gap-2">
             {principal && (
-              <Link href="/planos" className="btn btn--primary">
+              <Link href="/painel/planos" className="btn btn--primary">
                 RENOVAR
               </Link>
             )}
             <Link href="/download" className="btn btn--ghost">
               BAIXAR APP
             </Link>
-            <Link href="/planos?intent=nova" className={`btn ${principal ? 'btn--ghost' : 'btn--primary'}`}>
+            <Link href="/painel/planos?intent=nova" className={`btn ${principal ? 'btn--ghost' : 'btn--primary'}`}>
               ADQUIRIR NOVA LICENÇA
             </Link>
             {principal && (

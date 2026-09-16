@@ -49,7 +49,7 @@ export default async function LicencaPage() {
       {licenses.length === 0 && (
         <Surface flat className="p-6">
           <p className="text-ink-2">Você ainda não tem licença.</p>
-          <Link href="/planos" className="btn btn--primary mt-4">
+          <Link href="/painel/planos" className="btn btn--primary mt-4">
             VER PLANOS
           </Link>
         </Surface>
@@ -70,7 +70,7 @@ export default async function LicencaPage() {
                     Detectamos tentativa de ativação em outra instalação. Esta chave continua valendo
                     APENAS na instalação original. Para o novo Windows, adquira uma nova licença.
                   </p>
-                  <Link href="/planos?intent=nova" className="btn btn--primary btn--sm mt-3">
+                  <Link href="/painel/planos?intent=nova" className="btn btn--primary btn--sm mt-3">
                     ADQUIRIR NOVA LICENÇA
                   </Link>
                 </Notice>

@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
     const user = await currentUser()
     if (!user) return texto(401, 'Entre na sua conta para baixar o instalador.')
     if (!(await findLiveLicense(user.id)))
-      return texto(403, 'Esta conta não tem licença ativa. Escolha um plano em /#planos para baixar o instalador.')
+      return texto(403, 'Esta conta não tem licença ativa. Escolha um plano em /painel/planos para baixar o instalador.')
     userId = user.id
   }
 

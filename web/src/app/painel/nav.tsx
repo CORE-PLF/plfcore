@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 const ITEMS = [
   { href: '/painel', label: 'VISÃO GERAL' },
   { href: '/painel/licenca', label: 'LICENÇAS' },
+  { href: '/painel/planos', label: 'COMPRAR' },
   { href: '/painel/pedidos', label: 'PEDIDOS' },
   { href: '/painel/dispositivos', label: 'DISPOSITIVOS' },
   { href: '/painel/notificacoes', label: 'NOTIFICAÇÕES' },
