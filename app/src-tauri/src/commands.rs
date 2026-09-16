@@ -33,6 +33,7 @@ static GAMES_PS: LazyLock<String> = LazyLock::new(|| ps_decode(&[ENC_GAMEPATHS, 
 static GAMECONFIG_PS: LazyLock<String> =
     LazyLock::new(|| ps_decode(&[ENC_GAMEPATHS, ENC_GAMECONFIG]));
 static FIVEM_PS: LazyLock<String> = LazyLock::new(|| ps_decode(&[ENC_FIVEM]));
+static SOUNDS_PS: LazyLock<String> = LazyLock::new(|| ps_decode(&[ENC_GAMEPATHS, ENC_SOUNDS]));
 /// Só jogo cujo arquivo de config e range de valores estão confirmados.
 const GAMECONFIG_ALLOWLIST: [&str; 3] = ["gta5", "cs2", "lol"];
 const GAMECONFIG_PRESETS: [&str; 3] = ["desempenho", "equilibrado", "visual"];
@@ -1096,6 +1097,155 @@ pub async fn isolate_fivem_folder(pasta: String) -> Result<FiveMIsolateResult, S
     })
     .await
     .map_err(|e| format!("ERR_FIVEM_JOIN:{e}"))?
+}
+
+// ---------------------------------------------------------------------------
+// Mod de som do GTA V — troca os .rpf de áudio que o pure mode nível 1 libera.
+// ---------------------------------------------------------------------------
+
+/// Copiar e conferir sha256 de ~112 MB passa folgado dos 180 s do debloat em
+/// disco mecânico.
+const SOUNDS_TIMEOUT: Duration = Duration::from_secs(600);
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SoundPack {
+    id: String,
+    nome: String,
+    bytes: u64,
+    tem_preview: bool,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SoundsScan {
+    gta_raiz: Option<String>,
+    sfx: Option<String>,
+    geracao: Option<String>,
+    jogo_aberto: bool,
+    biblioteca: String,
+    tem_backup: bool,
+    instalado_id: Option<String>,
+    packs: Vec<SoundPack>,
+    origin: String,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SoundInstallResult {
+    id: String,
+    backup_criado: bool,
+    arquivos: u32,
+    origin: String,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SoundRestoreResult {
+    arquivos: u32,
+    origin: String,
+}
+
+/// O id vira nome de pasta dentro da biblioteca: barra, ponto e dois-pontos
+/// fora, senão um id vindo da UI sairia de `packs\` e escolheria o que quisesse.
+fn sound_pack_id_allowed(id: &str) -> bool {
+    !id.is_empty()
+        && id.len() <= 64
+        && id
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+}
+
+#[tauri::command]
+pub async fn scan_sounds() -> Result<SoundsScan, String> {
+    crate::license::ensure_licensed()?;
+    tauri::async_runtime::spawn_blocking(|| {
+        let out = run_powershell_env(
+            &SOUNDS_PS,
+            SOUNDS_TIMEOUT,
+            &[
+                ("PLFCORE_SOUNDS_ACTION", "scan"),
+                ("PLFCORE_SOUNDS_PACK", ""),
+            ],
+        )?;
+        let parsed: SoundsScan = parse_script_json(&out)?;
+        if parsed.origin != "measured" {
+            return Err("ERR_SND_ORIGIN".into());
+        }
+        Ok(parsed)
+    })
+    .await
+    .map_err(|e| format!("ERR_SND_JOIN:{e}"))?
+}
+
+#[tauri::command]
+pub async fn install_sound_pack(id: String) -> Result<SoundInstallResult, String> {
+    crate::license::ensure_licensed()?;
+    if !sound_pack_id_allowed(&id) {
+        return Err("ERR_SND_PACK".into());
+    }
+    tauri::async_runtime::spawn_blocking(move || {
+        let _guard = optimization_lock().lock().map_err(|_| "ERR_OPT_LOCK")?;
+        let out = run_powershell_env(
+            &SOUNDS_PS,
+            SOUNDS_TIMEOUT,
+            &[
+                ("PLFCORE_SOUNDS_ACTION", "install"),
+                ("PLFCORE_SOUNDS_PACK", id.as_str()),
+            ],
+        )?;
+        let parsed: SoundInstallResult = parse_script_json(&out)?;
+        if parsed.id != id || parsed.origin != "measured" {
+            return Err("ERR_SND_RESULT".into());
+        }
+        Ok(parsed)
+    })
+    .await
+    .map_err(|e| format!("ERR_SND_JOIN:{e}"))?
+}
+
+#[tauri::command]
+pub async fn restore_sounds() -> Result<SoundRestoreResult, String> {
+    crate::license::ensure_licensed()?;
+    tauri::async_runtime::spawn_blocking(|| {
+        let _guard = optimization_lock().lock().map_err(|_| "ERR_OPT_LOCK")?;
+        let out = run_powershell_env(
+            &SOUNDS_PS,
+            SOUNDS_TIMEOUT,
+            &[
+                ("PLFCORE_SOUNDS_ACTION", "restore"),
+                ("PLFCORE_SOUNDS_PACK", ""),
+            ],
+        )?;
+        let parsed: SoundRestoreResult = parse_script_json(&out)?;
+        if parsed.origin != "measured" {
+            return Err("ERR_SND_RESULT".into());
+        }
+        Ok(parsed)
+    })
+    .await
+    .map_err(|e| format!("ERR_SND_JOIN:{e}"))?
+}
+
+#[tauri::command]
+pub async fn preview_sound_pack(id: String) -> Result<(), String> {
+    crate::license::ensure_licensed()?;
+    if !sound_pack_id_allowed(&id) {
+        return Err("ERR_SND_PACK".into());
+    }
+    tauri::async_runtime::spawn_blocking(move || {
+        run_powershell_env(
+            &SOUNDS_PS,
+            DEBLOAT_TIMEOUT,
+            &[
+                ("PLFCORE_SOUNDS_ACTION", "preview"),
+                ("PLFCORE_SOUNDS_PACK", id.as_str()),
+            ],
+        )?;
+        Ok(())
+    })
+    .await
+    .map_err(|e| format!("ERR_SND_JOIN:{e}"))?
 }
 
 #[derive(Deserialize, Serialize)]
@@ -2818,6 +2968,70 @@ if ($errors.Count -gt 0) {
             "o script perdeu a recusa com o FiveM aberto"
         );
         parse_ps51(&FIVEM_PS, "fivem.ps1");
+    }
+
+    #[test]
+    fn som_so_troca_os_dois_rpf_e_guarda_o_vanilla_antes() {
+        for id in ["som-01", "som_17", "PureMode7", "a"] {
+            assert!(sound_pack_id_allowed(id), "id recusado: {id}");
+        }
+        // O id vira nome de pasta: qualquer coisa que saia de packs\ é ataque.
+        for invalid in [
+            "",
+            "../mods",
+            "som/01",
+            "som\\01",
+            "som 01",
+            "som;whoami",
+            "som.01",
+            "C:",
+        ] {
+            assert!(
+                !sound_pack_id_allowed(invalid),
+                "id perigoso aceito: {invalid}"
+            );
+        }
+        assert!(!sound_pack_id_allowed(&"a".repeat(65)), "id sem limite");
+
+        // Só o corpo do sounds.ps1: SOUNDS_PS traz o gamepaths.ps1 junto, e
+        // aquele resolve caminho de FiveM de propósito.
+        let codigo = sem_comentarios(&SOUNDS_PS)
+            .split_once("$SndRaiz")
+            .expect("corpo do sounds.ps1 sumiu")
+            .1
+            .to_string();
+        // A lista de escrita é fechada: só os dois caminhos que o pure mode
+        // nível 1 perdoa. Entrar outro arquivo aqui é tirar a pessoa do jogo.
+        assert!(
+            codigo.contains("$SndPermitidos = @('RESIDENT.rpf', 'WEAPONS_PLAYER.rpf')"),
+            "a lista de arquivos permitidos mudou"
+        );
+        // citizen/ tem SHA-256 conferido no boot e game-storage dispara GB de
+        // re-download: o som não encosta em nada do cliente FiveM.
+        for proibido in ["citizen", "game-storage", "FiveM.app", "mods"] {
+            assert!(
+                !codigo.contains(proibido),
+                "o som toca area do FiveM: {proibido}"
+            );
+        }
+        assert!(
+            codigo.contains("ERR_GAME_RUNNING"),
+            "o script perdeu a recusa com o jogo aberto"
+        );
+        assert!(
+            codigo.contains("ERR_SND_GERACAO"),
+            "geração indetectável deixou de recusar"
+        );
+        // O vanilla vai pro backup ANTES de qualquer escrita, senão não existe
+        // caminho de volta.
+        let install = codigo
+            .split_once("'install'")
+            .expect("ação install sumiu")
+            .1;
+        let backup = install.find("Save-SndBackup").expect("install sem backup");
+        let copia = install.find("Copy-SndArquivo").expect("install sem copia");
+        assert!(backup < copia, "o pack é escrito antes de guardar o vanilla");
+        parse_ps51(&SOUNDS_PS, "sounds.ps1");
     }
 
     #[test]

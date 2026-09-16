@@ -14,6 +14,9 @@ import type {
   FiveMFolder,
   FiveMIsolateResult,
   FiveMScan,
+  SoundInstallResult,
+  SoundRestoreResult,
+  SoundsScan,
   GameTarget,
   HardwareInventory,
   LatencyDevice,
@@ -267,6 +270,22 @@ export class NativeWindowsAdapter implements SystemAdapter {
 
   async isolateFivemFolder(pasta: FiveMFolder): Promise<FiveMIsolateResult> {
     return this.call<FiveMIsolateResult>('isolate_fivem_folder', { pasta })
+  }
+
+  async scanSounds(): Promise<SoundsScan> {
+    return this.call<SoundsScan>('scan_sounds')
+  }
+
+  async installSoundPack(id: string): Promise<SoundInstallResult> {
+    return this.call<SoundInstallResult>('install_sound_pack', { id })
+  }
+
+  async restoreSounds(): Promise<SoundRestoreResult> {
+    return this.call<SoundRestoreResult>('restore_sounds')
+  }
+
+  async previewSoundPack(id: string): Promise<void> {
+    await this.call<null>('preview_sound_pack', { id })
   }
 
   async scanStartup(): Promise<StartupEntry[]> {

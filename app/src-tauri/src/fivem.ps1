@@ -5,9 +5,13 @@ $ErrorActionPreference = 'Stop'
 #   - não toca em citizen/  (é o produto FiveM, tem hash SHA-256 conferido no boot
 #     e o updater desfaz qualquer alteração);
 #   - não apaga data/game-storage/  (dispara GB de re-download do cache de jogo);
-#   - não instala mod nenhum. Com sv_pureLevel 1 o servidor só perdoa 4 caminhos
-#     de áudio, com 2 não perdoa nada, e no FiveM para GTA V Enhanced o pure é
-#     sempre ligado. Instalar mod aqui é impedir a pessoa de entrar no servidor.
+#   - não instala mod nenhum em mods/, plugins/ ou addons/. O pure mode não
+#     perdoa nada nessas três: instalar aqui é impedir a pessoa de entrar no
+#     servidor. O que este script faz é o contrário — isola o que achar nelas.
+#
+# O mod de som é outro alvo e mora no sounds.ps1: ele troca RESIDENT.rpf e
+# WEAPONS_PLAYER.rpf em x64\audio\sfx do GTA, que estão entre os caminhos de
+# áudio que o sv_pureLevel 1 perdoa. Em pure 2 nada é perdoado, nem o som.
 
 $FmApp = Join-Path $env:LOCALAPPDATA 'FiveM\FiveM.app'
 $FmData = Join-Path $FmApp 'data'

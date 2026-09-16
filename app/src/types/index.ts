@@ -355,6 +355,40 @@ export interface FiveMIsolateResult {
   origin: DataOrigin
 }
 
+/** Geração do GTA V instalado: os .rpf de áudio são incompatíveis entre as duas. */
+export type SoundGen = 'legacy' | 'enhanced'
+
+export interface SoundPack {
+  id: string
+  nome: string
+  bytes: number
+  temPreview: boolean
+}
+
+export interface SoundsScan {
+  gtaRaiz: string | null
+  sfx: string | null
+  geracao: SoundGen | null
+  jogoAberto: boolean
+  biblioteca: string
+  temBackup: boolean
+  instaladoId: string | null
+  packs: SoundPack[]
+  origin: DataOrigin
+}
+
+export interface SoundInstallResult {
+  id: string
+  backupCriado: boolean
+  arquivos: number
+  origin: DataOrigin
+}
+
+export interface SoundRestoreResult {
+  arquivos: number
+  origin: DataOrigin
+}
+
 // ---------------------------------------------------------------------------
 // Inicialização e hub de ajustes
 // ---------------------------------------------------------------------------

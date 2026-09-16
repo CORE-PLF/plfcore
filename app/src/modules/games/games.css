@@ -1,11 +1,11 @@
-/* ===== tela: cabe em 1080 sem rolagem; a grade inferior estica ===== */
+/* ===== tela: hero + grade do FiveM e, abaixo, o instalador de som; rola quando não cabe ===== */
 .fm-screen {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
   padding: 22px 24px;
-  overflow: hidden;
+  overflow-y: auto;
 }
 .fm-explica {
   font-size: 11px;
@@ -112,7 +112,7 @@
 /* ===== linha inferior: cliente 380px + coluna de mods/zona ===== */
 .fm-colunas {
   flex: 1;
-  min-height: 0;
+  min-height: 420px;
   display: grid;
   grid-template-columns: 380px minmax(0, 1fr);
   gap: 14px;
@@ -221,4 +221,123 @@
 .fm-zona-hold {
   width: 210px;
   flex: none;
+}
+
+/* ===== instalador de mods de som ===== */
+.snd-card {
+  flex: none;
+  margin-top: 14px;
+  overflow: hidden;
+}
+.snd-aviso {
+  border-bottom: 1px solid var(--color-line);
+}
+.snd-aviso-corpo {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+}
+.snd-aviso-corpo p {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-ink-2);
+  text-wrap: pretty;
+}
+.snd-estado {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 26px;
+  padding: 4px 16px 10px;
+}
+.snd-bloqueio {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 16px 12px;
+  padding: 9px 11px;
+  border: 1px solid var(--color-edge-2);
+  border-radius: 6px;
+  background: var(--color-surface-2);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-ink-2);
+}
+.snd-bloqueio svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--color-signal);
+}
+.snd-zona {
+  border-top: 1px solid var(--color-line);
+}
+.snd-zona-corpo {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 16px;
+}
+.snd-zona-texto {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.snd-zona-titulo {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-1);
+}
+.snd-zona-hint {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-4);
+}
+.snd-lista {
+  display: flex;
+  flex-direction: column;
+}
+.snd-linha {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 16px;
+  border-top: 1px solid var(--color-line);
+}
+.snd-nome {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-1);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.snd-bytes {
+  flex: none;
+  width: 84px;
+  text-align: right;
+  font-size: 12px;
+  color: var(--color-ink-3);
+}
+.snd-hold {
+  flex: none;
+  width: 200px;
+}
+.snd-rodape {
+  padding: 10px 16px;
+  border-top: 1px solid var(--color-line);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-3);
 }

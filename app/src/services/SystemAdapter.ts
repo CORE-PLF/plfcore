@@ -13,6 +13,9 @@ import type {
   FiveMFolder,
   FiveMIsolateResult,
   FiveMScan,
+  SoundInstallResult,
+  SoundRestoreResult,
+  SoundsScan,
   GameTarget,
   HardwareInventory,
   LatencyDevice,
@@ -207,6 +210,18 @@ export interface SystemAdapter {
 
   /** Move o conteúdo de mods/plugins/addons para backup datado. Nunca apaga. */
   isolateFivemFolder(pasta: FiveMFolder): Promise<FiveMIsolateResult>
+
+  /** Estado medido do instalador de som: GTA encontrado, geração, backup e biblioteca de packs. */
+  scanSounds(): Promise<SoundsScan>
+
+  /** Troca os .rpf de áudio pelo pack. Faz backup do original na primeira vez e recusa com o jogo aberto. */
+  installSoundPack(id: string): Promise<SoundInstallResult>
+
+  /** Devolve o áudio original guardado no backup. */
+  restoreSounds(): Promise<SoundRestoreResult>
+
+  /** Toca a amostra do pack fora do jogo. Não toca em arquivo do GTA. */
+  previewSoundPack(id: string): Promise<void>
 
   /**
    * Programas que abrem com o Windows, com estado real (mesma fonte do Gerenciador

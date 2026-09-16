@@ -12,6 +12,9 @@ import type {
   FiveMFolder,
   FiveMIsolateResult,
   FiveMScan,
+  SoundInstallResult,
+  SoundRestoreResult,
+  SoundsScan,
   GameTarget,
   HardwareInventory,
   LatencyDevice,
@@ -514,6 +517,52 @@ export class MockSystemAdapter implements SystemAdapter {
     }
   }
 
+  private soundsDemo: SoundsScan = {
+    gtaRaiz: 'C:\\Program Files\\Rockstar Games\\Grand Theft Auto V',
+    sfx: 'C:\\Program Files\\Rockstar Games\\Grand Theft Auto V\\x64\\audio\\sfx',
+    geracao: 'legacy',
+    jogoAberto: false,
+    biblioteca: 'C:\\Users\\demo\\AppData\\Local\\PLFCore\\sound-packs',
+    temBackup: true,
+    instaladoId: 'tarkov-m4',
+    packs: [
+      { id: 'tarkov-m4', nome: 'TARKOV M4', bytes: 41_943_040, temPreview: true },
+      { id: 'tarkov-ak', nome: 'TARKOV AK-74', bytes: 38_797_312, temPreview: true },
+      { id: 'mw19-five-seven', nome: 'MW19 FIVE-SEVEN', bytes: 12_582_912, temPreview: true },
+      { id: 'insurgency-m4', nome: 'INSURGENCY M4', bytes: 33_554_432, temPreview: false },
+      { id: 'squad-ak', nome: 'SQUAD AK', bytes: 29_360_128, temPreview: true },
+      { id: 'vanilla-plus', nome: 'VANILLA PLUS', bytes: 8_388_608, temPreview: false },
+    ],
+    origin: 'demo',
+  }
+
+  async scanSounds(): Promise<SoundsScan> {
+    await sleep(800)
+    return { ...this.soundsDemo, packs: [...this.soundsDemo.packs] }
+  }
+
+  async installSoundPack(id: string): Promise<SoundInstallResult> {
+    await sleep(1800)
+    const pack = this.soundsDemo.packs.find((p) => p.id === id)
+    if (!pack) throw new Error('ERR_SND_PACK')
+    const backupCriado = !this.soundsDemo.temBackup
+    this.soundsDemo.temBackup = true
+    this.soundsDemo.instaladoId = id
+    return { id, backupCriado, arquivos: 4, origin: 'demo' }
+  }
+
+  async restoreSounds(): Promise<SoundRestoreResult> {
+    await sleep(1400)
+    if (!this.soundsDemo.temBackup) throw new Error('ERR_SND_SEM_BACKUP')
+    this.soundsDemo.instaladoId = null
+    return { arquivos: 4, origin: 'demo' }
+  }
+
+  async previewSoundPack(id: string): Promise<void> {
+    await sleep(400)
+    const pack = this.soundsDemo.packs.find((p) => p.id === id)
+    if (!pack || !pack.temPreview) throw new Error('ERR_SND_PACK')
+  }
   private startupDemo: StartupEntry[] = [
     { id: 'hkcu-run|Steam', nome: 'Steam', comando: '"C:\\Program Files (x86)\\Steam\\steam.exe" -silent', origemId: 'hkcu-run', ativado: true, precisaAdmin: false, protegido: false },
     { id: 'hkcu-run|Discord', nome: 'Discord', comando: 'C:\\Users\\demo\\AppData\\Local\\Discord\\Update.exe --processStart Discord.exe', origemId: 'hkcu-run', ativado: true, precisaAdmin: false, protegido: false },

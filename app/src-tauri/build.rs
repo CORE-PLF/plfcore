@@ -20,6 +20,7 @@ const PS_FILES: &[&str] = &[
     "inventory",
     "peripherals",
     "runtimes",
+    "sounds",
     "startup",
     "tweaks",
 ];
