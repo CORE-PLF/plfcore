@@ -6,9 +6,6 @@ const LINKS: { href: string; label: string }[] = [
   { href: '/download', label: 'Download' },
   { href: '/changelog', label: 'Changelog' },
   { href: '/status', label: 'Status' },
-  { href: '/legal/termos', label: 'Termos de uso' },
-  { href: '/legal/privacidade', label: 'Privacidade' },
-  { href: '/legal/reembolso', label: 'Reembolso' },
 ]
 
 export function SiteFooter() {
