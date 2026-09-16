@@ -127,16 +127,6 @@ export default async function DownloadPage() {
           </Surface>
         )}
 
-        <div className="mt-8">
-          <Kicker>Verificação de integridade</Kicker>
-          <p className="mt-3 text-sm text-ink-3">
-            Para conferir que o arquivo baixado é exatamente o que publicamos, gere o SHA-256 local
-            e compare com o checksum acima. No PowerShell:
-          </p>
-          <p className="type-num mt-2 overflow-x-auto rounded-ctl border border-edge bg-carbon px-4 py-3 text-xs text-ink-2">
-            Get-FileHash .\{inst?.fileName ?? 'Setup.exe'} -Algorithm SHA256
-          </p>
-        </div>
       </section>
     </>
   )
