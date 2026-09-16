@@ -4,9 +4,9 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       // conteúdo comercial consolidado na landing única (âncoras)
-      { source: '/produto', destination: '/#produto', permanent: true },
-      { source: '/como-funciona', destination: '/#como-funciona', permanent: true },
-      { source: '/transparencia', destination: '/#transparencia', permanent: true },
+      { source: '/produto', destination: '/#modulos', permanent: true },
+      { source: '/como-funciona', destination: '/#modulos', permanent: true },
+      { source: '/transparencia', destination: '/legal/privacidade', permanent: true },
       { source: '/faq', destination: '/#faq', permanent: true },
       { source: '/afiliados', destination: '/#programas', permanent: true },
       { source: '/revendedores', destination: '/#programas', permanent: true },
