@@ -12,7 +12,9 @@ import type {
   FiveMFolder,
   FiveMIsolateResult,
   FiveMScan,
+  SoundCatalogPack,
   SoundInstallResult,
+  SoundPackProgress,
   SoundRestoreResult,
   SoundsScan,
   GameTarget,
@@ -520,21 +522,28 @@ export class MockSystemAdapter implements SystemAdapter {
   private soundsDemo: SoundsScan = {
     gtaRaiz: 'C:\\Program Files\\Rockstar Games\\Grand Theft Auto V',
     sfx: 'C:\\Program Files\\Rockstar Games\\Grand Theft Auto V\\x64\\audio\\sfx',
-    geracao: 'legacy',
+    geracao: 'enhanced',
     jogoAberto: false,
-    biblioteca: 'C:\\Users\\demo\\AppData\\Local\\PLFCore\\sound-packs',
+    biblioteca: 'C:\\Users\\demo\\AppData\\Local\\PLFCore\\packs',
     temBackup: true,
-    instaladoId: 'tarkov-m4',
+    instaladoId: 'plf-01',
     packs: [
-      { id: 'tarkov-m4', nome: 'TARKOV M4', bytes: 41_943_040, temPreview: true },
-      { id: 'tarkov-ak', nome: 'TARKOV AK-74', bytes: 38_797_312, temPreview: true },
-      { id: 'mw19-five-seven', nome: 'MW19 FIVE-SEVEN', bytes: 12_582_912, temPreview: true },
-      { id: 'insurgency-m4', nome: 'INSURGENCY M4', bytes: 33_554_432, temPreview: false },
-      { id: 'squad-ak', nome: 'SQUAD AK', bytes: 29_360_128, temPreview: true },
-      { id: 'vanilla-plus', nome: 'VANILLA PLUS', bytes: 8_388_608, temPreview: false },
+      { id: 'plf-01', nome: 'PLF 01', bytes: 116_666_880, temPreview: true },
+      { id: 'plf-02', nome: 'PLF 02', bytes: 116_666_880, temPreview: true },
     ],
     origin: 'demo',
   }
+
+  // Catálogo de demonstração: sem rede no mock, então prévia e capa são nulas —
+  // o card mostra SEM PRÉVIA em vez de fingir um vídeo que não existe.
+  private catalogoDemo: SoundCatalogPack[] = [
+    { slug: 'plf-01', nome: 'PLF 01', geracao: ['enhanced'], bytes: 116_666_880, arquivos: [], previewUrl: null, capaUrl: null },
+    { slug: 'plf-02', nome: 'PLF 02', geracao: ['enhanced'], bytes: 116_666_880, arquivos: [], previewUrl: null, capaUrl: null },
+    { slug: 'plf-03', nome: 'PLF 03', geracao: ['enhanced'], bytes: 116_666_880, arquivos: [], previewUrl: null, capaUrl: null },
+    { slug: 'plf-04', nome: 'PLF 04', geracao: ['enhanced'], bytes: 116_666_880, arquivos: [], previewUrl: null, capaUrl: null },
+    { slug: 'plf-05', nome: 'PLF 05', geracao: ['enhanced'], bytes: 116_666_880, arquivos: [], previewUrl: null, capaUrl: null },
+    { slug: 'plf-06', nome: 'PLF 06', geracao: ['legacy'], bytes: 116_666_880, arquivos: [], previewUrl: null, capaUrl: null },
+  ]
 
   async scanSounds(): Promise<SoundsScan> {
     await sleep(800)
@@ -562,6 +571,38 @@ export class MockSystemAdapter implements SystemAdapter {
     await sleep(400)
     const pack = this.soundsDemo.packs.find((p) => p.id === id)
     if (!pack || !pack.temPreview) throw new Error('ERR_SND_PACK')
+  }
+
+  async fetchCatalog(): Promise<SoundCatalogPack[]> {
+    await sleep(600)
+    return this.catalogoDemo.map((p) => ({ ...p }))
+  }
+
+  async downloadPack(pack: SoundCatalogPack, onProgress: (p: SoundPackProgress) => void): Promise<void> {
+    const emitir = (fase: SoundPackProgress['fase'], pct: number) =>
+      onProgress({
+        slug: pack.slug,
+        arquivo: 'RESIDENT.rpf',
+        fase,
+        pct,
+        recebidoBytes: Math.round((pack.bytes * pct) / 100),
+        totalBytes: pack.bytes,
+      })
+    for (let pct = 0; pct <= 100; pct += 5) {
+      emitir('baixando', pct)
+      await sleep(70)
+    }
+    emitir('conferindo', 100)
+    await sleep(700)
+    if (!this.soundsDemo.packs.some((p) => p.id === pack.slug)) {
+      this.soundsDemo.packs.push({ id: pack.slug, nome: pack.nome, bytes: pack.bytes, temPreview: pack.previewUrl !== null })
+    }
+  }
+
+  async removePack(slug: string): Promise<void> {
+    await sleep(500)
+    if (this.soundsDemo.instaladoId === slug) throw new Error('ERR_SND_PACK')
+    this.soundsDemo.packs = this.soundsDemo.packs.filter((p) => p.id !== slug)
   }
   private startupDemo: StartupEntry[] = [
     { id: 'hkcu-run|Steam', nome: 'Steam', comando: '"C:\\Program Files (x86)\\Steam\\steam.exe" -silent', origemId: 'hkcu-run', ativado: true, precisaAdmin: false, protegido: false },

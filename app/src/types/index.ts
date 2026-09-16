@@ -389,6 +389,35 @@ export interface SoundRestoreResult {
   origin: DataOrigin
 }
 
+/** Um arquivo publicado do pack. O sha256 é conferido pelo nativo durante o download. */
+export interface SoundCatalogFile {
+  nome: string
+  url: string
+  bytes: number
+  sha256: string
+}
+
+/** Pack como o catálogo remoto (packs.json) o descreve — ainda não está no disco. */
+export interface SoundCatalogPack {
+  slug: string
+  nome: string
+  geracao: SoundGen[]
+  bytes: number
+  arquivos: SoundCatalogFile[]
+  previewUrl: string | null
+  capaUrl: string | null
+}
+
+/** Progresso de download vindo do evento nativo `pack-progress`. */
+export interface SoundPackProgress {
+  slug: string
+  arquivo: string
+  fase: 'baixando' | 'conferindo'
+  pct: number
+  recebidoBytes: number
+  totalBytes: number
+}
+
 // ---------------------------------------------------------------------------
 // Inicialização e hub de ajustes
 // ---------------------------------------------------------------------------

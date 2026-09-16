@@ -1,5 +1,6 @@
 mod commands;
 mod license;
+mod packs;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -45,6 +46,9 @@ pub fn run() {
             commands::install_sound_pack,
             commands::restore_sounds,
             commands::preview_sound_pack,
+            packs::manifest_baixar,
+            packs::baixar_pack,
+            packs::remover_pack,
             commands::scan_startup,
             commands::toggle_startup,
             commands::scan_tweaks,

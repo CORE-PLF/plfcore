@@ -25,7 +25,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:"
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://web-rit9w9is79i0owd4gvz9ct7g.189.127.164.199.sslip.io; media-src 'self' blob: https://web-rit9w9is79i0owd4gvz9ct7g.189.127.164.199.sslip.io"
     }
   },
   "bundle": {

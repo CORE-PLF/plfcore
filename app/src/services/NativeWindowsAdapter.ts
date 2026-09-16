@@ -14,7 +14,9 @@ import type {
   FiveMFolder,
   FiveMIsolateResult,
   FiveMScan,
+  SoundCatalogPack,
   SoundInstallResult,
+  SoundPackProgress,
   SoundRestoreResult,
   SoundsScan,
   GameTarget,
@@ -286,6 +288,40 @@ export class NativeWindowsAdapter implements SystemAdapter {
 
   async previewSoundPack(id: string): Promise<void> {
     await this.call<null>('preview_sound_pack', { id })
+  }
+
+  async fetchCatalog(): Promise<SoundCatalogPack[]> {
+    const url = import.meta.env.VITE_PLFCORE_MANIFEST
+    if (!url) throw new Error('ERR_MANIFEST_NAO_CONFIGURADO')
+    const bruto = await this.call<string>('manifest_baixar', { url })
+    let dados: { packs?: SoundCatalogPack[] }
+    try {
+      dados = JSON.parse(bruto)
+    } catch {
+      throw new Error('ERR_MANIFEST')
+    }
+    if (!Array.isArray(dados.packs)) throw new Error('ERR_MANIFEST')
+    return dados.packs
+  }
+
+  async downloadPack(pack: SoundCatalogPack, onProgress: (p: SoundPackProgress) => void): Promise<void> {
+    const un = await listen<SoundPackProgress>('pack-progress', (e) => {
+      if (e.payload.slug === pack.slug) onProgress(e.payload)
+    })
+    try {
+      await this.call<null>('baixar_pack', {
+        slug: pack.slug,
+        arquivos: pack.arquivos,
+        previewUrl: pack.previewUrl,
+        nome: pack.nome,
+      })
+    } finally {
+      un()
+    }
+  }
+
+  async removePack(slug: string): Promise<void> {
+    await this.call<null>('remover_pack', { slug })
   }
 
   async scanStartup(): Promise<StartupEntry[]> {

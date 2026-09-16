@@ -13,7 +13,9 @@ import type {
   FiveMFolder,
   FiveMIsolateResult,
   FiveMScan,
+  SoundCatalogPack,
   SoundInstallResult,
+  SoundPackProgress,
   SoundRestoreResult,
   SoundsScan,
   GameTarget,
@@ -222,6 +224,18 @@ export interface SystemAdapter {
 
   /** Toca a amostra do pack fora do jogo. Não toca em arquivo do GTA. */
   previewSoundPack(id: string): Promise<void>
+
+  /**
+   * Catálogo remoto de packs de som. Buscado pelo nativo (o bucket não manda CORS
+   * e o fetch da webview seria bloqueado). Erro é código: ERR_MANIFEST*.
+   */
+  fetchCatalog(): Promise<SoundCatalogPack[]>
+
+  /** Baixa o pack pra biblioteca local, conferindo sha256 por arquivo. Erro: ERR_DOWNLOAD*, ERR_SHA, ERR_CACHE_*. */
+  downloadPack(pack: SoundCatalogPack, onProgress: (p: SoundPackProgress) => void): Promise<void>
+
+  /** Apaga o pack da biblioteca local e libera o espaço. Não toca em arquivo do GTA. */
+  removePack(slug: string): Promise<void>
 
   /**
    * Programas que abrem com o Windows, com estado real (mesma fonte do Gerenciador
