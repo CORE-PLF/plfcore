@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useT } from '../../i18n'
 import { getAdapter } from '../../services/adapter'
+import { invalidateScan, scanCached } from '../../services/scanCache'
 import { useLogStore } from '../../stores/log'
 import { useToastsStore } from '../../stores/toasts'
 import type { StartupEntry } from '../../types'
@@ -20,19 +21,30 @@ export default function StartupScreen() {
   const pushToast = useToastsStore((s) => s.push)
   const [entradas, setEntradas] = useState<StartupEntry[] | null>(null)
   const [erro, setErro] = useState(false)
+  const [lendo, setLendo] = useState(true)
   const [ocupado, setOcupado] = useState<string | null>(null)
   const [lote, setLote] = useState<{ feitos: number; total: number } | null>(null)
   const [armado, setArmado] = useState(false)
 
-  const ler = useCallback(async () => {
+  const ler = useCallback(async (semCache = false) => {
     setErro(false)
+    setLendo(true)
     try {
-      const itens = await getAdapter().scanStartup()
-      itens.sort((a, b) => Number(b.ativado) - Number(a.ativado) || a.nome.localeCompare(b.nome))
-      setEntradas(itens)
+      await scanCached(
+        'startup',
+        async () => {
+          const itens = await getAdapter().scanStartup()
+          itens.sort((a, b) => Number(b.ativado) - Number(a.ativado) || a.nome.localeCompare(b.nome))
+          return itens
+        },
+        setEntradas,
+        semCache,
+      )
     } catch {
       setEntradas(null)
       setErro(true)
+    } finally {
+      setLendo(false)
     }
   }, [])
 
@@ -45,6 +57,7 @@ export default function StartupScreen() {
     setOcupado(entrada.id)
     try {
       const ativado = await getAdapter().toggleStartup(entrada.id, ativar)
+      invalidateScan('startup')
       useLogStore.getState().log({
         moduloId: 'startup',
         acao: ativado ? `ativar-${entrada.nome}` : `desativar-${entrada.nome}`,
@@ -70,6 +83,7 @@ export default function StartupScreen() {
     const alvos = (entradas ?? []).filter((e) => e.ativado && !e.protegido)
     if (alvos.length === 0) return
     setLote({ feitos: 0, total: alvos.length })
+    invalidateScan('startup')
     let ok = 0
     let falhas = 0
     for (const entrada of alvos) {
@@ -112,14 +126,17 @@ export default function StartupScreen() {
         title={t('titulo')}
         actions={
           entradas !== null && (
-            <Button size="sm" disabled={ocupadoGeral} onClick={() => void ler()}>
-              {t('reler')}
-            </Button>
+            <>
+              {lendo && <span className="tag">{t('lendo')}</span>}
+              <Button size="sm" disabled={ocupadoGeral} onClick={() => void ler(true)}>
+                {t('reler')}
+              </Button>
+            </>
           )
         }
       />
 
-      {erro && <ErrorState what={t('erroLer')} todo={t('erroLerAcao')} onRetry={() => void ler()} />}
+      {erro && <ErrorState what={t('erroLer')} todo={t('erroLerAcao')} onRetry={() => void ler(true)} />}
 
       {!erro && entradas === null && <p className="type-kicker p-6 text-center">{t('lendo')}</p>}
 

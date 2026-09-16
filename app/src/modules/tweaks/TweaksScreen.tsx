@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useT } from '../../i18n'
 import { getAdapter } from '../../services/adapter'
+import { invalidateScan, scanCached } from '../../services/scanCache'
 import { useRestartStore } from '../../stores/restart'
 import { useLogStore } from '../../stores/log'
 import { useToastsStore } from '../../stores/toasts'
@@ -123,20 +124,30 @@ export default function TweaksScreen() {
   const [estados, setEstados] = useState<Record<string, TweakState> | null>(null)
   const [admin, setAdmin] = useState(true)
   const [erro, setErro] = useState(false)
+  const [lendo, setLendo] = useState(true)
   const [ocupado, setOcupado] = useState<string | null>(null)
   const [lote, setLote] = useState<{ feitos: number; total: number } | null>(null)
   const [abertos, setAbertos] = useState<Set<string>>(new Set())
   const [armado, setArmado] = useState(false)
 
-  const ler = useCallback(async () => {
+  const ler = useCallback(async (semCache = false) => {
     setErro(false)
+    setLendo(true)
     try {
-      const scan = await getAdapter().scanTweaks()
-      setEstados(Object.fromEntries(scan.items.map((i) => [i.id, i])))
-      setAdmin(scan.admin)
+      await scanCached(
+        'tweaks',
+        () => getAdapter().scanTweaks(),
+        (scan) => {
+          setEstados(Object.fromEntries(scan.items.map((i) => [i.id, i])))
+          setAdmin(scan.admin)
+        },
+        semCache,
+      )
     } catch {
       setEstados(null)
       setErro(true)
+    } finally {
+      setLendo(false)
     }
   }, [])
 
@@ -168,6 +179,7 @@ export default function TweaksScreen() {
     setOcupado(def.id)
     try {
       const ligado = await getAdapter().setTweak(def.id, ligar)
+      invalidateScan('tweaks')
       const nome = t(`tw.${def.id}.nome`)
       useLogStore.getState().log({
         moduloId: 'tweaks',
@@ -196,6 +208,7 @@ export default function TweaksScreen() {
       return
     }
     setLote({ feitos: 0, total: alvos.length })
+    invalidateScan('tweaks')
     let aplicados = 0
     let falhas = 0
     let reinicio = false
@@ -263,14 +276,15 @@ export default function TweaksScreen() {
                 {t('tagAdmin')}
               </span>
             )}
-            <Button disabled={ocupadoGeral} onClick={() => void ler()}>
+            {lendo && estados !== null && <span className="tag">{t('lendo')}</span>}
+            <Button disabled={ocupadoGeral} onClick={() => void ler(true)}>
               {t('reler')}
             </Button>
           </>
         }
       />
 
-      {erro && <ErrorState what={t('erroLer')} todo={t('erroLerAcao')} onRetry={() => void ler()} />}
+      {erro && <ErrorState what={t('erroLer')} todo={t('erroLerAcao')} onRetry={() => void ler(true)} />}
 
       {!erro && estados === null && (
         <p className="type-mono p-6 text-center text-xs text-ink-3">{t('lendo')}</p>

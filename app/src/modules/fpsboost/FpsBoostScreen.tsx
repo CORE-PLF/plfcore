@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useT } from '../../i18n'
 import { getAdapter, isTauriEnv } from '../../services/adapter'
+import { invalidateScan, scanCached } from '../../services/scanCache'
 import {
   FPS_BOOST_CATALOG,
   FPS_BOOST_FORA,
@@ -44,21 +45,31 @@ export default function FpsBoostScreen() {
   const [scan, setScan] = useState<FpsBoostScan | null>(null)
   const [estados, setEstados] = useState<Record<string, FpsBoostState> | null>(null)
   const [erro, setErro] = useState(false)
+  const [lendo, setLendo] = useState(true)
   const [ocupado, setOcupado] = useState<string | null>(null)
   const [lote, setLote] = useState<{ feitos: number; total: number } | null>(null)
   const [abertos, setAbertos] = useState<Set<string>>(new Set())
   const [armado, setArmado] = useState(false)
 
-  const ler = useCallback(async () => {
+  const ler = useCallback(async (semCache = false) => {
     setErro(false)
+    setLendo(true)
     try {
-      const resultado = await getAdapter().scanFpsBoost()
-      setScan(resultado)
-      setEstados(Object.fromEntries(resultado.items.map((i) => [i.id, i])))
+      await scanCached(
+        'fpsboost',
+        () => getAdapter().scanFpsBoost(),
+        (resultado) => {
+          setScan(resultado)
+          setEstados(Object.fromEntries(resultado.items.map((i) => [i.id, i])))
+        },
+        semCache,
+      )
     } catch {
       setScan(null)
       setEstados(null)
       setErro(true)
+    } finally {
+      setLendo(false)
     }
   }, [])
 
@@ -93,6 +104,7 @@ export default function FpsBoostScreen() {
     setOcupado(def.id)
     try {
       const ligado = await getAdapter().setFpsBoost(def.id, ligar)
+      invalidateScan('fpsboost')
       const nome = nomeDe(def.id)
       const logId = useLogStore.getState().log({
         moduloId: 'fpsboost',
@@ -128,6 +140,7 @@ export default function FpsBoostScreen() {
       return
     }
     setLote({ feitos: 0, total: alvos.length })
+    invalidateScan('fpsboost')
     let ligados = 0
     let falhas = 0
     let reinicio = false
@@ -161,7 +174,7 @@ export default function FpsBoostScreen() {
         for (const def of alvos) {
           await getAdapter().setFpsBoost(def.id, false)
         }
-        await ler()
+        await ler(true)
       })
     }
     pushToast({
@@ -198,14 +211,15 @@ export default function FpsBoostScreen() {
         actions={
           <>
             {emDemo && <DemoTag full />}
-            <Button disabled={ocupadoGeral} onClick={() => void ler()}>
+            {lendo && estados !== null && <span className="tag">{t('lendo')}</span>}
+            <Button disabled={ocupadoGeral} onClick={() => void ler(true)}>
               {t('reler')}
             </Button>
           </>
         }
       />
 
-      {erro && <ErrorState what={t('erroLer')} todo={t('erroLerAcao')} onRetry={() => void ler()} />}
+      {erro && <ErrorState what={t('erroLer')} todo={t('erroLerAcao')} onRetry={() => void ler(true)} />}
 
       {!erro && estados === null && <p className="p-6 text-center text-[13px] text-ink-3">{t('lendo')}</p>}
 

@@ -108,15 +108,22 @@ export class NativeWindowsAdapter implements SystemAdapter {
   streamMetrics(cb: (m: SystemMetrics) => void, intervalMs = 1000): Unsubscribe {
     if (!isTauriRuntime()) throw new Error('ERR_TAURI_UNAVAILABLE')
     let vivo = true
+    let timer: ReturnType<typeof setTimeout> | undefined
+    // Encadeado, não setInterval: tick lento não empilha chamadas atrás de si.
+    // Tick que falha não mata o stream nem vira toast — o próximo tenta de novo.
     const tick = async () => {
-      const m = await this.call<SystemMetrics>('get_metrics')
-      if (vivo) cb(m)
+      try {
+        const m = await this.call<SystemMetrics>('get_metrics')
+        if (vivo) cb(m)
+      } catch {
+        /* silencioso por design */
+      }
+      if (vivo) timer = setTimeout(() => void tick(), intervalMs)
     }
     void tick()
-    const handle = setInterval(() => void tick(), intervalMs)
     return () => {
       vivo = false
-      clearInterval(handle)
+      if (timer !== undefined) clearTimeout(timer)
     }
   }
 

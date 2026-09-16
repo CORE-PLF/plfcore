@@ -4,7 +4,7 @@
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::io::{Read, Write};
 use std::os::windows::fs::OpenOptionsExt;
 use std::os::windows::process::CommandExt;
@@ -269,7 +269,52 @@ fn dono_da_sessao(sys: &System) -> Option<sysinfo::Uid> {
         .cloned()
 }
 
-fn alvo_permitido(p: &sysinfo::Process, dono: Option<&sysinfo::Uid>) -> bool {
+/// PIDs do próprio aplicativo: o executável e TODA a sua descendência, que
+/// inclui os processos do WebView2 (`msedgewebview2.exe`).
+///
+/// Sem isso a janela do próprio PLF CORE aparecia na lista de encerráveis, e
+/// encerrá-la matava a interface — o que a pessoa via como o aplicativo travando
+/// e pedindo para recarregar. Filtrar só pelo nome não serve: WebView2 de OUTRO
+/// programa é memória legítima de liberar.
+fn arvore_propria(sys: &System) -> HashSet<u32> {
+    let mut arvore = HashSet::from([std::process::id()]);
+    // A descendência pode vir em qualquer ordem no mapa: repete até estabilizar.
+    loop {
+        let antes = arvore.len();
+        for (pid, p) in sys.processes() {
+            if let Some(pai) = p.parent() {
+                if arvore.contains(&pai.as_u32()) {
+                    arvore.insert(pid.as_u32());
+                }
+            }
+        }
+        if arvore.len() == antes {
+            return arvore;
+        }
+    }
+}
+
+fn arvore_propria_cache() -> &'static Mutex<(HashSet<u32>, u64)> {
+    static ARVORE: OnceLock<Mutex<(HashSet<u32>, u64)>> = OnceLock::new();
+    ARVORE.get_or_init(|| Mutex::new((HashSet::new(), 0)))
+}
+
+/// O WebView2 cria processo sob demanda, então a árvore não pode ser fixada de
+/// uma vez; 2 s de validade evita recalcular a cada PID encerrado em lote.
+const ARVORE_VALIDADE_MS: u64 = 2_000;
+
+fn guardar_arvore(sys: &System) -> HashSet<u32> {
+    let arvore = arvore_propria(sys);
+    if let Ok(mut cache) = arvore_propria_cache().lock() {
+        *cache = (arvore.clone(), agora_ms());
+    }
+    arvore
+}
+
+fn alvo_permitido(p: &sysinfo::Process, dono: Option<&sysinfo::Uid>, proprios: &HashSet<u32>) -> bool {
+    if proprios.contains(&p.pid().as_u32()) {
+        return false;
+    }
     if KILL_DENY.contains(&p.name().to_string_lossy().to_lowercase().as_str()) {
         return false;
     }
@@ -1729,6 +1774,10 @@ struct Sensores {
     cpu_temp_origin: Option<&'static str>,
     atualizado_ms: u64,
     cpu_atualizado_ms: u64,
+    /// Última vez que alguém pediu telemetria. Sem tela aberta a sonda dorme:
+    /// um aplicativo de desempenho não pode gastar processo a cada segundo
+    /// medindo para ninguém.
+    lido_ms: u64,
 }
 
 fn sensores_cache() -> &'static Mutex<Sensores> {
@@ -1749,6 +1798,12 @@ struct PdhFmtCounterValue {
     value: PdhFmtValue,
 }
 
+#[repr(C)]
+struct PdhFmtCounterValueItemW {
+    name: *mut u16,
+    value: PdhFmtCounterValue,
+}
+
 #[link(name = "pdh")]
 extern "system" {
     fn PdhOpenQueryW(data_source: *const u16, user_data: usize, query: *mut isize) -> i32;
@@ -1764,6 +1819,13 @@ extern "system" {
         format: u32,
         value_type: *mut u32,
         value: *mut PdhFmtCounterValue,
+    ) -> i32;
+    fn PdhGetFormattedCounterArrayW(
+        counter: isize,
+        format: u32,
+        buffer_size: *mut u32,
+        item_count: *mut u32,
+        items: *mut PdhFmtCounterValueItemW,
     ) -> i32;
 }
 
@@ -1787,6 +1849,175 @@ fn cpu_performance_counter() -> &'static Mutex<CpuPerformanceCounter> {
 fn cpu_utility_counter() -> &'static Mutex<CpuUtilityCounter> {
     static COUNTER: OnceLock<Mutex<CpuUtilityCounter>> = OnceLock::new();
     COUNTER.get_or_init(|| Mutex::new(CpuUtilityCounter::default()))
+}
+
+#[derive(Default)]
+struct GpuCounter {
+    query: isize,
+    uso: isize,
+    vram: isize,
+}
+
+fn gpu_counter() -> &'static Mutex<GpuCounter> {
+    static COUNTER: OnceLock<Mutex<GpuCounter>> = OnceLock::new();
+    COUNTER.get_or_init(|| Mutex::new(GpuCounter::default()))
+}
+
+/// Nome da instância de um item PDH: ponteiro para UTF-16 terminado em NUL.
+///
+/// # Safety
+/// `ptr` precisa vir de um buffer preenchido por `PdhGetFormattedCounterArrayW`
+/// que ainda esteja vivo.
+unsafe fn nome_da_instancia(ptr: *const u16) -> String {
+    if ptr.is_null() {
+        return String::new();
+    }
+    let mut fim = 0usize;
+    while *ptr.add(fim) != 0 && fim < 512 {
+        fim += 1;
+    }
+    String::from_utf16_lossy(std::slice::from_raw_parts(ptr, fim))
+}
+
+/// Lê um contador PDH com curinga e devolve (instância, valor) por item.
+fn coletar_array(counter: isize) -> Option<Vec<(String, f64)>> {
+    const PDH_FMT_DOUBLE: u32 = 0x0000_0200;
+    if counter == 0 {
+        return None;
+    }
+    let mut tamanho = 0u32;
+    let mut itens = 0u32;
+    // Primeira chamada só mede o buffer; sem instância viva o tamanho volta zero.
+    // SAFETY: contador válido e ponteiros de saída próprios; buffer nulo é o
+    // contrato da chamada de medição.
+    unsafe {
+        PdhGetFormattedCounterArrayW(
+            counter,
+            PDH_FMT_DOUBLE,
+            &mut tamanho,
+            &mut itens,
+            std::ptr::null_mut(),
+        )
+    };
+    if tamanho == 0 || itens == 0 {
+        return None;
+    }
+    // u64 garante alinhamento de 8 bytes para o array de itens.
+    let mut buffer = vec![0u64; (tamanho as usize).div_ceil(8)];
+    // SAFETY: buffer com o tamanho que o próprio PDH pediu e alinhado para a struct.
+    let rc = unsafe {
+        PdhGetFormattedCounterArrayW(
+            counter,
+            PDH_FMT_DOUBLE,
+            &mut tamanho,
+            &mut itens,
+            buffer.as_mut_ptr() as *mut PdhFmtCounterValueItemW,
+        )
+    };
+    if rc != 0 {
+        return None;
+    }
+    // SAFETY: o PDH escreveu `itens` structs no início do buffer, e os nomes
+    // apontam para dentro dele — que continua vivo até o fim desta função.
+    let lista = unsafe {
+        std::slice::from_raw_parts(
+            buffer.as_ptr() as *const PdhFmtCounterValueItemW,
+            itens as usize,
+        )
+    };
+    let mut saida = Vec::with_capacity(lista.len());
+    for item in lista {
+        if item.value.status > 1 {
+            continue;
+        }
+        // SAFETY: nome vem do buffer acima; double_value é o membro selecionado
+        // por PDH_FMT_DOUBLE.
+        let (nome, valor) = unsafe {
+            (
+                nome_da_instancia(item.name),
+                item.value.value.double_value,
+            )
+        };
+        if valor.is_finite() {
+            saida.push((nome, valor));
+        }
+    }
+    (!saida.is_empty()).then_some(saida)
+}
+
+/// Uso e VRAM da GPU pelos contadores nativos do Windows.
+///
+/// Substitui a consulta CIM equivalente, que custava mais de um segundo e um
+/// processo do PowerShell por leitura. O PDH responde em microssegundos e sem
+/// spawnar nada — é o que torna possível ler GPU a cada segundo sem peso.
+fn ler_gpu_pdh() -> (Option<f32>, Option<f32>) {
+    let mut state = match gpu_counter().lock() {
+        Ok(s) => s,
+        Err(_) => return (None, None),
+    };
+    if state.query == 0 {
+        let mut query = 0isize;
+        // SAFETY: ponteiros de saída válidos e data_source nulo conforme contrato do PDH.
+        if unsafe { PdhOpenQueryW(std::ptr::null(), 0, &mut query) } != 0 {
+            return (None, None);
+        }
+        let adicionar = |caminho: &str| -> isize {
+            let mut path: Vec<u16> = caminho.encode_utf16().collect();
+            path.push(0);
+            let mut counter = 0isize;
+            // SAFETY: `path` é UTF-16 NUL-terminated e o handle fica no estado estático.
+            if unsafe { PdhAddEnglishCounterW(query, path.as_ptr(), 0, &mut counter) } != 0 {
+                return 0;
+            }
+            counter
+        };
+        state.uso = adicionar(r"\GPU Engine(*)\Utilization Percentage");
+        state.vram = adicionar(r"\GPU Adapter Memory(*)\Dedicated Usage");
+        if state.uso == 0 && state.vram == 0 {
+            return (None, None);
+        }
+        state.query = query;
+    }
+    // SAFETY: query aberta acima e mantida no estado estático.
+    if unsafe { PdhCollectQueryData(state.query) } != 0 {
+        return (None, None);
+    }
+
+    // Uso: soma as engines gráficas por adaptador e fica com o adaptador mais quente.
+    let uso = coletar_array(state.uso).and_then(|itens| {
+        let mut por_adaptador: HashMap<String, f64> = HashMap::new();
+        for (nome, valor) in itens {
+            let minusculo = nome.to_ascii_lowercase();
+            if !["engtype_3d", "engtype_compute", "engtype_graphics"]
+                .iter()
+                .any(|t| minusculo.ends_with(t))
+            {
+                continue;
+            }
+            // pid_X_luid_A_B_phys_N_eng_M_engtype_3D → a chave é o adaptador
+            let chave = match (minusculo.find("luid_"), minusculo.find("_eng_")) {
+                (Some(i), Some(f)) if f > i => minusculo[i..f].to_string(),
+                _ => "unico".to_string(),
+            };
+            *por_adaptador.entry(chave).or_insert(0.0) += valor;
+        }
+        por_adaptador
+            .into_values()
+            .fold(None::<f64>, |maior, v| Some(maior.map_or(v, |m| m.max(v))))
+            .map(|v| v.clamp(0.0, 100.0) as f32)
+    });
+
+    // VRAM: o adaptador que mais usa memória dedicada, em MB.
+    let vram = coletar_array(state.vram).and_then(|itens| {
+        itens
+            .into_iter()
+            .map(|(_, bytes)| bytes)
+            .fold(None::<f64>, |maior, v| Some(maior.map_or(v, |m| m.max(v))))
+            .map(|bytes| (bytes / 1_048_576.0) as f32)
+            .filter(|mb| (0.0..=262_144.0).contains(mb))
+    });
+
+    (uso, vram)
 }
 
 /// Uso total no contador que acompanha o Gerenciador de Tarefas nesta máquina.
@@ -1945,51 +2176,39 @@ fn ler_gpu_nvidia() -> (Option<f32>, Option<f32>, Option<f32>) {
     )
 }
 
-/// Fallback WDDM, independente de fabricante: funciona com AMD Radeon, Intel
-/// Arc/integrada e NVIDIA sem nvidia-smi. Temperatura continua vindo somente de
-/// sensor real exposto pelo Libre/OpenHardwareMonitor; ausência permanece null.
-fn ler_gpu_windows() -> (Option<f32>, Option<f32>, Option<f32>) {
+/// Temperaturas de CPU e GPU pelo Libre/OpenHardwareMonitor, quando instalado.
+///
+/// É a ÚNICA sonda que ainda spawna PowerShell no caminho de telemetria, porque
+/// não existe contador nativo de temperatura. Por isso ela é rara, roda fora da
+/// thread da janela e desiste por mais tempo quando a máquina não tem o monitor
+/// instalado. Zona ACPI genérica continua de fora: ela pode medir placa ou
+/// ambiente, e um número errado é pior que "não disponível".
+fn ler_temps_monitor() -> (Option<f32>, Option<&'static str>, Option<f32>) {
     let script = r#"
-$usage = $null
-$temp = $null
-$vram = $null
-try {
-  $perAdapter = @{}
-  $engines = @(Get-CimInstance Win32_PerfFormattedData_GPUPerformanceCounters_GPUEngine -ErrorAction Stop |
-    Where-Object { [string]$_.Name -match '(?i)engtype_(3D|Compute|Graphics)' })
-  foreach ($engine in $engines) {
-    $name = [string]$engine.Name
-    $key = if ($name -match '(?i)(luid_.*?_phys_\d+)') { $matches[1] } else { 'default' }
-    if (-not $perAdapter.ContainsKey($key)) { $perAdapter[$key] = 0.0 }
-    $perAdapter[$key] += [double]$engine.UtilizationPercentage
-  }
-  if ($perAdapter.Count -gt 0) {
-    $maximum = ($perAdapter.Values | Measure-Object -Maximum).Maximum
-    $usage = [math]::Min(100.0, [math]::Max(0.0, [double]$maximum))
-  }
-} catch {}
-try {
-  $memory = @(Get-CimInstance Win32_PerfFormattedData_GPUPerformanceCounters_GPUAdapterMemory -ErrorAction Stop |
-    Measure-Object -Property DedicatedUsage -Maximum)
-  if ($memory.Count -gt 0 -and $memory[0].Maximum -ge 0) {
-    $vram = [double]$memory[0].Maximum / 1MB
-  }
-} catch {}
+$cpu = $null
+$gpu = $null
 foreach ($namespace in @('root/LibreHardwareMonitor', 'root/OpenHardwareMonitor')) {
   try {
-    $sensors = @(Get-CimInstance -Namespace $namespace Sensor -ErrorAction Stop | Where-Object {
-      $_.SensorType -eq 'Temperature' -and
-      ([string]$_.Identifier -match '(?i)/gpu/' -or [string]$_.Parent -match '(?i)/gpu/')
-    })
-    $preferred = $sensors | Where-Object { [string]$_.Name -match '(?i)(gpu core|edge|hot spot|junction)' } | Select-Object -First 1
-    if ($preferred -and $preferred.Value -gt 0) { $temp = [double]$preferred.Value; break }
-    if ($sensors.Count -gt 0) {
-      $maximum = $sensors | Measure-Object -Property Value -Maximum
-      if ($maximum.Maximum -gt 0) { $temp = [double]$maximum.Maximum; break }
+    $todos = @(Get-CimInstance -Namespace $namespace Sensor -ErrorAction Stop | Where-Object { $_.SensorType -eq 'Temperature' })
+    if ($todos.Count -eq 0) { continue }
+    $cpuSensores = @($todos | Where-Object { [string]$_.Identifier -match '(?i)/cpu/' -or [string]$_.Parent -match '(?i)/cpu/' })
+    $preferido = $cpuSensores | Where-Object { [string]$_.Name -match '(?i)(package|cpu total|tctl|tdie)' } | Select-Object -First 1
+    if ($preferido -and $preferido.Value -gt 0) { $cpu = [double]$preferido.Value }
+    elseif ($cpuSensores.Count -gt 0) {
+      $maximo = $cpuSensores | Measure-Object -Property Value -Maximum
+      if ($maximo.Maximum -gt 0) { $cpu = [double]$maximo.Maximum }
     }
+    $gpuSensores = @($todos | Where-Object { [string]$_.Identifier -match '(?i)/gpu/' -or [string]$_.Parent -match '(?i)/gpu/' })
+    $preferido = $gpuSensores | Where-Object { [string]$_.Name -match '(?i)(gpu core|edge|hot spot|junction)' } | Select-Object -First 1
+    if ($preferido -and $preferido.Value -gt 0) { $gpu = [double]$preferido.Value }
+    elseif ($gpuSensores.Count -gt 0) {
+      $maximo = $gpuSensores | Measure-Object -Property Value -Maximum
+      if ($maximo.Maximum -gt 0) { $gpu = [double]$maximo.Maximum }
+    }
+    if ($null -ne $cpu -or $null -ne $gpu) { break }
   } catch {}
 }
-@{ usage = $usage; temp = $temp; vram = $vram } | ConvertTo-Json -Compress
+@{ cpu = $cpu; gpu = $gpu } | ConvertTo-Json -Compress
 "#;
     let Ok(saida) = run_powershell(script, Duration::from_secs(8)) else {
         return (None, None, None);
@@ -1997,75 +2216,26 @@ foreach ($namespace in @('root/LibreHardwareMonitor', 'root/OpenHardwareMonitor'
     let Ok(parsed) = serde_json::from_str::<Value>(saida.trim()) else {
         return (None, None, None);
     };
-    let plausible = |key: &str, min: f32, max: f32| {
-        parsed[key]
+    let plausivel = |chave: &str| {
+        parsed[chave]
             .as_f64()
             .map(|v| v as f32)
-            .filter(|v| v.is_finite() && (min..=max).contains(v))
+            .filter(|v| v.is_finite() && (10.0..=125.0).contains(v))
     };
-    (
-        plausible("usage", 0.0, 100.0),
-        plausible("temp", 10.0, 125.0),
-        plausible("vram", 0.0, 262_144.0),
-    )
+    let cpu = plausivel("cpu");
+    (cpu, cpu.map(|_| "measured"), plausivel("gpu"))
 }
 
+/// Uso, temperatura e VRAM da GPU. nvidia-smi quando existe (um processo, ~70 ms,
+/// e é a única fonte de temperatura sem monitor instalado); senão os contadores
+/// nativos, que não spawnam nada. Campo sem fonte fica null, nunca estimado.
 fn ler_gpu() -> (Option<f32>, Option<f32>, Option<f32>) {
     let vendor = ler_gpu_nvidia();
     if vendor.0.is_some() && vendor.1.is_some() && vendor.2.is_some() {
         return vendor;
     }
-    let windows = ler_gpu_windows();
-    (
-        vendor.0.or(windows.0),
-        vendor.1.or(windows.1),
-        vendor.2.or(windows.2),
-    )
-}
-
-/// Temp de CPU apenas por sensor que se identifica como CPU no Libre/OpenHardwareMonitor.
-/// Zonas ACPI genéricas não são usadas: elas podem medir placa/ambiente e seriam enganosas.
-fn ler_cpu_temp() -> (Option<f32>, Option<&'static str>) {
-    let script = r#"
-$value = $null
-$origin = $null
-foreach ($namespace in @('root/LibreHardwareMonitor', 'root/OpenHardwareMonitor')) {
-  try {
-    $cpuSensors = @(Get-CimInstance -Namespace $namespace Sensor -ErrorAction Stop | Where-Object {
-      $_.SensorType -eq 'Temperature' -and
-      ([string]$_.Identifier -match '(?i)/cpu/' -or [string]$_.Parent -match '(?i)/cpu/')
-    })
-    $preferred = $cpuSensors | Where-Object { [string]$_.Name -match '(?i)(package|cpu total|tctl|tdie)' } | Select-Object -First 1
-    if ($preferred -and $preferred.Value -gt 0) { $value = [double]$preferred.Value; $origin = 'measured'; break }
-    if ($cpuSensors.Count -gt 0) {
-      $maximum = $cpuSensors | Measure-Object -Property Value -Maximum
-      if ($maximum.Maximum -gt 0) { $value = [double]$maximum.Maximum; $origin = 'measured'; break }
-    }
-  } catch {}
-}
-if ($null -ne $value) {
-  @{ value = [math]::Round($value, 1); origin = $origin } | ConvertTo-Json -Compress
-}
-"#;
-    let Ok(saida) = run_powershell(script, Duration::from_secs(8)) else {
-        return (None, None);
-    };
-    let Ok(parsed) = serde_json::from_str::<Value>(saida.trim()) else {
-        return (None, None);
-    };
-    let Some(v) = parsed["value"].as_f64().map(|v| v as f32) else {
-        return (None, None);
-    };
-    let origin = match parsed["origin"].as_str() {
-        Some("measured") => Some("measured"),
-        _ => None,
-    };
-    // filtra leituras absurdas (zona ACPI às vezes reporta 0 ou constantes)
-    if (10.0..=120.0).contains(&v) {
-        (Some(v), origin)
-    } else {
-        (None, None)
-    }
+    let (uso, vram) = ler_gpu_pdh();
+    (vendor.0.or(uso), vendor.1, vendor.2.or(vram))
 }
 
 fn agora_ms() -> u64 {
@@ -2075,24 +2245,96 @@ fn agora_ms() -> u64 {
         .unwrap_or(0)
 }
 
+/// Passo da thread de sensores. Mesma cadência de antes para o que é barato.
+const SENSOR_PASSO_MS: u64 = 1500;
+/// Temperatura por PowerShell: cara, e o valor muda devagar.
+const SENSOR_TEMP_MS: u64 = 6_000;
+/// Sem monitor de hardware instalado a sonda nunca vai responder. Insistir a cada
+/// 6 s gastaria um processo por nada num aplicativo que promete desempenho.
+const SENSOR_TEMP_DESISTE_MS: u64 = 120_000;
+/// Leitura mais velha que isto não é mais "agora": vira null em vez de mentir.
+const SENSOR_VALIDADE_MS: u64 = 15_000;
+/// Sem ninguém pedindo telemetria por este tempo, a sonda para de rodar.
+const SENSOR_OCIOSO_MS: u64 = 10_000;
+
+/// Sonda de sensor spawna processo. Rodar isso no caminho do `get_metrics`
+/// congelava a janela — um comando síncrono do Tauri roda na thread principal, e
+/// a consulta de GPU sozinha passava de um segundo. Aqui uma thread própria
+/// mantém o cache quente e a leitura só copia o que já está pronto.
+fn iniciar_sensores() {
+    static INICIADO: OnceLock<()> = OnceLock::new();
+    INICIADO.get_or_init(|| {
+        thread::spawn(|| {
+            let mut proxima_temp = 0u64;
+            loop {
+                // Ninguém lendo: não sonda nada e volta a dormir.
+                let ocioso = {
+                    let cache = sensores_cache().lock().unwrap();
+                    agora_ms().saturating_sub(cache.lido_ms) > SENSOR_OCIOSO_MS
+                };
+                if ocioso {
+                    thread::sleep(Duration::from_millis(SENSOR_PASSO_MS));
+                    continue;
+                }
+
+                let (uso, temp_gpu, vram) = ler_gpu();
+                {
+                    let mut cache = sensores_cache().lock().unwrap();
+                    cache.gpu_uso = uso;
+                    cache.gpu_vram_usada_mb = vram;
+                    if temp_gpu.is_some() {
+                        cache.gpu_temp = temp_gpu;
+                    }
+                    cache.atualizado_ms = agora_ms();
+                }
+
+                if agora_ms() >= proxima_temp {
+                    let (cpu, origem, gpu) = ler_temps_monitor();
+                    let achou = cpu.is_some() || gpu.is_some();
+                    {
+                        let mut cache = sensores_cache().lock().unwrap();
+                        cache.cpu_temp = cpu;
+                        cache.cpu_temp_origin = origem;
+                        if gpu.is_some() {
+                            cache.gpu_temp = gpu;
+                        }
+                        cache.cpu_atualizado_ms = agora_ms();
+                    }
+                    proxima_temp = agora_ms()
+                        + if achou {
+                            SENSOR_TEMP_MS
+                        } else {
+                            SENSOR_TEMP_DESISTE_MS
+                        };
+                }
+
+                thread::sleep(Duration::from_millis(SENSOR_PASSO_MS));
+            }
+        });
+    });
+}
+
+/// Só lê o cache: nenhuma sonda roda aqui. Valor velho demais volta como null.
 fn sensores_atuais() -> Sensores {
-    let mut cache = sensores_cache().lock().unwrap();
     let agora = agora_ms();
-    if agora.saturating_sub(cache.atualizado_ms) >= 1500 {
-        let (uso, temp, vram) = ler_gpu();
-        cache.gpu_uso = uso;
-        cache.gpu_temp = temp;
-        cache.gpu_vram_usada_mb = vram;
-        cache.atualizado_ms = agora;
+    // Marca a demanda ANTES de acordar a thread: começar pela thread faria a
+    // primeira volta achar que ninguém está lendo e atrasar a primeira leitura.
+    let cache = {
+        let mut cache = sensores_cache().lock().unwrap();
+        cache.lido_ms = agora;
+        *cache
+    };
+    iniciar_sensores();
+    let mut saida = cache;
+    if agora.saturating_sub(cache.atualizado_ms) > SENSOR_VALIDADE_MS {
+        saida.gpu_uso = None;
+        saida.gpu_vram_usada_mb = None;
     }
-    // A fonte ACPI é mais cara e usa um relógio independente do cache da GPU.
-    if agora.saturating_sub(cache.cpu_atualizado_ms) >= 6000 {
-        let (temp, origin) = ler_cpu_temp();
-        cache.cpu_temp = temp;
-        cache.cpu_temp_origin = origin;
-        cache.cpu_atualizado_ms = agora;
+    if agora.saturating_sub(cache.cpu_atualizado_ms) > SENSOR_TEMP_DESISTE_MS + SENSOR_VALIDADE_MS {
+        saida.cpu_temp = None;
+        saida.cpu_temp_origin = None;
     }
-    *cache
+    saida
 }
 
 #[derive(Serialize)]
@@ -2118,9 +2360,18 @@ pub struct Metrics {
     origin: &'static str,
 }
 
+/// Comando ASSÍNCRONO de propósito: o Tauri roda comando síncrono na thread
+/// principal, e qualquer espera ali congela a janela inteira — foi o que fazia o
+/// Windows marcar "não está respondendo" durante a navegação.
 #[tauri::command]
-pub fn get_metrics() -> Result<Metrics, String> {
+pub async fn get_metrics() -> Result<Metrics, String> {
     crate::license::ensure_licensed()?;
+    tauri::async_runtime::spawn_blocking(coletar_metricas)
+        .await
+        .map_err(|e| format!("ERR_METRICS_JOIN:{e}"))?
+}
+
+fn coletar_metricas() -> Result<Metrics, String> {
     let (cpu_usage, cpu_clock_ghz, ram_used_gb, ram_total_gb) = {
         let mut sys = system().lock().unwrap();
         sys.refresh_cpu_usage();
@@ -2169,14 +2420,21 @@ pub struct Proc {
 }
 
 #[tauri::command]
-pub fn list_processes() -> Result<Vec<Proc>, String> {
+pub async fn list_processes() -> Result<Vec<Proc>, String> {
     crate::license::ensure_licensed()?;
+    tauri::async_runtime::spawn_blocking(listar_processos)
+        .await
+        .map_err(|e| format!("ERR_PROC_JOIN:{e}"))?
+}
+
+fn listar_processos() -> Result<Vec<Proc>, String> {
     let mut sys = system().lock().unwrap();
     atualizar_alvos(&mut sys);
     let dono = dono_da_sessao(&sys);
+    let proprios = guardar_arvore(&sys);
     let mut agg: HashMap<String, (String, Vec<u32>, u64)> = HashMap::new();
     for (pid, p) in sys.processes() {
-        if !alvo_permitido(p, dono.as_ref()) {
+        if !alvo_permitido(p, dono.as_ref(), &proprios) {
             continue;
         }
         let nome = p.name().to_string_lossy().to_string();
@@ -2203,18 +2461,49 @@ pub fn list_processes() -> Result<Vec<Proc>, String> {
 }
 
 #[tauri::command]
-pub fn kill_process(pid: u32) -> Result<Proc, String> {
+pub async fn kill_process(pid: u32) -> Result<Proc, String> {
     crate::license::ensure_licensed()?;
+    tauri::async_runtime::spawn_blocking(move || encerrar_processo(pid))
+        .await
+        .map_err(|e| format!("ERR_KILL_JOIN:{e}"))?
+}
+
+fn encerrar_processo(pid: u32) -> Result<Proc, String> {
     if pid <= 4 || pid == std::process::id() {
         return Err("ERR_KILL_DENIED".into());
     }
     let mut sys = system().lock().unwrap();
-    atualizar_alvos(&mut sys);
+    // Varredura completa só quando a árvore do próprio app está velha: encerrar em
+    // lote não pode pagar uma varredura de todos os processos por PID.
+    let proprios = {
+        let cache = arvore_propria_cache().lock().ok();
+        match cache
+            .as_ref()
+            .filter(|c| agora_ms().saturating_sub(c.1) <= ARVORE_VALIDADE_MS)
+            .map(|c| c.0.clone())
+        {
+            Some(arvore) => {
+                sys.refresh_processes_specifics(
+                    sysinfo::ProcessesToUpdate::Some(&[Pid::from_u32(pid)]),
+                    true,
+                    sysinfo::ProcessRefreshKind::nothing()
+                        .with_memory()
+                        .with_user(sysinfo::UpdateKind::OnlyIfNotSet),
+                );
+                arvore
+            }
+            None => {
+                drop(cache);
+                atualizar_alvos(&mut sys);
+                guardar_arvore(&sys)
+            }
+        }
+    };
     let dono = dono_da_sessao(&sys);
     let p = sys
         .process(Pid::from_u32(pid))
         .ok_or("ERR_KILL_NOT_FOUND")?;
-    if !alvo_permitido(p, dono.as_ref()) {
+    if !alvo_permitido(p, dono.as_ref(), &proprios) {
         return Err("ERR_KILL_DENIED".into());
     }
     let nome = p.name().to_string_lossy().to_string();
@@ -2666,7 +2955,7 @@ mod tests {
 
     #[test]
     fn metricas_sao_plausiveis() {
-        let m = get_metrics().expect("gate aberto em debug");
+        let m = coletar_metricas().expect("gate aberto em debug");
         assert!((0.0..=100.0).contains(&m.cpu_usage), "cpu fora de faixa");
         assert!(
             m.ram_total_gb > 0.0 && m.ram_used_gb <= m.ram_total_gb,
@@ -2690,7 +2979,7 @@ mod tests {
             "clock atual absurdo: {clock}"
         );
         thread::sleep(Duration::from_millis(1_000));
-        let segunda = get_metrics().expect("gate aberto em debug");
+        let segunda = coletar_metricas().expect("gate aberto em debug");
         let clock_live = segunda
             .cpu_clock_ghz
             .expect("segunda leitura do clock ausente");
@@ -2723,15 +3012,23 @@ mod tests {
         assert!(vram.is_some_and(|v| v >= 0.0), "vram invalida: {vram:?}");
     }
 
+    /// Em máquina sem nvidia-smi (AMD, Intel) este é o único caminho de GPU, e
+    /// ele precisa ser nativo: a consulta CIM equivalente custava mais de um
+    /// segundo por leitura. A primeira coleta do PDH só arma o contador.
     #[test]
     fn gpu_via_wddm_independe_de_fabricante() {
-        let (uso, temp, vram) = ler_gpu_windows();
-        eprintln!("GPU WDDM: uso={uso:?} temp={temp:?} vram_mb={vram:?}");
+        let _ = ler_gpu_pdh();
+        thread::sleep(Duration::from_millis(1_200));
+        let inicio = std::time::Instant::now();
+        let (uso, vram) = ler_gpu_pdh();
+        let gasto = inicio.elapsed();
+        eprintln!("GPU PDH: uso={uso:?} vram_mb={vram:?} em {gasto:?}");
+        assert!(
+            gasto < Duration::from_millis(250),
+            "leitura de GPU voltou a ser cara: {gasto:?}"
+        );
         if let Some(u) = uso {
             assert!((0.0..=100.0).contains(&u));
-        }
-        if let Some(t) = temp {
-            assert!((10.0..=125.0).contains(&t));
         }
         if let Some(v) = vram {
             assert!((0.0..=262_144.0).contains(&v));
@@ -2741,7 +3038,7 @@ mod tests {
     /// Processos críticos jamais podem ser listados como alvo de encerramento.
     #[test]
     fn lista_de_processos_exclui_criticos() {
-        let procs = list_processes().expect("gate aberto em debug");
+        let procs = listar_processos().expect("gate aberto em debug");
         for p in &procs {
             assert!(
                 !KILL_DENY.contains(&p.nome.to_lowercase().as_str()),
@@ -2764,13 +3061,111 @@ mod tests {
                     && (!meu || q.user_id() == Some(&dono))
             })
         };
-        let fora: Vec<String> = list_processes()
+        let fora: Vec<String> = listar_processos()
             .expect("gate aberto em debug")
             .into_iter()
             .filter(|p| da_sessao(&p.nome, false) && !da_sessao(&p.nome, true))
             .map(|p| p.nome)
             .collect();
         assert!(fora.is_empty(), "processos fora da sessão do usuário: {fora:?}");
+    }
+
+    /// O aplicativo não pode aparecer entre os alvos: encerrar um processo do
+    /// WebView2 do próprio PLF CORE mata a interface, e para quem está usando
+    /// isso parece o programa travando e pedindo para recarregar.
+    #[test]
+    fn lista_de_processos_nao_expoe_o_proprio_app() {
+        let mut sys = System::new();
+        atualizar_alvos(&mut sys);
+        let arvore = arvore_propria(&sys);
+        assert!(
+            arvore.contains(&std::process::id()),
+            "a árvore própria nem inclui o processo atual"
+        );
+        let nomes: Vec<String> = arvore
+            .iter()
+            .filter_map(|pid| sys.process(Pid::from_u32(*pid)))
+            .map(|p| p.name().to_string_lossy().to_lowercase())
+            .collect();
+        let listados = listar_processos().expect("gate aberto em debug");
+        for p in &listados {
+            for pid in p.pids.iter().chain(std::iter::once(&p.pid)) {
+                assert!(
+                    !arvore.contains(pid),
+                    "processo do próprio app listado como alvo: {} (pid {pid}) — árvore: {nomes:?}",
+                    p.nome
+                );
+            }
+        }
+
+        // O que protege o WebView2 é a descendência, não o nome: um filho vivo
+        // precisa entrar na árvore e sumir da lista de alvos.
+        let mut filho = Command::new("ping.exe")
+            .args(["-n", "30", "127.0.0.1"])
+            .stdout(Stdio::null())
+            .creation_flags(CREATE_NO_WINDOW)
+            .spawn()
+            .expect("não deu pra criar processo filho de teste");
+        thread::sleep(Duration::from_millis(400));
+        let mut sys = System::new();
+        atualizar_alvos(&mut sys);
+        let com_filho = arvore_propria(&sys);
+        let encontrado = com_filho.contains(&filho.id());
+        // O filtro é checado direto: a lista corta processo abaixo de 10 MB, e um
+        // teste que passasse por causa desse corte não provaria nada.
+        let dono = dono_da_sessao(&sys);
+        let veredito = sys
+            .process(Pid::from_u32(filho.id()))
+            .map(|p| (alvo_permitido(p, dono.as_ref(), &com_filho), alvo_permitido(p, dono.as_ref(), &HashSet::new())));
+        let _ = filho.kill();
+        let _ = filho.wait();
+        assert!(
+            encontrado,
+            "processo filho ficou fora da árvore própria: o WebView2 seguiria encerrável"
+        );
+        let (com_protecao, sem_protecao) = veredito.expect("processo filho sumiu antes da checagem");
+        assert!(
+            sem_protecao,
+            "o filho já era barrado por outro filtro: este teste não provaria a proteção de árvore"
+        );
+        assert!(
+            !com_protecao,
+            "processo filho do app passou como alvo de encerramento"
+        );
+    }
+
+    /// Comando síncrono do Tauri roda na thread principal: qualquer espera ali
+    /// congela a janela. Estes três leem hardware e encerram processo — nenhum
+    /// pode voltar a ser síncrono.
+    #[test]
+    fn comandos_de_telemetria_sao_assincronos() {
+        let fonte = include_str!("commands.rs");
+        for nome in ["get_metrics", "list_processes", "kill_process"] {
+            assert!(
+                fonte.contains(&format!("pub async fn {nome}(")),
+                "{nome} voltou a ser comando síncrono: trava a thread da janela"
+            );
+        }
+    }
+
+    /// A telemetria lê cache preenchido por uma thread própria. Se uma sonda que
+    /// spawna processo voltar para o caminho da leitura, a janela congela de novo.
+    #[test]
+    fn leitura_de_sensores_nao_spawna_processo() {
+        let fonte = include_str!("commands.rs");
+        let corpo = fonte
+            .split_once("fn sensores_atuais()")
+            .expect("sensores_atuais sumiu")
+            .1
+            .split_once("\n}")
+            .expect("fim de sensores_atuais não encontrado")
+            .0;
+        for proibido in ["ler_gpu(", "ler_temps_monitor(", "run_powershell", "Command::new"] {
+            assert!(
+                !corpo.contains(proibido),
+                "sonda cara voltou para a leitura de sensores: {proibido}"
+            );
+        }
     }
 
     /// O número da varredura é uma promessa: só entra o que a limpeza consegue apagar.

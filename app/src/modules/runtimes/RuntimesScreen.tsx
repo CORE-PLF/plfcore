@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRestartStore } from '../../stores/restart'
 import { useT } from '../../i18n'
 import { getAdapter } from '../../services/adapter'
+import { invalidateScan, scanCached } from '../../services/scanCache'
 import { useLogStore } from '../../stores/log'
 import { useToastsStore } from '../../stores/toasts'
 import type { RuntimeState } from '../../types'
@@ -42,23 +43,36 @@ export default function RuntimesScreen() {
   const [itens, setItens] = useState<RuntimeState[] | null>(null)
   const [winget, setWinget] = useState(true)
   const [erro, setErro] = useState(false)
+  const [lendo, setLendo] = useState(true)
   const [ocupado, setOcupado] = useState<string | null>(null)
   const [lote, setLote] = useState<{ feitos: number; total: number } | null>(null)
   // A lista aberta por padrão: a pessoa quer ver o que já tem instalado.
   const [detalhes, setDetalhes] = useState(true)
   const [reinicio, setReinicio] = useState(false)
 
-  const ler = useCallback(async () => {
+  const ler = useCallback(async (semCache = false) => {
     setErro(false)
+    setLendo(true)
     try {
-      const scan = await getAdapter().scanRuntimes()
-      const peso = new Map(ORDEM.map((id, i) => [id as string, i]))
-      scan.items.sort((a, b) => (peso.get(a.id) ?? 99) - (peso.get(b.id) ?? 99))
-      setItens(scan.items)
-      setWinget(scan.winget)
+      await scanCached(
+        'runtimes',
+        async () => {
+          const scan = await getAdapter().scanRuntimes()
+          const peso = new Map(ORDEM.map((id, i) => [id as string, i]))
+          scan.items.sort((a, b) => (peso.get(a.id) ?? 99) - (peso.get(b.id) ?? 99))
+          return scan
+        },
+        (scan) => {
+          setItens(scan.items)
+          setWinget(scan.winget)
+        },
+        semCache,
+      )
     } catch {
       setItens(null)
       setErro(true)
+    } finally {
+      setLendo(false)
     }
   }, [])
 
@@ -81,6 +95,7 @@ export default function RuntimesScreen() {
   async function instalar(item: RuntimeState): Promise<boolean> {
     const nome = t(`nome.${item.id as RuntimeId}`)
     const res = await getAdapter().installRuntime(item.id)
+    invalidateScan('runtimes')
     useLogStore.getState().log({
       moduloId: 'runtimes',
       acao: `instalar-${item.id}`,
@@ -155,14 +170,15 @@ export default function RuntimesScreen() {
                 {detalhes ? t('esconderDetalhes') : t('verDetalhes')}
               </Button>
             )}
-            <Button disabled={ocupadoGeral} onClick={() => void ler()}>
+            {lendo && itens !== null && <span className="tag">{t('lendo')}</span>}
+            <Button disabled={ocupadoGeral} onClick={() => void ler(true)}>
               {t('reler')}
             </Button>
           </>
         }
       />
 
-      {erro && <ErrorState what={t('erroLer')} todo={t('erroLerAcao')} onRetry={() => void ler()} />}
+      {erro && <ErrorState what={t('erroLer')} todo={t('erroLerAcao')} onRetry={() => void ler(true)} />}
 
       {!erro && itens === null && (
         <p className="type-mono p-6 text-center text-xs text-ink-3">{t('lendo')}</p>

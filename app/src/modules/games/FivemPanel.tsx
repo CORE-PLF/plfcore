@@ -7,6 +7,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useT } from '../../i18n'
 import { getAdapter } from '../../services/adapter'
+import { scanCached } from '../../services/scanCache'
 import { useLogStore } from '../../stores/log'
 import { useToastsStore } from '../../stores/toasts'
 import type { FiveMFolder, FiveMScan } from '../../types'
@@ -39,16 +40,20 @@ export function FivemPanel() {
   const pushToast = useToastsStore((s) => s.push)
   const [scan, setScan] = useState<FiveMScan | null>(null)
   const [erro, setErro] = useState(false)
+  const [lendo, setLendo] = useState(true)
   const [ocupado, setOcupado] = useState<string | null>(null)
   const [armado, setArmado] = useState(false)
 
-  const ler = useCallback(async () => {
+  const ler = useCallback(async (semCache = false) => {
     setErro(false)
+    setLendo(true)
     try {
-      setScan(await getAdapter().scanFivem())
+      await scanCached('fivem', () => getAdapter().scanFivem(), setScan, semCache)
     } catch {
       setScan(null)
       setErro(true)
+    } finally {
+      setLendo(false)
     }
   }, [])
 
@@ -77,7 +82,7 @@ export function FivemPanel() {
       })
       pushToast({ tipo: 'sucesso', mensagem: t('fmLimpou', { tamanho: fmtBytes(res.liberadoBytes) }) })
       setArmado(false)
-      await ler()
+      await ler(true)
     } catch (e) {
       avisar(e)
     } finally {
@@ -97,7 +102,7 @@ export function FivemPanel() {
         detalhes: res.destino,
       })
       pushToast({ tipo: 'sucesso', mensagem: t('fmIsolou', { n: res.movidos, pasta }) })
-      await ler()
+      await ler(true)
     } catch (e) {
       avisar(e)
     } finally {
@@ -122,7 +127,8 @@ export function FivemPanel() {
               {t('fmInstalado')}
             </span>
           )}
-          <Button disabled={ocupadoGeral || scan === null} onClick={() => void ler()}>
+          {lendo && scan !== null && <span className="tag">{t('fmLendo')}</span>}
+          <Button disabled={ocupadoGeral || scan === null} onClick={() => void ler(true)}>
             {t('reler')}
           </Button>
         </>
@@ -134,7 +140,7 @@ export function FivemPanel() {
     return (
       <>
         {header}
-        <ErrorState what={t('fmErroLer')} todo={t('fmErroLerAcao')} onRetry={() => void ler()} />
+        <ErrorState what={t('fmErroLer')} todo={t('fmErroLerAcao')} onRetry={() => void ler(true)} />
       </>
     )
   }

@@ -1,5 +1,6 @@
 import type { HardwareInventory, MachineRecord } from '../types'
 import { getAdapter } from './adapter'
+import { invalidateScan } from './scanCache'
 
 // Cache de sessão: a ignição pré-carrega; as telas leem sem repetir a coleta.
 // Falha NÃO fica em cache — o próximo acesso tenta de novo.
@@ -26,7 +27,9 @@ export function getMachineRecordCached(): Promise<MachineRecord> {
   return rec
 }
 
+/** Fonte de dados mudou: morre tudo — inventário, registro e os scans das telas. */
 export function invalidateInventory(): void {
   inv = null
   rec = null
+  invalidateScan()
 }
