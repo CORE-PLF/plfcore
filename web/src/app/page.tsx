@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import type { ReactNode } from 'react'
 import { CockpitDemo } from '@/components/cockpit-demo'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
@@ -42,15 +41,6 @@ const MODULOS: { codigo: string; nome: string; desc: string }[] = [
 // dimensões reais de public/shots/fps-booster.png
 const SHOT_W = 1920
 const SHOT_H = 1080
-
-function StatusBar({ children, top = false }: { children: ReactNode; top?: boolean }) {
-  return (
-    <div className={`reveal flex items-center gap-3.5 border-b border-line py-[18px] ${top ? 'border-t' : ''}`}>
-      <span className="led" aria-hidden />
-      <span className="text-[10.5px] font-extrabold uppercase tracking-[0.24em] text-ink-3">{children}</span>
-    </div>
-  )
-}
 
 function SectionTitle({ title, lead }: { title: string; lead: string }) {
   return (
@@ -107,11 +97,7 @@ export default async function Home({
         <section className="border-b border-line">
           <div className="mx-auto grid w-full max-w-6xl lg:grid-cols-2">
             <div className="reveal px-4 pb-14 pt-14 md:pt-[72px] lg:border-r lg:border-line lg:pb-[76px] lg:pr-10">
-              <p className="flex items-center gap-2.5 text-[10px] font-extrabold uppercase tracking-[0.22em] text-ink-3">
-                <span className="led" aria-hidden />
-                App oficial · servidor Pro League
-              </p>
-              <h1 className="mt-6 text-[2.6rem] font-black uppercase leading-[1.02] tracking-[-0.05em] text-ink-1 sm:text-[3.4rem] xl:text-[4.6rem]">
+              <h1 className="text-[2.6rem] font-black uppercase leading-[1.02] tracking-[-0.05em] text-ink-1 sm:text-[3.4rem] xl:text-[4.6rem]">
                 Seu PC
                 <br />
                 medido —
@@ -152,7 +138,6 @@ export default async function Home({
         {/* ================= MÓDULOS ================= */}
         <section id="modulos" className="scroll-mt-[60px]">
           <div className="mx-auto w-full max-w-6xl px-4">
-            <StatusBar>Módulos do app — 06 instrumentos</StatusBar>
             <SectionTitle
               title="O que o app faz"
               lead="Cada instrumento diz de onde vem o dado, o que pretende mudar e mede de novo depois da sua confirmação."
@@ -191,9 +176,7 @@ export default async function Home({
         {/* ================= PLANOS ================= */}
         <section id="planos" className="scroll-mt-[60px]">
           <div className="mx-auto w-full max-w-6xl px-4 pb-24">
-            <div className="mt-[88px]">
-              <StatusBar top>Licença — emissão imediata no painel</StatusBar>
-            </div>
+            <div className="mt-[88px] border-t border-line" />
             <SectionTitle
               title="Planos"
               lead="Mesmo app em todos. Muda a duração. Uma licença vale para 1 instalação do Windows."

@@ -2,10 +2,9 @@
 
 import { useEffect, useRef } from 'react'
 import { BRAND } from '@/lib/brand'
-import { DemoSeal } from './ui'
 
-// Cockpit ilustrativo da landing. Agulhas e telemetria andam com valores inventados —
-// por isso o selo ILUSTRAÇÃO fica no cabeçalho. Nada aqui é lido da máquina do visitante.
+// Cockpit ilustrativo da landing. Agulhas e telemetria andam com valores de exemplo.
+// Nada aqui é lido da máquina do visitante.
 
 const GAUGES: { key: string; label: string; sub: string; base: number }[] = [
   { key: 'cpu', label: 'CPU', sub: 'RYZEN 7 5800X', base: 21 },
@@ -130,9 +129,6 @@ export function CockpitDemo() {
       <div className="sweep border-b border-line">
         <div className="flex min-h-11 items-center gap-2.5 bg-steel px-4 text-[11px] font-extrabold uppercase tracking-[0.18em] text-ink-1">
           COCKPIT
-          <span className="ml-auto">
-            <DemoSeal>ILUSTRAÇÃO — SEM DADOS MEDIDOS</DemoSeal>
-          </span>
         </div>
       </div>
 
